@@ -1,26 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
     <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\main.cpp">
       <Filter>Source Files\proj.win32</Filter>
     </ClCompile>
     <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\precheader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HexiiScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Util.cpp">
+      <Filter>Source Files\Classes\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Hex.cpp">
+      <Filter>Source Files\Classes\Hexii</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.cpp">
+      <Filter>Source Files\Classes\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HexagonCoordinatePlane.cpp">
+      <Filter>Source Files\Classes\Hexii</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HexPlane.cpp">
+      <Filter>Source Files\Classes\Hexii</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.h">
-      <Filter>Source Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.h">
-      <Filter>Source Files\Classes</Filter>
-    </ClInclude>
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\main.h">
       <Filter>Source Files\proj.win32</Filter>
     </ClInclude>
@@ -44,6 +53,33 @@
     </ClInclude>
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\res\.gitkeep">
       <Filter>Resources\res</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HexiiScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Console.h">
+      <Filter>Source Files\Classes\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Hex.h">
+      <Filter>Source Files\Classes\Hexii</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.h">
+      <Filter>Source Files\Classes\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HexagonCoordinatePlane.h">
+      <Filter>Source Files\Classes\Hexii</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Maths.h">
+      <Filter>Source Files\Classes\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HexPlane.h">
+      <Filter>Source Files\Classes\Hexii</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Memory.h">
+      <Filter>Source Files\Classes\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +108,18 @@
     </Filter>
     <Filter Include="Source Files\proj.win32">
       <UniqueIdentifier>{37A90B6D-2014-3086-A90F-9D9ACF8FAEDD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Scene">
+      <UniqueIdentifier>{c96fd932-d9a5-42c1-83d6-f7f0df9fa0d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Util">
+      <UniqueIdentifier>{f2f05239-831e-4539-a615-474d96cfc947}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Hexii">
+      <UniqueIdentifier>{112f9df0-b9ba-4f87-b0ff-31613831d582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Base">
+      <UniqueIdentifier>{9fc1590a-bff5-4464-8512-cafcc270f925}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
