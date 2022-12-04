@@ -16,9 +16,18 @@ void err(const std::string& msg) {
 	ErrFlag = 1;
 }
 
-Vec2 roundVec2(Vec2 target) {
-	target.x = std::roundf(target.x);
-	target.y = std::roundf(target.y);
+Vec2 roundVec2(const Vec2& target) {
+	return Vec2(roundf(target.x), roundf(target.y));
+}
 
-	return target;
+Vec3 roundVec3(const Vec3& target) {
+	return Vec3(roundf(target.x), roundf(target.y), roundf(target.z));
+}
+
+Vec2 absVec2(const cocos2d::Vec2& target) {
+	return Vec2(abs(target.x), abs(target.y));
+}
+
+Vec3 absVec3(const Vec3& target) {
+	return Vec3(abs(target.x), abs(target.y), abs(target.z));
 }
