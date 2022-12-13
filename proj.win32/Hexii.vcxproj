@@ -103,6 +103,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;COCOS2D_DEBUG=1;_WIN32;UNICODE;_UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;CC_STATIC;LWS_WITH_LIBUV;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;COCOS2D_DEBUG=1;_WIN32;UNICODE;_UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;CC_STATIC;LWS_WITH_LIBUV;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
@@ -245,7 +246,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/Debug/Hexii.lib</ImportLibrary>
       <ProgramDataBaseFile>D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/bin/Hexii/Debug/Hexii.pdb</ProgramDataBaseFile>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -809,21 +810,26 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Classes\BigInt.hpp" />
     <ClInclude Include="..\Classes\Console.h" />
     <ClInclude Include="..\Classes\Hex.h" />
     <ClInclude Include="..\Classes\HexiiScene.h" />
-    <ClInclude Include="..\Classes\HexagonCoordinatePlane.h" />
     <ClInclude Include="..\Classes\HexPlane.h" />
+    <ClInclude Include="..\Classes\InfoBox.h" />
     <ClInclude Include="..\Classes\Maths.h" />
     <ClInclude Include="..\Classes\Memory.h" />
+    <ClInclude Include="..\Classes\ProgressBar.h" />
+    <ClInclude Include="..\Classes\SimpleShader.h" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.h" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.h" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\main.h" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\resource.h" />
     <ClCompile Include="..\Classes\Hex.cpp" />
     <ClCompile Include="..\Classes\HexiiScene.cpp" />
-    <ClCompile Include="..\Classes\HexagonCoordinatePlane.cpp" />
     <ClCompile Include="..\Classes\HexPlane.cpp" />
+    <ClCompile Include="..\Classes\InfoBox.cpp" />
+    <ClCompile Include="..\Classes\ProgressBar.cpp" />
+    <ClCompile Include="..\Classes\SimpleShader.cpp" />
     <ClCompile Include="..\Classes\Util.cpp" />
     <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.cpp" />
     <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.cpp" />

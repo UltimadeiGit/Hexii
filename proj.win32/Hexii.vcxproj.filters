@@ -22,11 +22,15 @@
     <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.cpp">
       <Filter>Source Files\Classes\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HexagonCoordinatePlane.cpp">
-      <Filter>Source Files\Classes\Hexii</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\HexPlane.cpp">
       <Filter>Source Files\Classes\Hexii</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\InfoBox.cpp">
+      <Filter>Source Files\Classes\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SimpleShader.cpp" />
+    <ClCompile Include="..\Classes\ProgressBar.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -69,17 +73,22 @@
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.h">
       <Filter>Source Files\Classes\Base</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HexagonCoordinatePlane.h">
+    <ClInclude Include="..\Classes\HexPlane.h">
       <Filter>Source Files\Classes\Hexii</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Maths.h">
       <Filter>Source Files\Classes\Util</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HexPlane.h">
-      <Filter>Source Files\Classes\Hexii</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Memory.h">
       <Filter>Source Files\Classes\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\BigInt.hpp" />
+    <ClInclude Include="..\Classes\InfoBox.h">
+      <Filter>Source Files\Classes\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SimpleShader.h" />
+    <ClInclude Include="..\Classes\ProgressBar.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +129,9 @@
     </Filter>
     <Filter Include="Source Files\Classes\Base">
       <UniqueIdentifier>{9fc1590a-bff5-4464-8512-cafcc270f925}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\UI">
+      <UniqueIdentifier>{63122845-b9f5-4708-8d11-db7e2ec041a7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
