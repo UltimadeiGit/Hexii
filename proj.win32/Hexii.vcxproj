@@ -810,6 +810,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="HexUpgrade.cpp" />
     <ClInclude Include="..\Classes\BigInt.hpp" />
     <ClInclude Include="..\Classes\Console.h" />
     <ClInclude Include="..\Classes\Hex.h" />
@@ -834,6 +835,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.cpp" />
     <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\main.cpp" />
+    <ClInclude Include="HexUpgrade.h" />
     <ResourceCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\game.rc" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\CloseNormal.png" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\CloseSelected.png" />
