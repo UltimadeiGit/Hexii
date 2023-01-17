@@ -34,7 +34,15 @@ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 #include "platform/CCPlatformConfig.h"
 #include "platform/CCPlatformDefine.h"
 
-#define CREATE_FUNC_BODY \
+/** @def CREATE_FUNC(__TYPE__)
+ * Define a create function for a specific type, such as Layer.
+ *
+ * @param __TYPE__  class type to add create(), such as Layer.
+ */
+#define CREATE_FUNC(__TYPE__) \
+static __TYPE__* create() \
+{ \
+    __TYPE__ *pRet = new(std::nothrow) __TYPE__(); \
     if (pRet && pRet->init()) \
     { \
         pRet->autorelease(); \
@@ -45,40 +53,8 @@ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
         delete pRet; \
         pRet = nullptr; \
         return nullptr; \
-    }
-
-/** @def CREATE_FUNC(__TYPE__)
- * Define a create function for a specific type, such as Layer.
- *
- * @param __TYPE__  class type to add create(), such as Layer.
- */
-#define CREATE_FUNC(__TYPE__) \
-inline static __TYPE__* create() \
-{ \
-    __TYPE__ *pRet = new(std::nothrow) __TYPE__(); \
-    CREATE_FUNC_BODY \
+    } \
 }
-
-#define CREATE_FUNC_WITH_CTOR_1(__TYPE__, ARG1TYPE) \
-private: \
-__TYPE__(ARG1TYPE arg1); \
-public: \
-inline static __TYPE__* create(ARG1TYPE arg1) \
-{ \
-    __TYPE__ *pRet = new(std::nothrow) __TYPE__(arg1); \
-    CREATE_FUNC_BODY \
-}
-
-#define CREATE_FUNC_WITH_CTOR_2(__TYPE__, ARG1TYPE, ARG2TYPE) \
-private: \
-__TYPE__(ARG1TYPE arg1, ARG2TYPE arg2); \
-public: \
-inline static __TYPE__* create(ARG1TYPE arg1, ARG2TYPE arg2) \
-{ \
-    __TYPE__ *pRet = new(std::nothrow) __TYPE__(arg1, arg2); \
-    CREATE_FUNC_BODY \
-}
-
 
 /** @def NODE_FUNC(__TYPE__)
  * Define a node function for a specific type, such as Layer.

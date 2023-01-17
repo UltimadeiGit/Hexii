@@ -25,9 +25,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{019D1DC1-DAD7-3817-A40C-FB2AC948DC4B}</ProjectGuid>
+    <ProjectGuid>{40482BD1-F6DA-364E-A9D0-DCC99C9B4D79}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
     <Platform>win32</Platform>
     <ProjectName>ALL_BUILD</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
@@ -36,22 +36,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -108,11 +108,11 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\CMakeLists.txt">
+    <CustomBuild Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\cocos2d\external\CMakeLists.txt">
       <UseUtf8Encoding>Always</UseUtf8Encoding>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/external/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Building Custom Rule C:/Users/samsh/Documents/Programming/Cocos/Hexii/cocos2d/external/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/external/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/samsh/Documents/Programming/Cocos/Hexii -BC:/Users/samsh/Documents/Programming/Cocos/Hexii/proj.win32 --check-stamp-file C:/Users/samsh/Documents/Programming/Cocos/Hexii/proj.win32/engine/external/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -121,11 +121,11 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/external/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|win32'">Building Custom Rule C:/Users/samsh/Documents/Programming/Cocos/Hexii/cocos2d/external/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/external/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/samsh/Documents/Programming/Cocos/Hexii -BC:/Users/samsh/Documents/Programming/Cocos/Hexii/proj.win32 --check-stamp-file C:/Users/samsh/Documents/Programming/Cocos/Hexii/proj.win32/engine/external/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -134,11 +134,11 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/external/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">Building Custom Rule C:/Users/samsh/Documents/Programming/Cocos/Hexii/cocos2d/external/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/external/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/samsh/Documents/Programming/Cocos/Hexii -BC:/Users/samsh/Documents/Programming/Cocos/Hexii/proj.win32 --check-stamp-file C:/Users/samsh/Documents/Programming/Cocos/Hexii/proj.win32/engine/external/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -147,11 +147,11 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/external/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">Building Custom Rule C:/Users/samsh/Documents/Programming/Cocos/Hexii/cocos2d/external/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/external/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/samsh/Documents/Programming/Cocos/Hexii -BC:/Users/samsh/Documents/Programming/Cocos/Hexii/proj.win32 --check-stamp-file C:/Users/samsh/Documents/Programming/Cocos/Hexii/proj.win32/engine/external/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -160,61 +160,61 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\ZERO_CHECK.vcxproj">
-      <Project>{454CA76D-75FC-3F37-B9BA-0A2C1C033296}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\ZERO_CHECK.vcxproj">
+      <Project>{DED156E8-990E-301A-92E0-0B4FA2969C71}</Project>
       <Name>ZERO_CHECK</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\clipper\ext_clipper.vcxproj">
-      <Project>{35CF7857-FC8A-31B7-8799-28D7A25E8BA2}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\clipper\ext_clipper.vcxproj">
+      <Project>{B57E490C-3D5C-3989-A51A-7C0A4B057263}</Project>
       <Name>ext_clipper</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\ConvertUTF\ext_convertUTF.vcxproj">
-      <Project>{FA952C72-0F18-33F1-B5ED-A7C71F16D254}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\ConvertUTF\ext_convertUTF.vcxproj">
+      <Project>{04505AFD-92B7-39C9-A7CB-FB572661B4D5}</Project>
       <Name>ext_convertUTF</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\edtaa3func\ext_edtaa3func.vcxproj">
-      <Project>{76BBE908-DA6C-3828-802B-F92E804C9EDA}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\edtaa3func\ext_edtaa3func.vcxproj">
+      <Project>{6B33A05F-0795-34DA-A7FB-12CB100D4E20}</Project>
       <Name>ext_edtaa3func</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\md5\ext_md5.vcxproj">
-      <Project>{656AE385-6D17-3B7D-B7DB-032FB95A5469}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\md5\ext_md5.vcxproj">
+      <Project>{D1E5875B-446B-30E0-B771-E65A2FD13CBD}</Project>
       <Name>ext_md5</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\poly2tri\ext_poly2tri.vcxproj">
-      <Project>{1D954DE0-5823-3C92-8483-5292639B4AC7}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\poly2tri\ext_poly2tri.vcxproj">
+      <Project>{0844DB16-A806-3EEE-9380-3ED51F91A31A}</Project>
       <Name>ext_poly2tri</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\recast\ext_recast.vcxproj">
-      <Project>{2B3FDB08-E269-3550-B964-C7F3C78F03A6}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\recast\ext_recast.vcxproj">
+      <Project>{A0EF2EB4-E535-36F4-8BC8-F2A0E5C7209D}</Project>
       <Name>ext_recast</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\tinyxml2\ext_tinyxml2.vcxproj">
-      <Project>{7FFBCAD9-6EC1-3283-AE63-CC193241F42C}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\tinyxml2\ext_tinyxml2.vcxproj">
+      <Project>{1E996F87-F55D-34F6-BA4C-CD164F1101A6}</Project>
       <Name>ext_tinyxml2</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\unzip\ext_unzip.vcxproj">
-      <Project>{B12248C4-C270-3F68-9005-85558CFB65CC}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\unzip\ext_unzip.vcxproj">
+      <Project>{9E8B3B77-1AD8-387B-ADA2-6D1CF220B6BA}</Project>
       <Name>ext_unzip</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\xxhash\ext_xxhash.vcxproj">
-      <Project>{A98B18AB-19B3-3773-AF97-A39AD069B42B}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\xxhash\ext_xxhash.vcxproj">
+      <Project>{9C569FEC-0694-38C8-92C5-5B3CA0D68557}</Project>
       <Name>ext_xxhash</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\xxtea\ext_xxtea.vcxproj">
-      <Project>{BBA38255-6F48-3C69-A4DE-94A1244B3E14}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\xxtea\ext_xxtea.vcxproj">
+      <Project>{D25D1572-2EEF-3B65-8ABE-20F1F4F1895D}</Project>
       <Name>ext_xxtea</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\external.vcxproj">
-      <Project>{115B5BA8-BF6F-3B0C-980D-A8F71F3BE5B9}</Project>
+    <ProjectReference Include="C:\Users\samsh\Documents\Programming\Cocos\Hexii\proj.win32\engine\external\external.vcxproj">
+      <Project>{2F884DAF-CD58-307E-AF39-A9E4B05C0CE1}</Project>
       <Name>external</Name>
     </ProjectReference>
   </ItemGroup>
