@@ -33,7 +33,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
@@ -74,7 +74,8 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message></Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "D:\Program Files\CMake\bin\cmake.exe" -E echo "    copying to D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/bin/Hexii/$(Configuration)/Resources"
 if %errorlevel% neq 0 goto :cmEnd
@@ -98,7 +99,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message></Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "D:\Program Files\CMake\bin\cmake.exe" -E echo "    copying to D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/bin/Hexii/$(Configuration)/Resources"
 if %errorlevel% neq 0 goto :cmEnd
@@ -122,7 +124,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message></Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "D:\Program Files\CMake\bin\cmake.exe" -E echo "    copying to D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/bin/Hexii/$(Configuration)/Resources"
 if %errorlevel% neq 0 goto :cmEnd
@@ -146,7 +149,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message></Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "D:\Program Files\CMake\bin\cmake.exe" -E echo "    copying to D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/bin/Hexii/$(Configuration)/Resources"
 if %errorlevel% neq 0 goto :cmEnd
@@ -162,7 +166,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <CustomBuild Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\CMakeFiles\7dd550de267b42950b7e33d44e0539b4\SYNC_RESOURCE-Hexii.rule">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'"></Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">
+      </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
 "D:\Program Files\CMake\bin\cmake.exe" -E echo "Copying resources for Hexii ..."
 if %errorlevel% neq 0 goto :cmEnd
@@ -176,7 +181,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\CMakeFiles\SYNC_RESOURCE-Hexii</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
       <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</VerifyInputsAndOutputsExist>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|win32'"></Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|win32'">
+      </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|win32'">setlocal
 "D:\Program Files\CMake\bin\cmake.exe" -E echo "Copying resources for Hexii ..."
 if %errorlevel% neq 0 goto :cmEnd
@@ -190,7 +196,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\CMakeFiles\SYNC_RESOURCE-Hexii</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|win32'">false</LinkObjects>
       <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Release|win32'">false</VerifyInputsAndOutputsExist>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'"></Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">
+      </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">setlocal
 "D:\Program Files\CMake\bin\cmake.exe" -E echo "Copying resources for Hexii ..."
 if %errorlevel% neq 0 goto :cmEnd
@@ -204,7 +211,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\CMakeFiles\SYNC_RESOURCE-Hexii</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">false</LinkObjects>
       <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">false</VerifyInputsAndOutputsExist>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'"></Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">
+      </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">setlocal
 "D:\Program Files\CMake\bin\cmake.exe" -E echo "Copying resources for Hexii ..."
 if %errorlevel% neq 0 goto :cmEnd
