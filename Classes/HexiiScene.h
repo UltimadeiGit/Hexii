@@ -2,7 +2,8 @@
 
 #include "cocos2d.h"
 #include "HexPlane.h"
-#include "InfoBox.h"
+#include "Sidebar.h"
+#include "CurrencyHUD.h"
 
 class HexiiScene :
     public cocos2d::Scene {
@@ -29,27 +30,23 @@ public:
     CREATE_FUNC(HexiiScene);
 private:
     void onHexYield(Hex* hex);
-    void onHexStartLevelUp(Hex* hex);
-    void onHexFinishLevelUp(Hex* hex);
-
-    void updateGreenMatter(BigInt extraGreenMatter, BigInt extraGreenMatterPerSecond);
 
     void tryPurchaseHex(Hex* target);
 
     // Used to fix position vectors whose y component is flipped (i.e from a touch)
     cocos2d::Vec2 correctInvertedYVec(const cocos2d::Vec2& vec) const;
 
-    BigInt m_greenMatter = 6000;
-    // TODO: I forgot that only l0 affected this... Gotta fix a lot of stuff to do with that
-    BigInt m_greenMatterPerSecond;
-
     unsigned int m_hexiiCountPerLayer[6];
 
-    InfoBox* m_infoBox;
+    // UI & HUD
+
+    Sidebar* m_sidebar;
+    CurrencyHUD* m_currencyHUD;
 
     cocos2d::DrawNode* m_debugNodes[10];
-    cocos2d::Vec2 m_mousePos;
     cocos2d::Label* m_debugLabel;
+
+    cocos2d::Vec2 m_mousePos;
 
 #ifdef CC_PLATFORM_PC
     Hex* m_mouseOverHex = nullptr;

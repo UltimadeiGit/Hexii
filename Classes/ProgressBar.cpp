@@ -50,6 +50,8 @@ bool ProgressBar::init() {
 	m_wholeTex->setAnchorPoint(Vec2::ZERO);
 	m_wholeTex->setProgramState(m_shader->programState);
 
+	setContentSize(innerTexture->getContentSize());
+
 	this->addChild(m_whole);
 	this->addChild(m_wholeTex);
 
@@ -75,6 +77,6 @@ void ProgressBar::visit(Renderer* renderer, const Mat4& parentTransform, uint32_
 	}
 
 	m_whole->end();
-
+	
 	m_wholeTex->visit(renderer, this->getNodeToParentTransform() * parentTransform, parentFlags);
 }

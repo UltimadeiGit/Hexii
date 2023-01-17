@@ -25,14 +25,27 @@
     <ClCompile Include="..\Classes\HexPlane.cpp">
       <Filter>Source Files\Classes\Hexii</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\InfoBox.cpp">
-      <Filter>Source Files\Classes\UI</Filter>
+    <ClCompile Include="..\Classes\CurrencyHUD.cpp">
+      <Filter>Source Files\Classes\UI&amp;HUD</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\SimpleShader.cpp" />
     <ClCompile Include="..\Classes\ProgressBar.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Classes\UI&amp;HUD</Filter>
     </ClCompile>
-    <ClCompile Include="HexUpgrade.cpp" />
+    <ClCompile Include="..\Classes\Sidebar.cpp">
+      <Filter>Source Files\Classes\UI&amp;HUD\Sidebar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HexInfoTab.cpp">
+      <Filter>Source Files\Classes\UI&amp;HUD\Sidebar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SimpleShader.cpp">
+      <Filter>Source Files\Classes\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Currencies.cpp">
+      <Filter>Source Files\Classes\Hexii</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SettingsTab.cpp">
+      <Filter>Source Files\Classes\UI&amp;HUD\Sidebar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\main.h">
@@ -84,14 +97,27 @@
       <Filter>Source Files\Classes\Util</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\BigInt.hpp" />
-    <ClInclude Include="..\Classes\InfoBox.h">
-      <Filter>Source Files\Classes\UI</Filter>
+    <ClInclude Include="..\Classes\CurrencyHUD.h">
+      <Filter>Source Files\Classes\UI&amp;HUD</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\SimpleShader.h" />
     <ClInclude Include="..\Classes\ProgressBar.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Classes\UI&amp;HUD</Filter>
     </ClInclude>
-    <ClInclude Include="HexUpgrade.h" />
+    <ClInclude Include="..\Classes\Sidebar.h">
+      <Filter>Source Files\Classes\UI&amp;HUD\Sidebar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HexInfoTab.h">
+      <Filter>Source Files\Classes\UI&amp;HUD\Sidebar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SimpleShader.h">
+      <Filter>Source Files\Classes\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Currencies.h">
+      <Filter>Source Files\Classes\Hexii</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SettingsTab.h">
+      <Filter>Source Files\Classes\UI&amp;HUD\Sidebar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\CMakeLists.txt" />
@@ -132,8 +158,11 @@
     <Filter Include="Source Files\Classes\Base">
       <UniqueIdentifier>{9fc1590a-bff5-4464-8512-cafcc270f925}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Classes\UI">
+    <Filter Include="Source Files\Classes\UI&amp;HUD">
       <UniqueIdentifier>{63122845-b9f5-4708-8d11-db7e2ec041a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\UI&amp;HUD\Sidebar">
+      <UniqueIdentifier>{ca6eb082-1d60-4661-9e25-e64892908e14}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

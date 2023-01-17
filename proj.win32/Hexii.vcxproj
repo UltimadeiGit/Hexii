@@ -810,32 +810,38 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HexUpgrade.cpp" />
     <ClInclude Include="..\Classes\BigInt.hpp" />
     <ClInclude Include="..\Classes\Console.h" />
+    <ClInclude Include="..\Classes\Currencies.h" />
+    <ClInclude Include="..\Classes\CurrencyHUD.h" />
     <ClInclude Include="..\Classes\Hex.h" />
     <ClInclude Include="..\Classes\HexiiScene.h" />
     <ClInclude Include="..\Classes\HexPlane.h" />
-    <ClInclude Include="..\Classes\InfoBox.h" />
+    <ClInclude Include="..\Classes\HexInfoTab.h" />
     <ClInclude Include="..\Classes\Maths.h" />
     <ClInclude Include="..\Classes\Memory.h" />
     <ClInclude Include="..\Classes\ProgressBar.h" />
+    <ClInclude Include="..\Classes\SettingsTab.h" />
+    <ClInclude Include="..\Classes\Sidebar.h" />
     <ClInclude Include="..\Classes\SimpleShader.h" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.h" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.h" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\main.h" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\resource.h" />
+    <ClCompile Include="..\Classes\Currencies.cpp" />
+    <ClCompile Include="..\Classes\CurrencyHUD.cpp" />
     <ClCompile Include="..\Classes\Hex.cpp" />
     <ClCompile Include="..\Classes\HexiiScene.cpp" />
     <ClCompile Include="..\Classes\HexPlane.cpp" />
-    <ClCompile Include="..\Classes\InfoBox.cpp" />
+    <ClCompile Include="..\Classes\HexInfoTab.cpp" />
     <ClCompile Include="..\Classes\ProgressBar.cpp" />
+    <ClCompile Include="..\Classes\SettingsTab.cpp" />
+    <ClCompile Include="..\Classes\Sidebar.cpp" />
     <ClCompile Include="..\Classes\SimpleShader.cpp" />
     <ClCompile Include="..\Classes\Util.cpp" />
     <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.cpp" />
     <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\main.cpp" />
-    <ClInclude Include="HexUpgrade.h" />
     <ResourceCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\game.rc" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\CloseNormal.png" />
     <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\CloseSelected.png" />

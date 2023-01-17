@@ -13,6 +13,14 @@ private:
 	bool init();
 
 public:
+	// The 'role' of a Hex (determined by its universe) informs how its yield should be used
+	enum class Role {
+		HOME_L0,
+		HOME
+	} const role;
+
+	// TODO: Upgrades here
+
 	CREATE_FUNC_WITH_CTOR_2(Hex, const unsigned int, const cocos2d::Vec2&);
 
 	inline const cocos2d::Vec2& getPosition() const override { return Sprite::getPosition(); }
@@ -24,7 +32,6 @@ public:
 	inline unsigned int getLevel() const { return m_level; }
 	
 	inline BigInt getYield() const { return m_yield; }
-	inline BigInt getYieldPerSecond() const { return m_cachedYieldPerSecond; }
 
 	void onTouchBegan();
 	void onTouchEnded();
@@ -47,8 +54,6 @@ private:
 
 	cocos2d::Label* m_debugLabel = nullptr;
 
-	// Cached to avoid having to recalculate many times. Only updated when `m_yield` is updated
-	BigInt m_cachedYieldPerSecond;
 	BigInt m_yield = 1;
 	BigInt m_baseYield = 1;
 	// Speed = yields per second = 1 / baseYieldDelay
@@ -57,11 +62,13 @@ private:
 	unsigned int m_exp = 0;
 	unsigned int m_level = 0;
 
+	const static unsigned int MAX_UPGRADES = 10;
+	// See design docs for info about which upgrades are which. This is just an efficient way of tracking them
+	unsigned int m_upgrades[MAX_UPGRADES];
+
 	SimpleShader* m_shader = nullptr;
 
 	bool m_isPressed = false;
-
-	void levelUp();
 	
 	// An inactive hex is just a border
 	bool m_active;

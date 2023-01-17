@@ -5,10 +5,8 @@
 USING_NS_CC;
 
 Hex::Hex(const unsigned int layer, const Vec2& pos) : m_layer(layer), m_pos(pos), m_active(false),
-	m_baseYieldDelay(layer + 1) 
-{
-	m_cachedYieldPerSecond = m_yield / m_baseYieldDelay;
-}
+	m_baseYieldDelay(layer + 1), role(layer == 0 ? Role::HOME_L0 : Role::HOME), m_upgrades {0}
+{}
 
 bool Hex::init() {
 	if (!Sprite::initWithPolygon(AutoPolygon::generatePolygon("HexagonInactive.png"))) return false;
@@ -34,7 +32,7 @@ bool Hex::init() {
 
 void Hex::addEXP(unsigned int exp) {
 	m_exp += exp;
-	while (m_exp >= getEXPRequiredForLevel(m_level + 1)) levelUp();
+	while (m_exp >= getEXPRequiredForLevel(m_level + 1)) m_level++;
 }
 
 void Hex::onTouchBegan() {
@@ -93,14 +91,6 @@ LEVEL: {}",
 	// Update shader uniforms
 
 	m_shader->setUniform<float>("progress", m_progress);
-}
-
-void Hex::levelUp() {
-	// TODO: Later on this can be changed with upgrades
-	m_yield = m_baseYield;
-	m_cachedYieldPerSecond = m_yield / m_baseYieldDelay;
-
-	m_level++;
 }
 
 /*

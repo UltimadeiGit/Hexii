@@ -1,6 +1,7 @@
 #include "HexiiScene.h"
 #include "Maths.h"
 #include "SimpleShader.h"
+#include "Currencies.h"
 
 USING_NS_CC;
 
@@ -28,10 +29,7 @@ bool HexiiScene::init() {
 	m_debugLabel->setTextColor(Color4B(128, 128, 128, 255));
 	// m_debugLabel->enableGlow(Color4B(255, 0, 0, 255));
 	m_debugLabel->setPosition(Vec2(visibleSize.width / 2 + origin.x, 100));
-	this->addChild(this->m_debugLabel);
-
-	
-	
+	this->addChild(this->m_debugLabel);	
 
 #ifdef CC_PLATFORM_MOBILE
 	auto touchListener = EventListenerTouchOneByOne::create();
@@ -59,11 +57,15 @@ bool HexiiScene::init() {
 		this->addChild(m_debugNodes[i]);
 	}
 
-	m_infoBox = InfoBox::create();
-	m_infoBox->setAnchorPoint(Vec2(0, 0));
-	m_infoBox->setPosition(Vec2(0, 35));
+	m_sidebar = Sidebar::create();
+	m_sidebar->setPosition(Vec2(0, 35));
 
-	this->addChild(m_infoBox);
+	m_currencyHUD = CurrencyHUD::create();
+	// m_currencyHUD->setAnchorPoint(Vec2(0.5f, 0.0f));
+	m_currencyHUD->setPosition(Vec2(origin.x + visibleSize.width / 2, visibleSize.height + origin.y));
+
+	this->addChild(m_sidebar);
+	this->addChild(m_currencyHUD);
 
 	return true;
 }
@@ -83,7 +85,7 @@ void HexiiScene::onMousePressed(cocos2d::EventMouse* mouse) {
 
 	// Right clicks
 	if (mouse->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) {
-		if (m_mouseOverHex) m_infoBox->setFocus(m_mouseOverHex);
+		if (m_mouseOverHex) m_sidebar->getHexInfoTab()->setFocus(m_mouseOverHex);
 	}
 }
 
@@ -96,6 +98,7 @@ void HexiiScene::onMouseMoved(cocos2d::EventMouse* mouse) {
 	// printf("(%d, %d)\n", (int)mouse->getLocationInView().x, (int)mouse->getLocationInView().y);
 	// TODO: This line is a bit long. Some of the functionality belongs in the HexPlane
 	m_mouseOverHex = m_plane->get(m_plane->round(m_plane->hexPositionOf(mouse->getLocationInView() - m_plane->getPosition())));
+	// if(!m_mouseOverHex->getActive()) m_mouseOverHex->
 }
 
 #endif
@@ -104,16 +107,8 @@ void HexiiScene::update(float dt) {
 	SimpleShaderManager::getInstance()->updateShaderTime();
 
 	m_plane->update(dt);
-	m_infoBox->update(dt);
-
-	// Used to update certain elements only every few frames
-	static unsigned int frameCount = 0;
-	frameCount++;
-
-	if (frameCount % 3 == 0) {
-		m_infoBox->updateGreenMatterAmount(m_greenMatter);
-		m_infoBox->updateGreenMatterIncreaseAmount(m_greenMatterPerSecond);
-	}
+	m_sidebar->update(dt);
+	m_currencyHUD->update(dt);
 }
 
 void HexiiScene::onHexYield(Hex* hex) {
@@ -121,25 +116,13 @@ void HexiiScene::onHexYield(Hex* hex) {
 
 	int layer = hex->getLayer();
 	BigInt yield = hex->getYield();
-	if (layer == 0) return updateGreenMatter(yield, 0);
+	if (hex->role == Hex::Role::HOME_L0) {
+		Currencies::instance()->addGreenMatter(yield);
+		return;
+	}
 	
 	auto neighbors = m_plane->neighborsOf(m_plane->hexPositionOf(hex->getPosition()), true);
 	for (auto& neighbor : neighbors) if (neighbor.hex->getLayer() < layer) neighbor.hex->addEXP(yield.to_int());
-}
-
-void HexiiScene::onHexStartLevelUp(Hex* hex) {
-	// A hex level up may trigger a change in its green matter per second. So, this function will erase its current \
-	contributions, then the FinishLevelUp function will add the new value back in
-	updateGreenMatter(0, -hex->getYieldPerSecond());
-}
-
-void HexiiScene::onHexFinishLevelUp(Hex* hex) {
-	updateGreenMatter(0, hex->getYieldPerSecond());
-}
-
-void HexiiScene::updateGreenMatter(BigInt extraGreenMatter, BigInt extraGreenMatterPerSecond) {
-	m_greenMatter += extraGreenMatter;
-	m_greenMatterPerSecond += extraGreenMatterPerSecond;
 }
 
 void HexiiScene::tryPurchaseHex(Hex* target) {
@@ -151,7 +134,7 @@ void HexiiScene::tryPurchaseHex(Hex* target) {
 	case 0:
 		break;
 	case 1:
-		cost = 100; //100 * (cost ^ (m_hexiiCountPerLayer[1] + 1));
+		cost = 100 * (cost ^ (m_hexiiCountPerLayer[1] + 1));
 		break;
 	default:
 		cost = "100";
@@ -159,14 +142,13 @@ void HexiiScene::tryPurchaseHex(Hex* target) {
 	}
 	
 	// Not affordable
-	if (m_greenMatter < cost) return;
+	if (cost > Currencies::getGreenMatter()) return;
 
 	// Affordable; buy it!
 
 	target->setActive(true);
 	m_hexiiCountPerLayer[layer]++;
-	// Hacky thing before I change the way the per second display works
-	updateGreenMatter(-cost, target->getLayer() == 0 ? target->getYieldPerSecond() : 0);
+	Currencies::instance()->addGreenMatter(-cost);
 
 	// Any neighboring positions that don't yet have an inactive hex need to have one so they can be purchased
 

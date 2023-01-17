@@ -21,6 +21,7 @@
 #define BIG_INT_HPP
 
 #include <iostream>
+#include <string>
 
 class BigInt {
     std::string value;

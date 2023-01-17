@@ -13,7 +13,6 @@ public:
 	CREATE_FUNC_WITH_CTOR_2(ProgressBar, float, unsigned int);
 
 	void setProgress(float progress);
-
 	virtual void visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags) override;
 
 private:
