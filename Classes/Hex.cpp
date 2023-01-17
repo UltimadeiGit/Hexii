@@ -71,12 +71,14 @@ unsigned int Hex::getEXPRequiredForLevel(unsigned int layer, unsigned int level)
 }
 
 void Hex::update(float dt) {
+	/*
 	m_debugLabel->setString(std::format("\
 Layer: {}\n \
 EXP: {}\n\
 LEVEL: {}",
 		m_layer, m_exp, m_level
 	));
+	*/
 
 	if (!m_active) return;
 

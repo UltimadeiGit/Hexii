@@ -28,7 +28,7 @@ bool Sidebar::init() {
         // Set the size and position for all tabs (layers)
         m_tabs[i]->setAnchorPoint(Vec2(0.0, 0.0));
         m_tabs[i]->setContentSize(Size(420, 1320));
-        m_tabs[i]->setPosition(Vec2(0, 25));
+        m_tabs[i]->setPosition(Vec2(0, 0));
         m_tabs[i]->setVisible(false);
 
         const std::string istr = std::to_string(i + 1);
@@ -56,6 +56,12 @@ bool Sidebar::init() {
     // Start with tab 1 already active
 
     switchTab(0);
+
+    setContentSize(m_background->getContentSize());
+    auto& designRes = Director::getInstance()->getOpenGLView()->getDesignResolutionSize();
+    if (_contentSize.height + 100 > designRes.height) {
+        setScale(0.5f * designRes.height / (_contentSize.height + 100));
+    }
 
     return true;
 }

@@ -2,7 +2,7 @@
 
 Currencies* Currencies::m_instance = nullptr;
 
-Currencies::Currencies() : m_greenMatter(6) {}
+Currencies::Currencies() : m_greenMatter(6000) {}
 
 Currencies* Currencies::instance() {
     if (Currencies::m_instance) return Currencies::m_instance;

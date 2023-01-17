@@ -10,10 +10,11 @@ bool HexInfoTab::init() {
 	m_upgradesList->setContentSize(Size(420, 4650));
 	m_upgradesList->setBounceEnabled(true);	
 	m_upgradesList->setPosition(Vec2(15, 70));
+	m_upgradesList->setBackGroundColor(Color3B::BLACK);
 
 	m_hexEXPBar = ProgressBar::create(400.0f, 6);
 	m_hexEXPBar->setAnchorPoint(Vec2(0.0, 1.0));
-	m_hexEXPBar->setPosition(Vec2(0.0f, 1320));
+	m_hexEXPBar->setPosition(Vec2(0.0f, 600));
 	
 	setContentSize(Size(420, 1320));
 

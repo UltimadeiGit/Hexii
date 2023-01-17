@@ -1,6 +1,6 @@
 #include "HexiiScene.h"
 #include "Maths.h"
-#include "SimpleShader.h"
+#include "SimpleShader.h"`
 #include "Currencies.h"
 
 USING_NS_CC;
