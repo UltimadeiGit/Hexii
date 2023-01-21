@@ -4,6 +4,7 @@
 #include <cocos/ui/UIButton.h>
 #include "HexInfoTab.h"
 
+
 // Contains various tabs and can switch between them
 class Sidebar :
 	public cocos2d::Node {

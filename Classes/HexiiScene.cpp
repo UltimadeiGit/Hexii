@@ -13,12 +13,11 @@ bool HexiiScene::init() {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	m_plane = HexPlane::create();
-	m_plane->initWithSize(270 + 10);
+	m_plane = HexPlane::create(270 + 10);
 
 	m_plane->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
-	Hex* l0Hex = m_plane->set(Vec2(0, 0));
+	Hex* l0Hex = m_plane->placeHexAtPos(Vec2(0, 0));
 	l0Hex->yieldFunction = CC_CALLBACK_1(HexiiScene::onHexYield, this);
 
 	this->addChild(m_plane);
@@ -97,7 +96,7 @@ void HexiiScene::onMouseMoved(cocos2d::EventMouse* mouse) {
 	m_debugLabel->setString("(" + std::to_string(mouse->getLocationInView().x) + ", " + std::to_string(mouse->getLocationInView().y) + ")");
 	// printf("(%d, %d)\n", (int)mouse->getLocationInView().x, (int)mouse->getLocationInView().y);
 	// TODO: This line is a bit long. Some of the functionality belongs in the HexPlane
-	m_mouseOverHex = m_plane->get(m_plane->round(m_plane->hexPositionOf(mouse->getLocationInView() - m_plane->getPosition())));
+	m_mouseOverHex = m_plane->getHexAtPos(m_plane->round(m_plane->axialPositionOf(mouse->getLocationInView() - m_plane->getPosition())));
 	// if(!m_mouseOverHex->getActive()) m_mouseOverHex->
 }
 
@@ -121,7 +120,7 @@ void HexiiScene::onHexYield(Hex* hex) {
 		return;
 	}
 	
-	auto neighbors = m_plane->neighborsOf(m_plane->hexPositionOf(hex->getPosition()), true);
+	auto neighbors = m_plane->neighborsOf(m_plane->axialPositionOf(hex->getPosition()), true);
 	for (auto& neighbor : neighbors) if (neighbor.hex->getLayer() < layer) neighbor.hex->addEXP(yield.to_int());
 }
 
@@ -152,12 +151,12 @@ void HexiiScene::tryPurchaseHex(Hex* target) {
 
 	// Any neighboring positions that don't yet have an inactive hex need to have one so they can be purchased
 
-	auto neighbors = m_plane->neighborsOf(m_plane->hexPositionOf(target->getPosition()), false);
+	auto neighbors = m_plane->neighborsOf(m_plane->axialPositionOf(target->getPosition()), false);
 	for (auto& neighbor : neighbors) {
 		// No need to set a hex if one is already in place or if it's beyond the maximum layer
 		if (neighbor.hex != nullptr || m_plane->layerOf(neighbor.pos) > 3) continue;
 		
-		Hex* newHex = m_plane->set(neighbor.pos);
+		Hex* newHex = m_plane->placeHexAtPos(neighbor.pos);
 		newHex->yieldFunction = CC_CALLBACK_1(HexiiScene::onHexYield, this);
 	}
 }

@@ -1,33 +1,57 @@
 #include "Hex.h"
+#include "Maths.h"
 
 #include <format>
 
 USING_NS_CC;
 
-Hex::Hex(const unsigned int layer, const Vec2& pos) : m_layer(layer), m_pos(pos), m_active(false),
+Hex::Hex(const unsigned int layer) : m_layer(layer), m_active(false),
 	m_baseYieldDelay(layer + 1), role(layer == 0 ? Role::HOME_L0 : Role::HOME), m_upgrades {0}
 {}
 
 bool Hex::init() {
-	if (!Sprite::initWithPolygon(AutoPolygon::generatePolygon("HexagonInactive.png"))) return false;
-	Sprite::setPosition(m_pos);
+	m_hex = Sprite::create(AutoPolygon::generatePolygon("HexagonInactive.png"));
+	m_hex->setAnchorPoint(Vec2(0, 0));
+	
+	setContentSize(m_hex->getContentSize());
+	auto& size = getContentSize();
 
 	m_shader = SimpleShader::createWithFragmentShader("shaders/hexProgress.frag");
 	m_shader->setUniform<float>("progress", 0.0f);
-	m_shader->setUniform<Vec2>("hexCenter", m_pos);
+	m_shader->setUniform<Vec2>("hexCenter", Vec2(size.height * HEXAGON_HEIGHT_TO_WIDTH * 0.5f, size.height * 0.5f));
 	m_shader->setUniform<Vec2>("screenCenter", Director::getInstance()->getVisibleSize() / 2);
 	m_shader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("HexProgressOverlay.png"));
 
-	this->setProgramState(m_shader->programState);
+	// The shader applies to the hex sprite
+	m_hex->setProgramState(m_shader->programState);
 
 	m_debugLabel = Label::createWithTTF("TMP", "fonts/OCR.ttf", 20, Size::ZERO, TextHAlignment::CENTER);
-	m_debugLabel->setPosition(Sprite::getContentSize() / 2);
+	m_debugLabel->setPosition(size / 2);
 	m_debugLabel->setTextColor(Color4B(160, 0, 120, 255));
 	m_debugLabel->enableShadow(Color4B::BLACK, Size(2, -2), 5);
 
-	this->addChild(m_debugLabel);
+	m_hex->addChild(m_debugLabel);
+
+	m_shaded = RenderTexture::create(size.width, size.height);
+	m_shaded->getSprite()->setAnchorPoint(Vec2(0.5, 0.5));
+
+	this->addChild(m_hex);
+	this->addChild(m_shaded);
 	
 	return true;
+}
+
+void Hex::visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags) {
+	m_shaded->beginWithClear(0, 0, 0, 0);
+
+	m_hex->setVisible(true);
+	m_hex->visit(renderer, Mat4::IDENTITY, parentFlags);
+	// Prevents the sprite from being drawn in addition to the shaded version later on
+	m_hex->setVisible(false);
+
+	m_shaded->end();
+
+	Node::visit(renderer, parentTransform, parentFlags);
 }
 
 void Hex::addEXP(unsigned int exp) {
@@ -52,8 +76,8 @@ void Hex::setActive(bool active) {
 	this->getProgramState();
 
 	m_active = active;
-	this->setTexture(_director->getTextureCache()->addImage(active ? "HexagonActive.png" : "HexagonInactive.png"));
-	this->setProgramState(m_shader->programState);
+	m_hex->setTexture(_director->getTextureCache()->addImage(active ? "HexagonActive.png" : "HexagonInactive.png"));
+	m_hex->setProgramState(m_shader->programState);
 }
 
 unsigned int Hex::getEXPRequiredForLevel(unsigned int layer, unsigned int level)

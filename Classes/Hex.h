@@ -6,8 +6,8 @@
 
 #include <functional>
 
-// TODO: I plan to make Hex a node instead of a sprite, then it can rendedr to a RenderTexture for the relief shader I plan to write
-class Hex : protected cocos2d::Sprite {
+class Hex : 
+	public cocos2d::Node {
 private:
 	
 	bool init();
@@ -21,9 +21,8 @@ public:
 
 	// TODO: Upgrades here
 
-	CREATE_FUNC_WITH_CTOR_2(Hex, const unsigned int, const cocos2d::Vec2&);
-
-	inline const cocos2d::Vec2& getPosition() const override { return Sprite::getPosition(); }
+	// arg1: Layer
+	CREATE_FUNC_WITH_CTOR_1(Hex, const unsigned int);
 
 	inline unsigned int getLayer() const { return m_layer; }
 	
@@ -46,11 +45,14 @@ public:
 
 	cocos2d::Node* asNode() { return this; }
 
+	cocos2d::Texture2D* getShadedRenderTexture() const { return m_shaded->getSprite()->getTexture(); }
+
+	virtual void visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags) override;
+
 	std::function<void(Hex*)> yieldFunction;
 
 private:
 	const unsigned int m_layer;
-	const cocos2d::Vec2 m_pos;
 
 	cocos2d::Label* m_debugLabel = nullptr;
 
@@ -72,4 +74,10 @@ private:
 	
 	// An inactive hex is just a border
 	bool m_active;
+
+	// Hexagon sprite
+	cocos2d::Sprite* m_hex;
+
+	// A shader will apply to the whole Hex after the progress outline to do a relief effect
+	cocos2d::RenderTexture* m_shaded;
 };

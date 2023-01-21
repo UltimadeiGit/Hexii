@@ -20,7 +20,7 @@ void main()
     float altProgress = progress * PROGRESS_MODIFIER;
     float allowedAngle = altProgress * HALF_PI;
 
-    vec2 relativeCoord = gl_FragCoord.xy - (screenCenter + hexCenter);
+    vec2 relativeCoord = gl_FragCoord.xy - (hexCenter);
     // Symmetry
     relativeCoord = abs(relativeCoord);
     // The minus means that it works clockwise (because in this case atan is guaranteed to return 0 < atan < HALF_PI)

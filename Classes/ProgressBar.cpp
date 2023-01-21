@@ -38,32 +38,23 @@ bool ProgressBar::init() {
 	}
 	
 	m_whole = RenderTexture::create(m_desiredWidth, scale * size.height);
-	Texture2D* innerTexture = m_whole->getSprite()->getTexture();
+	m_whole->getSprite()->setAnchorPoint(Vec2(0.0, 0.0));
+
+	setContentSize(m_whole->getSprite()->getContentSize());
 
 	m_shader = SimpleShader::createWithFragmentShader("shaders/progressBar.frag");
-	m_shader->setUniform<Vec2>("dims", innerTexture->getContentSize());
+	m_shader->setUniform<Vec2>("dims", getContentSize());
 
-	m_wholeTex = Sprite::create();
-	m_wholeTex->setTexture(innerTexture);
-	m_wholeTex->setTextureRect(Rect(Vec2::ZERO, innerTexture->getContentSize()));
-	m_wholeTex->setPosition(Vec2(0, 0));
-	m_wholeTex->setAnchorPoint(Vec2::ZERO);
-	m_wholeTex->setProgramState(m_shader->programState);
-
-	setContentSize(innerTexture->getContentSize());
+	m_whole->getSprite()->setProgramState(m_shader->programState);
 
 	this->addChild(m_whole);
-	this->addChild(m_wholeTex);
 
 	return true;
 }
 
 void ProgressBar::setProgress(float progress) {
+	if (progress != m_progress) printf("Progress: %.2f -> %.2f\n", m_progress, progress);
 	m_progress = progress;
-
-	if (progress > 0.5f) {
-		bool dbg = true;
-	}
 
 	m_shader->setUniform("progress", progress);
 }
@@ -72,11 +63,14 @@ void ProgressBar::visit(Renderer* renderer, const Mat4& parentTransform, uint32_
 	m_whole->beginWithClear(0, 0, 0, 0);
 
 	for (unsigned int i = 0; i < m_parts.size(); i++) {
+		m_parts[i]->setVisible(true);
 		// Uses identity transform because this node's transform is given to `wholeTex`
-		m_parts[i]->visit(renderer, Mat4::IDENTITY, parentFlags);
+		m_parts[i]->visit(renderer, Mat4::IDENTITY, 0);
+		// Ensure the part is invisble so that it isn't drawn again when `this` is visited in a few lines
+		m_parts[i]->setVisible(false);
 	}
 
 	m_whole->end();
-	
-	m_wholeTex->visit(renderer, this->getNodeToParentTransform() * parentTransform, parentFlags);
+
+	Node::visit(renderer, parentTransform, parentFlags);
 }

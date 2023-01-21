@@ -27,7 +27,6 @@ bool Sidebar::init() {
     for (unsigned int i = 0; i < 6; i++) {
         // Set the size and position for all tabs (layers)
         m_tabs[i]->setAnchorPoint(Vec2(0.0, 0.0));
-        m_tabs[i]->setContentSize(Size(420, 1320));
         m_tabs[i]->setPosition(Vec2(0, 0));
         m_tabs[i]->setVisible(false);
 
@@ -60,7 +59,7 @@ bool Sidebar::init() {
     setContentSize(m_background->getContentSize());
     auto& designRes = Director::getInstance()->getOpenGLView()->getDesignResolutionSize();
     if (_contentSize.height + 100 > designRes.height) {
-        setScale(0.5f * designRes.height / (_contentSize.height + 100));
+        setScale(designRes.height / (_contentSize.height + 100));
     }
 
     return true;

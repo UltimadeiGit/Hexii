@@ -19,12 +19,12 @@ private:
 	const float m_desiredWidth;
 	const unsigned int m_numParts;
 
-	cocos2d::RenderTexture* m_whole = nullptr;
-	cocos2d::Sprite* m_wholeTex = nullptr;
-
-	SimpleShader* m_shader = nullptr;
-
 	float m_progress = 0.0f;
 
+	// Used to display progress in the bar
+	SimpleShader* m_shader = nullptr;
+
+	// The 'parts' are rendered to this target
+	cocos2d::RenderTexture * m_whole = nullptr;
 	std::vector<cocos2d::Sprite*> m_parts;
 };

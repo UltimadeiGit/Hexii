@@ -8,7 +8,7 @@ bool CurrencyHUD::init() {
 	m_background->setAnchorPoint(Vec2(0.5, 1.0));
 	m_background->setPosition(Vec2(0.0f, 0.0f));
 
-	m_greenMatterIcon = Sprite::create("GreenMatter.png");
+	m_greenMatterIcon = Sprite::create("icons/GreenMatter.png");
 	m_greenMatterIcon->setScale(1.0 / 3);
 	m_greenMatterIcon->setAnchorPoint(Vec2(0.5f, 0.5f));
 	m_greenMatterIcon->setPosition(Vec2(-100, -85));

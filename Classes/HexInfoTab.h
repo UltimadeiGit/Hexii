@@ -6,24 +6,30 @@
 #include "BigInt.hpp"
 #include "Hex.h"
 #include "ProgressBar.h"
+#include "CompoundLabel.h"
 
 class HexInfoTab : public cocos2d::Layer {
+private:
+    HexInfoTab();
 public:
     bool init();
     virtual void update(float dt) override;
 
-    inline void setFocus(Hex* focus) { m_focus = focus; }
+    void setFocus(Hex* focus);
 
     CREATE_FUNC(HexInfoTab);
+
 private:
-    cocos2d::ui::ScrollView* m_upgradesList;
-
-    ProgressBar* m_hexEXPBar;
-
     // The hex whose details are listed in this tab
     Hex* m_focus = nullptr;
 
-    /// TODO: Remove
-    // Offset of the gm box (where the top left starts)
-    // const cocos2d::Vec2 m_greenMatterBoxAnchor = cocos2d::Vec2(15, -70);
+    cocos2d::ui::ScrollView* m_upgradesList;
+
+    ProgressBar* m_hexEXPBar;
+    // Sprite displaying the focused hex
+    cocos2d::Sprite* m_focusSprite;
+    cocos2d::Label* m_layerLabel;
+    CompoundLabel* m_levelLabel;
+    CompoundLabel* m_expLabel;
+    CompoundLabel* m_yieldLabel;
 };

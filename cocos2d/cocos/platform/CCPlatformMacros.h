@@ -79,6 +79,16 @@ inline static __TYPE__* create(ARG1TYPE arg1, ARG2TYPE arg2) \
     CREATE_FUNC_BODY \
 }
 
+#define CREATE_FUNC_WITH_CTOR_3(__TYPE__, ARG1TYPE, ARG2TYPE, ARG3TYPE) \
+private: \
+__TYPE__(ARG1TYPE arg1, ARG2TYPE arg2, ARG3TYPE arg3); \
+public: \
+inline static __TYPE__* create(ARG1TYPE arg1, ARG2TYPE arg2, ARG3TYPE arg3) \
+{ \
+    __TYPE__ *pRet = new(std::nothrow) __TYPE__(arg1, arg2, arg3); \
+    CREATE_FUNC_BODY \
+}
+
 
    /** @def NODE_FUNC(__TYPE__)
     * Define a node function for a specific type, such as Layer.

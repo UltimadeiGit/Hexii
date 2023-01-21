@@ -15,36 +15,35 @@ public:
 	};
 
 public:
-	Hex* get(cocos2d::Vec2 pos) const;
+	Hex* getHexAtPos(cocos2d::Vec2 posAxial) const;
 	
 	// Sets and returns the hex at pos by initializing a new one
-	Hex* set(cocos2d::Vec2 pos);
+	Hex* placeHexAtPos(cocos2d::Vec2 posAxial);
 
 	// Converts a hex coordinate system position to a game coordinate position in local space (of this layer)
-	cocos2d::Vec2 localPositionOf(const cocos2d::Vec2& pos) const;
+	cocos2d::Vec2 localPositionOf(const cocos2d::Vec2& posAxial) const;
 	// Converts a game coordinate system position to a hex coordinate system position (pos should be in the local space of this node)
-	cocos2d::Vec2 hexPositionOf(cocos2d::Vec2 pos) const;
-	static float layerOf(const cocos2d::Vec2& pos);
-	// Rounds `pos` to the nearest hex that contains it
-	static cocos2d::Vec2 round(cocos2d::Vec2 pos);
+	cocos2d::Vec2 axialPositionOf(cocos2d::Vec2 posLocal) const;
+	static float layerOf(const cocos2d::Vec2& posAxial);
+	// Rounds `posAxial` to the nearest hex that contains it
+	static cocos2d::Vec2 round(cocos2d::Vec2 posAxial);
 
-	// Returns the hexii adjacent to the one at `pos`. Will always return 6 pairs unless `activeOnly` is true.
+	// Returns the hexii adjacent to the one at `posAxial`. Will always return 6 pairs unless `activeOnly` is true.
 	// nullptr indicates a hex does not exist at that coord
-	std::vector<HexPosPair> neighborsOf(cocos2d::Vec2 pos, bool activeOnly);
-
-	// `nodeLength` represents the vertical distance between the node at (0, 0) and (0, 1)
-	inline bool initWithSize(float nodeLength) { m_nodeLength = nodeLength; return true; }
+	std::vector<HexPosPair> neighborsOf(cocos2d::Vec2 posAxial, bool activeOnly);
 
 	void update(float dt) override;
 
-	CREATE_FUNC(HexPlane);
+	// arg1: Hex height
+	CREATE_FUNC_WITH_CTOR_1(HexPlane, const float);
 private:
-	Hex* set(cocos2d::Vec2 pos, Hex* hex);
+	Hex* placeHexAtPos(cocos2d::Vec2 posAxial, Hex* hex);
 
 	bool init() { return true; }
 
-	std::map<cocos2d::Vec2, Hex*> m_inner;
+	// The plane's internal storage
+	std::map<cocos2d::Vec2, Hex*> m_hexMap;
 
-	// In practice, vertical hexagon height 
-	float m_nodeLength;
+	// The vertical height of each hex. This must remain constant for the plane to have any sensible use
+	const float m_hexHeight;
 };

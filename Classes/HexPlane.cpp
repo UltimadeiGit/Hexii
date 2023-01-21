@@ -4,70 +4,75 @@
 
 USING_NS_CC;
 
-Hex* HexPlane::get(Vec2 pos) const {
-    pos = roundVec2(pos);
+HexPlane::HexPlane(const float hexHeight) : m_hexHeight(hexHeight)
+{}
 
-    auto it = m_inner.find(pos);
-    if (it != m_inner.end()) return it->second;
+Hex* HexPlane::getHexAtPos(Vec2 posAxial) const {
+    posAxial = roundVec2(posAxial);
+
+    auto it = m_hexMap.find(posAxial);
+    if (it != m_hexMap.end()) return it->second;
 
     return nullptr;
 }
 
-Hex* HexPlane::set(cocos2d::Vec2 pos) {
-    return set(pos, Hex::create(layerOf(pos), localPositionOf(pos)));
+Hex* HexPlane::placeHexAtPos(cocos2d::Vec2 posAxial) {
+    Hex* ret = placeHexAtPos(posAxial, Hex::create(layerOf(posAxial)));
+    ret->setPosition(localPositionOf(posAxial));
+    return ret;
 }
 
-Hex* HexPlane::set(Vec2 pos, Hex* hex) {
-    pos = round(pos);
+Hex* HexPlane::placeHexAtPos(Vec2 posAxial, Hex* hex) {
+    // Use the nearest point to the given pos
+    posAxial = round(posAxial);
 
-    auto it = m_inner.find(pos);
-    if (it != m_inner.end()) {
-        warn("About to overwrite existing object at (" + std::to_string(pos.x) + "," + std::to_string(pos.y) + ")");
-        m_inner.erase(it);
+    auto it = m_hexMap.find(posAxial);
+    if (it != m_hexMap.end()) {
+        warn("About to overwrite existing object at (" + std::to_string(posAxial.x) + "," + std::to_string(posAxial.y) + ")");
+        
+        // Cleanup the existing hex at that pos
+        
+        this->removeChild(it->second);
+        m_hexMap.erase(it);
     }
 
     // Nullptr is treated as simply deleting the hex at `pos`, so no emplace needed
-    if (hex != nullptr) {
-        m_inner.emplace(std::make_pair(pos, hex));
+    if (hex == nullptr) return nullptr;    
 
-        /*
-        Size nodeSize = asNode->getContentSize();
+    /*
+    Size nodeSize = asNode->getContentSize();
 
-        auto dbgLabel = Label::createWithTTF("(" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")", "fonts/arial.ttf", 20.0f);
-        dbgLabel->setPosition(nodeSize.width * 0.5f, nodeSize.height * 0.5f);
-        dbgLabel->setTextColor(Color4B(127, 127, 127, 255));
-        asNode->addChild(dbgLabel);
-        */
+    auto dbgLabel = Label::createWithTTF("(" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")", "fonts/arial.ttf", 20.0f);
+    dbgLabel->setPosition(nodeSize.width * 0.5f, nodeSize.height * 0.5f);
+    dbgLabel->setTextColor(Color4B(127, 127, 127, 255));
+    asNode->addChild(dbgLabel);
+    */
 
-        this->addChild(hex->asNode());
-    }
+    m_hexMap.emplace(std::make_pair(posAxial, hex));
+    this->addChild(hex->asNode());
 
     return hex;
 }
 
 
-cocos2d::Vec2 HexPlane::localPositionOf(const Vec2& pos) const {
+cocos2d::Vec2 HexPlane::localPositionOf(const Vec2& posAxial) const {
     // The y axis is just vertical, the x axis looks like a skew diagonal pointed upwards
     // therefore each 1 local unit in x corresponds to 0.75 widths AND 0.5 heights
-        
-    // worldx = pos.x * m_nodeLength * HEXAGON_HEIGHT_TO_WIDTH;
-    // worldy = (pos.y + (pos.x * 0.5f)) * m_nodeLength;
 
-    float gamex = pos.x * 0.75f * m_nodeLength * HEXAGON_HEIGHT_TO_WIDTH;
-    float gamey = (pos.y + (pos.x * 0.5f)) * m_nodeLength;
+    float localx = posAxial.x * 0.75f * m_hexHeight * HEXAGON_HEIGHT_TO_WIDTH;
+    float localy = (posAxial.y + (posAxial.x * 0.5f)) * m_hexHeight;
 
-    return Vec2(gamex, gamey);
+    return Vec2(localx, localy);
 }
 
 
-cocos2d::Vec2 HexPlane::hexPositionOf(cocos2d::Vec2 pos) const
-{
+cocos2d::Vec2 HexPlane::axialPositionOf(cocos2d::Vec2 posLocal) const {
     // Formulae derived from the reverse of localPositionOf
 
-    const float recipNodeLength = 1.0f / m_nodeLength;
+    const float recipNodeLength = 1.0f / m_hexHeight;
 
-    float hexx = pos.x * 2 * RECIP_SQRT_3 * recipNodeLength;
-    float hexy = (pos.y - (m_nodeLength * 0.5f) * hexx) * recipNodeLength;
+    float hexx = posLocal.x * 2 * RECIP_SQRT_3 * recipNodeLength;
+    float hexy = (posLocal.y - (m_hexHeight * 0.5f) * hexx) * recipNodeLength;
 
     return Vec2(hexx, hexy);
 }
@@ -98,33 +103,34 @@ cocos2d::Vec2 HexPlane::round(cocos2d::Vec2 pos) {
     return Vec2(rounded.x, rounded.y);
 }
 
-std::vector<HexPlane::HexPosPair> HexPlane::neighborsOf(cocos2d::Vec2 pos, bool activeOnly) {
+std::vector<HexPlane::HexPosPair> HexPlane::neighborsOf(cocos2d::Vec2 posAxial, bool activeOnly) {
     // Enforce integer coords
-    pos = round(pos);
+    posAxial = round(posAxial);
     
     std::vector<HexPosPair> neighbors;
 
-    for (int x = -1; x <= 1; x++) {
-        for (int j = 0; j <= 1; j++) {
-            // Requirements:
-            // x: -1, -1,  0, 0,  1, 1
-            // y:  1,  0, -1, 1, -1, 0
-            // This line ensures that the requirements are met
-            // TODO: Figure out how to get rid of the if statement (ternary operator)
-            int y = x == 0 ? (2 * j) - 1 : -j * x;
-            HexPosPair neighbor;
-            neighbor.pos = Vec2(pos.x + x, pos.y + y);
-            neighbor.hex = get(neighbor.pos);
-            if (!activeOnly || (neighbor.hex != nullptr && neighbor.hex->getActive())) neighbors.push_back(neighbor);
-        }        
+    // I've opted for hard code rather than programatically calculating the positions because this is so much cleaner
+    Vec2 neighborOffsets[6]{
+        // Starts vertically above and rotates clockwise
+        Vec2(0, 1), Vec2(1, 0), Vec2(1, -1), Vec2(0, -1), Vec2(-1, 0), Vec2(-1, 1)
+    };
+
+    for (unsigned int i = 0; i < 6; i++) {
+        HexPosPair neighbor;
+        neighbor.pos = Vec2(posAxial.x + neighborOffsets[i].x, posAxial.y + neighborOffsets[i].y);
+        neighbor.hex = getHexAtPos(neighbor.pos);
+
+        // If only nodes with hexii on them are permitted (`activeOnly`) then only append this neighbor if it is both non-null and active
+        if (!activeOnly || (neighbor.hex != nullptr && neighbor.hex->getActive())) neighbors.push_back(neighbor);
     }
 
     return neighbors;
 }
 
 void HexPlane::update(float dt) {
-    auto it = m_inner.begin();
-    while (it != m_inner.end()) {
+    // Update all hexii
+    auto it = m_hexMap.begin();
+    while (it != m_hexMap.end()) {
         it->second->update(dt);
         it++;
     }
