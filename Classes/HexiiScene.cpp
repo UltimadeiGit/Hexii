@@ -114,29 +114,29 @@ void HexiiScene::onHexYield(Hex* hex) {
 	// Layer 0 produces green matter. Outer layers produce EXP for adjacent hexii of lower layers
 
 	int layer = hex->getLayer();
-	BigInt yield = hex->getYield();
+	BigReal yield = hex->getYield();
 	if (hex->role == Hex::Role::HOME_L0) {
 		Currencies::instance()->addGreenMatter(yield);
 		return;
 	}
 	
 	auto neighbors = m_plane->neighborsOf(m_plane->axialPositionOf(hex->getPosition()), true);
-	for (auto& neighbor : neighbors) if (neighbor.hex->getLayer() < layer) neighbor.hex->addEXP(yield.to_int());
+	for (auto& neighbor : neighbors) if (neighbor.hex->getLayer() < layer) neighbor.hex->addEXP(yield);
 }
 
 void HexiiScene::tryPurchaseHex(Hex* target) {
 	// Check if it's affordable
-	unsigned int layer = target->getLayer();
+	uint layer = target->getLayer();
 
-	BigInt cost = 6;
+	BigReal cost = 6;
 	switch (layer) {
 	case 0:
 		break;
 	case 1:
-		cost = 100 * (cost ^ (m_hexiiCountPerLayer[1] + 1));
+		cost = (BigReal)100 * (std::powl(6, (m_hexiiCountPerLayer[1] + 1)));
 		break;
 	default:
-		cost = "100";
+		cost = 100;
 		break;
 	}
 	
@@ -145,9 +145,11 @@ void HexiiScene::tryPurchaseHex(Hex* target) {
 
 	// Affordable; buy it!
 
-	target->setActive(true);
-	m_hexiiCountPerLayer[layer]++;
 	Currencies::instance()->addGreenMatter(-cost);
+
+	target->setActive(true);
+	m_sidebar->getHexInfoTab()->setFocus(target);
+	m_hexiiCountPerLayer[layer]++;
 
 	// Any neighboring positions that don't yet have an inactive hex need to have one so they can be purchased
 

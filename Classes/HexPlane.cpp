@@ -49,7 +49,7 @@ Hex* HexPlane::placeHexAtPos(Vec2 posAxial, Hex* hex) {
     */
 
     m_hexMap.emplace(std::make_pair(posAxial, hex));
-    this->addChild(hex->asNode());
+    this->addChild(hex);
 
     return hex;
 }

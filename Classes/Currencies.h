@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BigInt.hpp"
+#include "Maths.h"
 #include <vector>
 
 class Currencies {
@@ -14,13 +14,13 @@ private:
 public:
 	static Currencies* instance();
 
-	inline static const BigInt& getGreenMatter() { return instance()->m_greenMatter; }
+	inline static BigReal getGreenMatter() { return instance()->m_greenMatter; }
 	// Adds op to green matter count.
 	// If op was negative (a transaction), returns false if it was unaffordable. Always true otherwise
-	bool addGreenMatter(const BigInt& op);
+	bool addGreenMatter(BigReal op);
 
 private:
 	static Currencies* m_instance;
 
-	BigInt m_greenMatter;
+	BigReal m_greenMatter;
 };

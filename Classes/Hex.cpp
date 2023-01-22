@@ -6,7 +6,7 @@
 USING_NS_CC;
 
 Hex::Hex(const unsigned int layer) : m_layer(layer), m_active(false),
-	m_baseYieldDelay(layer + 1), role(layer == 0 ? Role::HOME_L0 : Role::HOME), m_upgrades {0}
+	m_baseYieldSpeed(10 * (BigReal)1.0 / (layer + 1)), role(layer == 0 ? Role::HOME_L0 : Role::HOME)
 {}
 
 bool Hex::init() {
@@ -54,14 +54,52 @@ void Hex::visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTransfor
 	Node::visit(renderer, parentTransform, parentFlags);
 }
 
-void Hex::addEXP(unsigned int exp) {
+void Hex::addEXP(BigReal exp) {
 	m_exp += exp;
-	while (m_exp >= getEXPRequiredForLevel(m_level + 1)) m_level++;
+	BigReal expRequired = 0;
+	while (m_exp >= (expRequired = getEXPRequiredForLevel(m_level + 1))) {
+		m_level++;
+		m_exp -= expRequired;
+	}
+}
+
+void Hex::unlockUpgrade(const std::string& name) {
+	m_upgrades[name] = true;
+}
+
+// +0.5 per level
+BigReal Hex::getYieldFromYieldUp1Upgrade() const {
+	return std::ceil(0.5 * m_level) * m_upgrades("YieldUp1");
+}
+
+// +2% per level
+BigReal Hex::getYieldSpeedFactorFromSpeedUp1Upgrade() const {
+	return 1.0 + (0.02 * m_level);
+}
+
+BigReal Hex::getEXPCost() const {
+	// Cost = 6^(layer) * (level + 1)
+	return std::powl(6, m_layer) * (m_level + 1);
+}
+
+BigReal Hex::getYield() const {
+	return 1 +
+
+	getYieldFromYieldUp1Upgrade()
+
+	;
+}
+
+BigReal Hex::getYieldSpeed() const {
+	return m_baseYieldSpeed *
+
+	(getYieldSpeedFactorFromSpeedUp1Upgrade())
+
+	;
 }
 
 void Hex::onTouchBegan() {
-	// A mouse press provides an immediate boost 1 second boost to progress
-	m_progress += 1 / m_baseYieldDelay;
+	if (m_upgrades("StrengthToStrength")) addEXP(1);
 
 	m_isPressed = true;
 }
@@ -80,7 +118,7 @@ void Hex::setActive(bool active) {
 	m_hex->setProgramState(m_shader->programState);
 }
 
-unsigned int Hex::getEXPRequiredForLevel(unsigned int layer, unsigned int level)
+BigReal Hex::getEXPRequiredForLevel(uint layer, BigInt level)
 {
 	// n = level
 	// a_1 = 6 * (layer + 1)
@@ -108,8 +146,8 @@ LEVEL: {}",
 
 	// Increase progress
 
-	m_progress += (dt * (1 + m_isPressed * 3)) / m_baseYieldDelay;
-	if (m_progress > 1.0f) {
+	m_progress += ((BigReal)dt * (1 + m_isPressed * 3)) * getYieldSpeed();
+	while (m_progress > 1.0f) {
 		m_progress = m_progress - floor(m_progress);
 		if (yieldFunction) yieldFunction(this);
 	}

@@ -52,7 +52,7 @@ bool CurrencyHUD::init() {
 }
 
 void CurrencyHUD::update(float dt) {
-	m_greenMatterAmount->setString(Currencies::getGreenMatter().to_string());
+	m_greenMatterAmount->setString(formatBigReal(Currencies::getGreenMatter()));
 
 	/*
 	m_greenMatterIncreaseAmount->setString("+ " + Currencies::getGreenMatter().to_string());

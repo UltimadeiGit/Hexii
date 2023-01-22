@@ -3,6 +3,7 @@
 #include <cocos2d.h>
 #include <cocos/ui/UIButton.h>
 #include "HexInfoTab.h"
+#include "SettingsTab.h"
 
 
 // Contains various tabs and can switch between them
@@ -13,7 +14,7 @@ public:
 	virtual void update(float dt) override;
 
 	HexInfoTab* getHexInfoTab() { return dynamic_cast<HexInfoTab*>(m_tabs[0]); }
-	HexInfoTab* getSettingsTab() { return dynamic_cast<HexInfoTab*>(m_tabs[5]); }
+	SettingsTab* getSettingsTab() { return dynamic_cast<SettingsTab*>(m_tabs[5]); }
 
 	CREATE_FUNC(Sidebar);
 private:

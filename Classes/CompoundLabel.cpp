@@ -42,15 +42,15 @@ void CompoundLabel::setStyle(bool applyConstPart, bool applyVariablePart, unsign
 	updateSize();
 }
 
-void CompoundLabel::setSingleStyle(cocos2d::Label*& part, unsigned int fontSize, const cocos2d::Color4B& textColor, const cocos2d::Color4B& outlineColor, int outlineSize, const cocos2d::Color4B& shadowColor, const cocos2d::Size& shadowOffset, int shadowBlurRadius) {
-	part->setTextColor(textColor);
-	if (part->getRenderingFontSize() != fontSize) {
+void CompoundLabel::setSingleStyle(cocos2d::Label* part, unsigned int fontSize, const cocos2d::Color4B& textColor, const cocos2d::Color4B& outlineColor, int outlineSize, const cocos2d::Color4B& shadowColor, const cocos2d::Size& shadowOffset, int shadowBlurRadius) {
+	if(textColor.a > 0) part->setTextColor(textColor);
+	if (fontSize > 0 && part->getRenderingFontSize() != fontSize) {
 		TTFConfig config = part->getTTFConfig();
 		config.fontSize = fontSize;
 		part->setTTFConfig(config);
 	}
-	if (outlineSize > 0) part->enableOutline(outlineColor, outlineSize);
-	if (shadowBlurRadius > 0) part->enableShadow(shadowColor, shadowOffset, shadowBlurRadius);
+	if (outlineSize > 0 && outlineColor.a > 0) part->enableOutline(outlineColor, outlineSize);
+	if (shadowBlurRadius > 0 && shadowColor.a > 0) part->enableShadow(shadowColor, shadowOffset, shadowBlurRadius);
 
 	// It is assumed that `updateSize` will be called by the caller of this function
 }
@@ -75,7 +75,14 @@ void CompoundLabel::setIconTexture(const std::string& texturePath) {
 		m_iconPart = Sprite::create(texturePath);
 		m_iconPart->setAnchorPoint(Vec2(0, 0));
 		this->addChild(m_iconPart);
+
+		return updateSize();
 	}
+
+	Texture2D* newTexture = Director::getInstance()->getTextureCache()->addImage(texturePath);
+	if (m_iconPart->getTexture() == newTexture) return;
+
+	m_iconPart->setTexture(newTexture);
 
 	updateSize();
 }

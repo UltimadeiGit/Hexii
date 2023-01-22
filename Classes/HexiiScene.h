@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cocos2d.h"
+#include <cocos2d.h>
 #include "HexPlane.h"
 #include "Sidebar.h"
 #include "CurrencyHUD.h"
@@ -36,9 +36,9 @@ private:
     // Used to fix position vectors whose y component is flipped (i.e from a touch)
     cocos2d::Vec2 correctInvertedYVec(const cocos2d::Vec2& vec) const;
 
-    unsigned int m_hexiiCountPerLayer[6];
+    uint m_hexiiCountPerLayer[6];
 
-    // UI & HUD
+    /// UI & HUD
 
     Sidebar* m_sidebar;
     CurrencyHUD* m_currencyHUD;
