@@ -43,7 +43,9 @@ public:
 	// Upgrade specific contributions
 
 	BigReal getYieldFromYieldUp1Upgrade() const;
+	BigReal getYieldFromYieldUp2Upgrade() const;
 	BigReal getYieldSpeedFactorFromSpeedUp1Upgrade() const;
+	BigReal getYieldSpeedFactorFromSpeedUp2Upgrade() const;
 	
 	inline BigInt getLevel() const { return m_level; }
 	inline BigReal getEXP() const { return m_exp; }

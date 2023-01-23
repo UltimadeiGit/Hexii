@@ -11,8 +11,10 @@ Upgrade::Upgrade(const std::string_view name, const std::string_view description
 
 Upgrades::Upgrades() {
 	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "YieldUp1" }, std::string_view{ "Increases yield by +0.5 per level" }, 30, 1));
-	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "SpeedUp1" }, std::string_view{ "Increases yield speed by +2% per level" }, 120, 3));
+	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "SpeedUp1" }, std::string_view{ "Increases yield speed by +25%" }, 120, 3));
 	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "StrengthToStrength" }, std::string_view{ "Clicking on this hex provides it 1 EXP" }, 600, 6));
+	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "YieldUp2" }, std::string_view{ "Increases yield by +5% per level" }, 900, 12));
+	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "SpeedUp2" }, std::string_view{ "Increases yield speed by a further +25%" }, 3000, 18));
 }
 
 Upgrades* Upgrades::getInstance() {

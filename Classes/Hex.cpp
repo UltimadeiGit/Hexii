@@ -6,7 +6,7 @@
 USING_NS_CC;
 
 Hex::Hex(const unsigned int layer) : m_layer(layer), m_active(false),
-	m_baseYieldSpeed(10 * (BigReal)1.0 / (layer + 1)), role(layer == 0 ? Role::HOME_L0 : Role::HOME)
+	m_baseYieldSpeed((BigReal)1.0 / (layer + 1)), role(layer == 0 ? Role::HOME_L0 : Role::HOME)
 {}
 
 bool Hex::init() {
@@ -72,9 +72,19 @@ BigReal Hex::getYieldFromYieldUp1Upgrade() const {
 	return std::ceil(0.5 * m_level) * m_upgrades("YieldUp1");
 }
 
-// +2% per level
+// +5% per level
+BigReal Hex::getYieldFromYieldUp2Upgrade() const {
+	return 1.0 + (0.05 * m_level) * m_upgrades("YieldUp2");
+}
+
+// +25%
 BigReal Hex::getYieldSpeedFactorFromSpeedUp1Upgrade() const {
-	return 1.0 + (0.02 * m_level);
+	return 0.25 * m_upgrades("SpeedUp1");
+}
+
+// +25%
+BigReal Hex::getYieldSpeedFactorFromSpeedUp2Upgrade() const {
+	return 0.25 * m_upgrades("SpeedUp2");
 }
 
 BigReal Hex::getEXPCost() const {
@@ -83,18 +93,21 @@ BigReal Hex::getEXPCost() const {
 }
 
 BigReal Hex::getYield() const {
-	return 1 +
-
+	return (1 +
 	getYieldFromYieldUp1Upgrade()
-
+	) 
+		* (
+	getYieldFromYieldUp2Upgrade()
+	)
 	;
 }
 
 BigReal Hex::getYieldSpeed() const {
-	return m_baseYieldSpeed *
-
-	(getYieldSpeedFactorFromSpeedUp1Upgrade())
-
+	return m_baseYieldSpeed * (
+		1 +
+	getYieldSpeedFactorFromSpeedUp1Upgrade() + 
+	getYieldSpeedFactorFromSpeedUp2Upgrade()
+	)
 	;
 }
 

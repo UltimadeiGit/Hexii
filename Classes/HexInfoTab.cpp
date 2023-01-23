@@ -166,6 +166,7 @@ void HexInfoTab::setFocus(Hex* focus) {
 }
 
 void HexInfoTab::purchaseUpgrade(UpgradePtr upgrade) {
+	Currencies::instance()->addGreenMatter(-upgrade->greenMatterCost);
 	m_focus->unlockUpgrade(std::string(upgrade->name));
 }
 
