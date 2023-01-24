@@ -4,6 +4,7 @@
 #include "SimpleShader.h"
 #include "Maths.h"
 #include "BoolMap.h"
+#include "CompoundLabel.h"
 
 #include <functional>
 
@@ -34,9 +35,13 @@ public:
 	inline cocos2d::Texture2D* getShadedRenderTexture() const { return m_shaded->getSprite()->getTexture(); }
 
 	void setActive(bool active);
+	void setPurchaseCost(BigReal cost);
 
 	void onTouchBegan();
 	void onTouchEnded();
+	// Displays the cost label gradually
+	void onHoverBegan();
+	void onHoverEnd();
 
 	/// Gameplay values
 
@@ -71,7 +76,11 @@ private:
 	// An inactive hex is just a border
 	bool m_active;
 
-	cocos2d::Label* m_debugLabel = nullptr;
+	// Displays the cost to buy this hex if it's inactive
+	CompoundLabel* m_purchaseCostLabel = nullptr;
+	// Used for animation
+	float m_purchaseCostLabelOpacity = 0.0f;
+
 	// Hexagon sprite
 	cocos2d::Sprite* m_hex = nullptr;
 	// A shader will apply to the whole Hex after the progress outline to do a relief effect
@@ -87,6 +96,7 @@ private:
 	BigReal m_exp = 0;
 
 	bool m_isPressed = false;
+	bool m_isHovered = false;
 
 	// Associates the upgrade names with a bool value depending on if they've been acquired
 	BoolMap m_upgrades;		

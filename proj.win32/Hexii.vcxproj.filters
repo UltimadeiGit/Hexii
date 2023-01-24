@@ -1,0 +1,431 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\precheader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.cpp">
+      <Filter>Source Files\Classes\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Hex.cpp">
+      <Filter>Source Files\Classes\Hex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HexPlane.cpp">
+      <Filter>Source Files\Classes\Hex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Currencies.cpp">
+      <Filter>Source Files\Classes\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CurrencyHUD.cpp">
+      <Filter>Source Files\Classes\UI &amp; HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HexInfoTab.cpp">
+      <Filter>Source Files\Classes\UI &amp; HUD\Sidebar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SettingsTab.cpp">
+      <Filter>Source Files\Classes\UI &amp; HUD\Sidebar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Sidebar.cpp">
+      <Filter>Source Files\Classes\UI &amp; HUD\Sidebar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HexiiScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Util.cpp">
+      <Filter>Source Files\Classes\Utility Includes</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\main.cpp">
+      <Filter>Source Files\Classes\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CompoundLabel.cpp">
+      <Filter>Source Files\Classes\UI &amp; HUD\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ProgressBar.cpp">
+      <Filter>Source Files\Classes\UI &amp; HUD\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SimpleShader.cpp">
+      <Filter>Source Files\Classes\Types &amp; Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Upgrades.cpp">
+      <Filter>Source Files\Classes\Hex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\BoolMap.cpp">
+      <Filter>Source Files\Classes\Types &amp; Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HexUpgradeBox.cpp">
+      <Filter>Source Files\Classes\UI &amp; HUD\Component</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Button1Disabled.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Button1Neutral.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Button1Pressed.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\ComponentHexagon.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\CurrencyHUDBackground.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Achievement Box Design.pdn">
+      <Filter>Resources\Designs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\AchievementIconHumbleHex.pdn">
+      <Filter>Resources\Designs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Archive\CoolImageMadeFromOutlineEffect.png">
+      <Filter>Resources\Designs\Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Archive\Design v2.pdn">
+      <Filter>Resources\Designs\Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Archive\Info Bar Design.pdn">
+      <Filter>Resources\Designs\Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Background.png">
+      <Filter>Resources\Designs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Button1.pdn">
+      <Filter>Resources\Designs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\ColorPalet.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\ComponentHexagon.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\CurrencyHUDBackground.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\Hexagon.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\SettingsIcon.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\Tab1Neutral.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\Tab1Selected.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\Tab6Neutral.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\Tab6Selected.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\TabFirst.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\TabLast.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\TabLocked.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\TabMiddle.png">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Components\WIP_HexiiBackground.pdn">
+      <Filter>Resources\Designs\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Design.pdn">
+      <Filter>Resources\Designs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\GreenMatterDisplayDesign.pdn">
+      <Filter>Resources\Designs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\IconBase.png">
+      <Filter>Resources\Designs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Info Box Design.pdn">
+      <Filter>Resources\Designs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\InfoIcon.png">
+      <Filter>Resources\Designs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\Instructions\TabInactiveToActive.png">
+      <Filter>Resources\Designs\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\Designs\UpgradeIconYieldPlus1Design.pdn">
+      <Filter>Resources\Designs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\GreenMatter.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\GreenMatterB.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\HexProgressOverlay.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\HexagonActive.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\HexagonInactive.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\NEA\neaDesign.pdn">
+      <Filter>Resources\NEA</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\NEA\neaDesign2.pdn">
+      <Filter>Resources\NEA</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\NEA\neaHexagonCollisionDetectionAlgorithm.pdn">
+      <Filter>Resources\NEA</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\NEA\neaMainSceneFlowChart.pdn">
+      <Filter>Resources\NEA</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\SidebarBackground.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\fonts\8514oem.fon">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\fonts\Agency.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\fonts\AgencyBold.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\fonts\Marker Felt.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\fonts\OCR.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\fonts\arial.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\icons\AchievementIconHumbleHex.png">
+      <Filter>Resources\icons</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\icons\UpgradeIconYieldPlus1.png">
+      <Filter>Resources\icons</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\res\.gitkeep">
+      <Filter>Resources\res</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\shaders\hexProgress.frag">
+      <Filter>Resources\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\shaders\hexProgress.vert">
+      <Filter>Resources\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\shaders\progressBar.frag">
+      <Filter>Resources\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab1Active.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab1Neutral.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab1Selected.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab2Active.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab2Neutral.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab2Selected.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab3Active.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab3Neutral.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab3Selected.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab4Active.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab4Neutral.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab4Selected.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab5Active.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab5Neutral.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab5Selected.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab6Active.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab6Neutral.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\Tab6Selected.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\tabs\TabLocked.png">
+      <Filter>Resources\tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.h">
+      <Filter>Source Files\Classes\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Hex.h">
+      <Filter>Source Files\Classes\Hex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HexPlane.h">
+      <Filter>Source Files\Classes\Hex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Currencies.h">
+      <Filter>Source Files\Classes\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Console.h">
+      <Filter>Source Files\Classes\Utility Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CurrencyHUD.h">
+      <Filter>Source Files\Classes\UI &amp; HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Sidebar.h">
+      <Filter>Source Files\Classes\UI &amp; HUD\Sidebar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HexInfoTab.h">
+      <Filter>Source Files\Classes\UI &amp; HUD\Sidebar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SettingsTab.h">
+      <Filter>Source Files\Classes\UI &amp; HUD\Sidebar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HexiiScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Maths.h">
+      <Filter>Source Files\Classes\Utility Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\main.h">
+      <Filter>Source Files\Classes\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\resource.h">
+      <Filter>Source Files\Classes\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CompoundLabel.h">
+      <Filter>Source Files\Classes\UI &amp; HUD\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ProgressBar.h">
+      <Filter>Source Files\Classes\UI &amp; HUD\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\BigIntArchived.hpp">
+      <Filter>Source Files\Classes\Types &amp; Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SimpleShader.h">
+      <Filter>Source Files\Classes\Types &amp; Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Upgrades.h">
+      <Filter>Source Files\Classes\Hex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\BoolMap.h">
+      <Filter>Source Files\Classes\Types &amp; Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HexUpgradeBox.h">
+      <Filter>Source Files\Classes\UI &amp; HUD\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ColorSchemes.h">
+      <Filter>Source Files\Classes\Utility Includes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\game.rc">
+      <Filter>Source Files\proj.win32</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{E94336AB-9C8E-3F35-B75A-0DD43361E151}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Designs">
+      <UniqueIdentifier>{D2D54867-12DB-3B9D-AB38-FCF454683A48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Designs\Archive">
+      <UniqueIdentifier>{BBC7A508-48C8-31A2-BC7F-E87FD21AE876}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Designs\Components">
+      <UniqueIdentifier>{8CEDDC46-44CB-39A8-9B37-22254C865644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Designs\Instructions">
+      <UniqueIdentifier>{1A6D484A-F04A-380A-9A45-C58A807D1C08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\NEA">
+      <UniqueIdentifier>{38C67965-03A9-3BA8-8760-F6D3B7C3883C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\fonts">
+      <UniqueIdentifier>{59F66645-C01D-322E-8ED1-C48F999F5ACA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\icons">
+      <UniqueIdentifier>{854B3711-513C-3ECB-80A8-CB2BB1571A04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\res">
+      <UniqueIdentifier>{985C76A8-FA52-3CB9-BBB0-8FB6CFB85400}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\shaders">
+      <UniqueIdentifier>{BB0E9BAD-35FF-3355-BBC9-4CDB85361EC2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\tabs">
+      <UniqueIdentifier>{2DCFDF72-8E03-3D43-BC60-89E80B8AB45B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9CADDE28-4A9B-3258-95D3-4FB33CE1942A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes">
+      <UniqueIdentifier>{565BB99C-0A70-391D-A559-2076B3A84E85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\proj.win32">
+      <UniqueIdentifier>{37A90B6D-2014-3086-A90F-9D9ACF8FAEDD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Base">
+      <UniqueIdentifier>{5db70c49-3fb0-47ee-b26f-156aab9b1f24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Global">
+      <UniqueIdentifier>{02ddc6d8-1687-4bf2-b1c1-91cb93f2e212}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\UI &amp; HUD">
+      <UniqueIdentifier>{14048dc4-c646-4214-a65f-983e06d84efa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Hex">
+      <UniqueIdentifier>{3f0ccc87-b5ec-4320-a6d2-3f17834c4240}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Scene">
+      <UniqueIdentifier>{f9631d9a-1534-485a-8f18-99dff7790971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\UI &amp; HUD\Sidebar">
+      <UniqueIdentifier>{5e78c6da-962f-4660-a222-bb56a793947d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\UI &amp; HUD\Component">
+      <UniqueIdentifier>{f10dd90a-f683-4537-97c7-93ac4a0a406e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Utility Includes">
+      <UniqueIdentifier>{96d68193-d519-44ea-b034-1432c96ddd81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Types &amp; Helpers">
+      <UniqueIdentifier>{4a446ffc-29b3-41ac-820a-d241621fc045}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

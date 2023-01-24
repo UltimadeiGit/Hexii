@@ -94,10 +94,19 @@ void HexiiScene::onMouseUp(cocos2d::EventMouse* mouse) {
 
 void HexiiScene::onMouseMoved(cocos2d::EventMouse* mouse) {
 	m_debugLabel->setString("(" + std::to_string(mouse->getLocationInView().x) + ", " + std::to_string(mouse->getLocationInView().y) + ")");
-	// printf("(%d, %d)\n", (int)mouse->getLocationInView().x, (int)mouse->getLocationInView().y);
-	// TODO: This line is a bit long. Some of the functionality belongs in the HexPlane
+
+	Hex* previousMouseOver = m_mouseOverHex;
 	m_mouseOverHex = m_plane->getHexAtPos(m_plane->round(m_plane->axialPositionOf(mouse->getLocationInView() - m_plane->getPosition())));
 	// if(!m_mouseOverHex->getActive()) m_mouseOverHex->
+
+	// Change in mouse over hex
+	if (m_mouseOverHex != previousMouseOver) {
+		// If the mouse moved off a hex
+		if (previousMouseOver) previousMouseOver->onHoverEnd();
+
+		// If this mouse moved onto a hex
+		if (m_mouseOverHex) m_mouseOverHex->onHoverBegan();
+	}	
 }
 
 #endif
@@ -124,21 +133,34 @@ void HexiiScene::onHexYield(Hex* hex) {
 	for (auto& neighbor : neighbors) if (neighbor.hex->getLayer() < layer) neighbor.hex->addEXP(yield);
 }
 
-void HexiiScene::tryPurchaseHex(Hex* target) {
-	// Check if it's affordable
-	uint layer = target->getLayer();
-
+BigReal HexiiScene::getHexPurchaseCost(uint layer) {
 	BigReal cost = 6;
 	switch (layer) {
 	case 0:
 		break;
 	case 1:
-		cost = (BigReal)100 * (std::powl(6, (m_hexiiCountPerLayer[1] + 1)));
+		cost = (BigReal)300 * (std::powl(3, m_hexiiCountPerLayer[1]));
+		break;
+	case 2:
+		cost = (BigReal)120000 * std::powl(1.5, m_hexiiCountPerLayer[2]);
+		break;
+	case 3:
+		cost = (BigReal)3e7 * std::powl(1.25, m_hexiiCountPerLayer[3]);
 		break;
 	default:
-		cost = 100;
+		cost = 1.79e308;
 		break;
 	}
+	cost = std::floorl(cost);
+
+	return cost;
+}
+
+void HexiiScene::tryPurchaseHex(Hex* target) {
+	// Check if it's affordable
+	uint layer = target->getLayer();
+
+	BigReal cost = getHexPurchaseCost(layer);
 	
 	// Not affordable
 	if (cost > Currencies::getGreenMatter()) return;
@@ -151,15 +173,35 @@ void HexiiScene::tryPurchaseHex(Hex* target) {
 	m_sidebar->getHexInfoTab()->setFocus(target);
 	m_hexiiCountPerLayer[layer]++;
 
+	// After a purchase, the cost of the next hex in that layer is increased so they need to be updated
+
+	// 6 * layer is the maximum count in that layer. Cost doesn't need to be updated if all the hexii in that layer have already been bought
+	if (m_hexiiCountPerLayer[layer] < 6 * layer) {
+		BigReal nextCost = getHexPurchaseCost(layer);
+		auto hexiiInLayer = m_plane->getHexiiInLayer(layer);
+
+		for (uint i = 0; i < hexiiInLayer.size(); i++) {
+			hexiiInLayer[i].hex->setPurchaseCost(nextCost);
+		}
+	}
+
+	// TODO: Remove debug stuff
+	constexpr uint MAXIMUM_LAYER = 3;
+
+	if (layer == MAXIMUM_LAYER) return;
+
 	// Any neighboring positions that don't yet have an inactive hex need to have one so they can be purchased
 
 	auto neighbors = m_plane->neighborsOf(m_plane->axialPositionOf(target->getPosition()), false);
+	BigReal higherLayerCost = getHexPurchaseCost(layer + 1);
+
 	for (auto& neighbor : neighbors) {
-		// No need to set a hex if one is already in place or if it's beyond the maximum layer
-		if (neighbor.hex != nullptr || m_plane->layerOf(neighbor.pos) > 3) continue;
+		// No need to set a hex if one is already in place. Only set a hex if it's in a higher layer
+		if (neighbor.hex != nullptr || m_plane->layerOf(neighbor.pos) != layer + 1) continue;
 		
 		Hex* newHex = m_plane->placeHexAtPos(neighbor.pos);
 		newHex->yieldFunction = CC_CALLBACK_1(HexiiScene::onHexYield, this);
+		newHex->setPurchaseCost(higherLayerCost);
 	}
 }
 

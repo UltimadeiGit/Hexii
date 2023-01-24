@@ -42,12 +42,18 @@ std::string formatBigReal(BigReal val, bool floor, uint significantFigures, uint
 		}
 	}
 	else {
-		// Use scientific notation
-		// sf = 3
-		// 12345 -> 1.23e4
-		// First `sf` characters, plus the string "eX" where X is floor(exponent)
+		// TODO: This code fails for certain numbers so it clearly doesn't work the way I think it does\
+		rewrite recommended.
 
-		formatted = std::format("{}", val).substr(0, significantFigures) + "e" + std::format("{}", std::floor(exponent));
+		std::string exponentSuffix = "e" + std::format("{}", std::floor(exponent));
+
+		// Formatting changes when exponent is greater than 16. Note significantfigures doesn't have a -1 because the '.' takes up an extra char 
+		if(exponent >= 17) formatted = std::format("{}", val).substr(0, significantFigures + 1) + exponentSuffix;
+		else {
+			std::string processed = std::format("{}", val).substr(0, significantFigures);
+			char mostSignificantBit = processed[0];
+			formatted = std::string(1, mostSignificantBit) + "." + processed.substr(1) + exponentSuffix;
+		}
 	}	
 
 	return formatted;
