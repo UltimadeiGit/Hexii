@@ -182,8 +182,6 @@ void Hex::update(float dt) {
 		if (m_purchaseCostLabelOpacity < 0) m_purchaseCostLabelOpacity = 0.0f;
 		else if (m_purchaseCostLabelOpacity > 1) m_purchaseCostLabelOpacity = 1.0f;
 
-		printf("Opacity: %f\n", m_purchaseCostLabelOpacity);
-
 		m_purchaseCostLabel->setOpacity(m_purchaseCostLabelOpacity * 255);
 	}
 

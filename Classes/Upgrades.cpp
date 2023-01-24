@@ -1,4 +1,5 @@
 #include "Upgrades.h"
+#include "Console.h"
 
 USING_NS_CC;
 
@@ -15,6 +16,8 @@ Upgrades::Upgrades() {
 	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "StrengthToStrength" }, std::string_view{ "Clicking on this hex provides it 1 EXP" }, 600, 6));
 	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "YieldUp2" }, std::string_view{ "Increases yield by +5% per level" }, 900, 12));
 	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "SpeedUp2" }, std::string_view{ "Increases yield speed by a further +25%" }, 3000, 18));
+
+	if (m_upgrades.size() != Upgrades::UPGRADE_COUNT) err(std::format("Upgrades - Expected {} upgrades but got {} instead", UPGRADE_COUNT, m_upgrades.size()));
 }
 
 Upgrades* Upgrades::getInstance() {
@@ -50,7 +53,9 @@ const Upgrades::UpgradeList Upgrades::getUpgradesFollowing(UpgradePtr pivot, uin
 	UpgradeList& fullList = Upgrades::getInstance()->m_upgrades;
 	UpgradeList subList;
 	
-	// begun once pivot has been reached
+	if (count == 0) return subList;
+
+	// Begun once pivot has been reached (if nullptr then begin immediately)
 	bool begun = pivot == nullptr;
 	
 	for (unsigned int i = 0; i < fullList.size(); i++) {
@@ -63,8 +68,4 @@ const Upgrades::UpgradeList Upgrades::getUpgradesFollowing(UpgradePtr pivot, uin
 	}
 
 	return subList;
-}
-
-const uint Upgrades::getUpgradeCount() {
-	return Upgrades::getInstance()->m_upgrades.size();
 }

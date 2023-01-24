@@ -36,8 +36,8 @@ public:
 	static const UpgradeList getUpgradesBetweenLevels(uint lower, uint higher);
 	// Fetches up to the next `count` upgrades after `pivot`. If nullptr, this will just return the first `count` upgrades in order
 	static const UpgradeList getUpgradesFollowing(UpgradePtr pivot, uint count);
-	// Returns the total number of upgrades available
-	static const uint getUpgradeCount();
+	
+	static constexpr uint UPGRADE_COUNT = 5;
 private:
 	static Upgrades* m_instance;
 

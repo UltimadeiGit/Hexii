@@ -14,6 +14,8 @@ void warn(const std::string& msg) {
 void err(const std::string& msg) {
 	printf("Error: %s\n", msg.c_str());
 	ErrFlag = 1;
+
+	throw std::runtime_error(msg);
 }
 
 std::string formatBigReal(BigReal val, bool floor, uint significantFigures, uint decimalPlaces) {
@@ -22,6 +24,24 @@ std::string formatBigReal(BigReal val, bool floor, uint significantFigures, uint
 
 	double exponent = log10(val);
 
+	// 1,001,001 -> 1.001001e6 (7sf) 
+
+	// Switch to exponential form after 10000
+	if (exponent >= 4 && exponent >= significantFigures - 1) {
+		formatted = std::format("{:.{}e}", val, significantFigures - 1);
+		
+		// The string before e+...
+		std::string mantissaStr = formatted.substr(0, significantFigures + 1);
+		// The string after e+
+		std::string exponentStr = formatted.substr(significantFigures + 3);
+		// Strip leading 0s
+		exponentStr = exponentStr.erase(0, exponentStr.find_first_not_of('0'));
+
+		formatted = mantissaStr + "e" + exponentStr;
+	}
+	else formatted = std::format("{:.{}f}", val, decimalPlaces);
+
+	/*
 	// +2 is to account for the extra characters 'e' and the exponent being added in scientific notation
 	if (exponent < significantFigures + 2) {
 		// This is as annoying to write as it is to read, trust me
@@ -55,6 +75,7 @@ std::string formatBigReal(BigReal val, bool floor, uint significantFigures, uint
 			formatted = std::string(1, mostSignificantBit) + "." + processed.substr(1) + exponentSuffix;
 		}
 	}	
+	*/
 
 	return formatted;
 }

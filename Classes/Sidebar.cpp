@@ -62,6 +62,23 @@ bool Sidebar::init() {
         setScale(designRes.height / (_contentSize.height + 100));
     }
 
+    setFocusEnabled(false);
+
+    // TODO: Events system overhaul needed
+
+    setSwallowTouches(true);
+
+    ui::Widget::setTouchEnabled(true);
+
+    // auto listener = EventListenerTouchOneByOne::create();
+
+    //ui::Widget::
+
+    //listener->onTouchBegan = CC_CALLBACK_2(Sidebar::onTouchBegan, this);
+    //listener->setSwallowTouches(true);
+
+   // _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
     return true;
 }
 

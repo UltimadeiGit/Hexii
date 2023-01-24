@@ -4,7 +4,7 @@
 USING_NS_CC;
 
 HexInfoTab::HexInfoTab() : m_focus(nullptr), m_hexEXPBar(nullptr), m_focusSprite(nullptr), m_layerLabel(nullptr), m_levelLabel(nullptr),
-	m_expLabel(nullptr), m_yieldLabel(nullptr), m_upgradesList(nullptr) {}
+	m_expLabel(nullptr), m_yieldLabel(nullptr), m_upgradeScrollView(nullptr) {}
 
 bool HexInfoTab::init() {
 	setContentSize(Size(420, 1320));
@@ -56,19 +56,16 @@ bool HexInfoTab::init() {
 	m_purchaseEXPButton->setAnchorPoint(Vec2(0.5, 0.5));
 	m_purchaseEXPButton->setPosition(Vec2(315, 1106));
 
-	m_upgradesList = ui::ScrollView::create();
-	m_upgradesList->setAnchorPoint(Vec2(0.0, 0.0));
-	m_upgradesList->setDirection(ui::ScrollView::Direction::VERTICAL);
-	m_upgradesList->setContentSize(Size(415, 625)); // 415, 3625
-	m_upgradesList->setInnerContainerSize(Size(415, 0));
-	// m_upgradesList->setInnerContainerSize(m_upgradesList->getContentSize());
-	m_upgradesList->setBounceEnabled(true);
-	m_upgradesList->setPosition(Vec2(0, 864));
-	m_upgradesList->setFlippedY(true);
+	m_upgradeScrollView = ui::ScrollView::create();
+	m_upgradeScrollView->setAnchorPoint(Vec2(0.0, 0.0));
+	m_upgradeScrollView->setDirection(ui::ScrollView::Direction::VERTICAL);
+	m_upgradeScrollView->setContentSize(Size(415, 625)); // 415, 3625
+	m_upgradeScrollView->setInnerContainerSize(Size(415, 625));
+	m_upgradeScrollView->setBounceEnabled(true);
+	m_upgradeScrollView->setPosition(Vec2(0, 864));
+	m_upgradeScrollView->setFlippedY(true);
 	// Invisible scrollbar
-	m_upgradesList->setScrollBarOpacity(0);
-	//m_upgradesList->setBackGroundColorType(ui::Layout::BackGroundColorType::SOLID);
-	//m_upgradesList->setBackGroundColor(Color3B::BLACK);
+	m_upgradeScrollView->setScrollBarOpacity(0);
 
 	this->addChild(m_hexEXPBar);
 	this->addChild(m_focusSprite);
@@ -77,7 +74,7 @@ bool HexInfoTab::init() {
 	this->addChild(m_expLabel);
 	this->addChild(m_yieldLabel);
 	this->addChild(m_purchaseEXPButton);
-	this->addChild(m_upgradesList);
+	this->addChild(m_upgradeScrollView);
 
 	return true;
 }
@@ -107,7 +104,7 @@ void HexInfoTab::update(float dt) {
 
 	/// Update upgrades
 
-	for (auto& i : m_upgradesList->getChildren()) i->update(dt);
+	for (auto& i : m_upgradeScrollView->getChildren()) i->update(dt);
 
 	// Level changed
 	if (level > m_storedFocuslevel) {
@@ -144,6 +141,8 @@ void HexInfoTab::update(float dt) {
 }
 
 void HexInfoTab::setFocus(Hex* focus) {
+	// TODO: This function is *slow*. Needs optimization
+
 	if (m_focus == focus) return;
 
 	m_focus = focus;
@@ -159,8 +158,8 @@ void HexInfoTab::setFocus(Hex* focus) {
 	m_layerLabel->setString("L" + std::to_string(layer));
 	m_yieldLabel->setIconTexture(layer == 0 ? "icons/GreenMatter.png" : "icons/EXP.png");
 
-	m_upgradesList->removeAllChildrenWithCleanup(true);
-	m_lockedBoxes.clear();
+	m_upgradeScrollView->removeAllChildrenWithCleanup(true);
+	m_previewUpgradeBoxes.clear();
 	updateUpgradesList();
 
 	m_storedFocuslevel = m_focus->getLevel();
@@ -184,37 +183,43 @@ HexUpgradeBox* HexInfoTab::addUpgradeToList(UpgradePtr upgrade) {
 	HexUpgradeBox* upgradeBox = HexUpgradeBox::create();
 	HexUpgradeBox::State state;
 
+	// Set the state of the upgrade box (whether it's locked, revealed or fully purchased)
+
 	if (upgrade->unlockLevel > m_focus->getLevel()) state = HexUpgradeBox::State::LOCKED;
 	else if (m_focus->getUpgrade(std::string(upgrade->name))) state = HexUpgradeBox::State::PURCHASED;
 	else state = HexUpgradeBox::State::REVEALED;
 
 	upgradeBox->setUpgrade(upgrade, state);
 	upgradeBox->setAnchorPoint(Vec2(0, 1));
-	upgradeBox->setPosition(Vec2(0, 160 * m_upgradesList->getChildrenCount()));
+	upgradeBox->setPosition(Vec2(0, 160 * m_upgradeScrollView->getChildrenCount()));
 	upgradeBox->purchaseUpgradeFunction = CC_CALLBACK_1(HexInfoTab::purchaseUpgrade, this);
 
-	m_upgradesList->addChild(upgradeBox);
+	m_upgradeScrollView->addChild(upgradeBox);
 
 	return upgradeBox;
 }
 
-
 void HexInfoTab::updateUpgradesList() {
+	// Number of preview upgrade boxes that should be displayed
 	constexpr int PREVIEW_COUNT = 2;
 
 	BigInt level = m_focus->getLevel();
 
 	// Update the locked boxes
 
-	std::vector<HexUpgradeBox*> updatedLockedBoxes;
-	for (uint i = 0; i < m_lockedBoxes.size(); i++) {
-		if (level >= m_lockedBoxes[i]->getUpgrade()->unlockLevel) m_lockedBoxes[i]->setState(HexUpgradeBox::State::REVEALED);
-		else updatedLockedBoxes.push_back(m_lockedBoxes[i]);
+	// The list of preview boxes after this function has updated the list
+	std::vector<HexUpgradeBox*> updatedPreviewUpgradeBoxes;
+	for (uint i = 0; i < m_previewUpgradeBoxes.size(); i++) {
+		// If a preview box has reached the reveal level, reveal it. Otherwise, it remains a preview so it stays in the updated preview \
+		boxes list
+
+		if (level >= m_previewUpgradeBoxes[i]->getUpgrade()->unlockLevel) m_previewUpgradeBoxes[i]->setState(HexUpgradeBox::State::REVEALED);
+		else updatedPreviewUpgradeBoxes.push_back(m_previewUpgradeBoxes[i]);
 	}
 
 	// If there are no more locked boxes and all upgrades are available, this function is done
-	if (updatedLockedBoxes.size() == 0 && m_upgradesList->getChildrenCount() == Upgrades::getUpgradeCount()) {
-		m_lockedBoxes = updatedLockedBoxes;
+	if (updatedPreviewUpgradeBoxes.size() == 0 && m_upgradeScrollView->getChildrenCount() == Upgrades::UPGRADE_COUNT) {
+		m_previewUpgradeBoxes = updatedPreviewUpgradeBoxes;
 		return;
 	}
 
@@ -224,33 +229,40 @@ void HexInfoTab::updateUpgradesList() {
 
 	// The latest upgrade referenced so far
 	UpgradePtr lastUpgrade = nullptr;
-	if (updatedLockedBoxes.size() > 0) lastUpgrade = updatedLockedBoxes.back()->getUpgrade();
+	if (updatedPreviewUpgradeBoxes.size() > 0) lastUpgrade = updatedPreviewUpgradeBoxes.back()->getUpgrade();
 	else if (list.size() > 0) lastUpgrade = list.back();
 
 	// The total number of locked boxes should be PREVIEW_COUNT, so this bonus list increases up to that
-	Upgrades::UpgradeList bonusList = Upgrades::getUpgradesFollowing(lastUpgrade, PREVIEW_COUNT - updatedLockedBoxes.size());
-
-	// Used to calculate how much the container size should be increased
-	int numberAdded = 0;
+	Upgrades::UpgradeList previewUpgradeList = Upgrades::getUpgradesFollowing(lastUpgrade, PREVIEW_COUNT - updatedPreviewUpgradeBoxes.size());
 
 	// When a level up happens, a locked upgrade may become available. If this happens, the upgrade is present in locked boxes\
 	and it is also returned in `list`. This upgrade shouldn't be added again, so i needs to start offsetted based on how many of \
 	these newly unlocked ones there are. Everything else afterwards is to be appended
-	for (unsigned int i = m_lockedBoxes.size() - updatedLockedBoxes.size(); i < list.size(); i++) {
+	for (unsigned int i = m_previewUpgradeBoxes.size() - updatedPreviewUpgradeBoxes.size(); i < list.size(); i++) {
 		addUpgradeToList(list[i]);
-		numberAdded++;
 	}
 
-	for (unsigned int i = 0; i < bonusList.size(); i++) {
-		updatedLockedBoxes.push_back(addUpgradeToList(bonusList[i]));
-		numberAdded++;
+	for (unsigned int i = 0; i < previewUpgradeList.size(); i++) {
+		updatedPreviewUpgradeBoxes.push_back(addUpgradeToList(previewUpgradeList[i]));
 	}
 
 	/// Update container size
 
-	Size newListSize = m_upgradesList->getContentSize();
-	newListSize.height += 160 * numberAdded;
-	m_upgradesList->setInnerContainerSize(Size(415, 625)); // 415, 725
+	// Used to preserve the scroll position. 100% means top, not bottom (because the y is inverted). NaN is the initial scroll value \
+	before user input
+	float percentScrolled = m_upgradeScrollView->getScrolledPercentVertical();
+	if (!(percentScrolled >= 0.0f)) { // Meaning NaN
+		percentScrolled = 100.0f;
+	}
+	// TODO: Optimize
+	// Updated size after new boxes have been added
+	Size newScrollViewSize = m_upgradeScrollView->getInnerContainerSize();
 
-	m_lockedBoxes = updatedLockedBoxes;
+	// Height is not allowed to go below the content height
+	newScrollViewSize.height = std::max((long)m_upgradeScrollView->getContentSize().height, 160 * m_upgradeScrollView->getChildrenCount());
+	
+	m_upgradeScrollView->setInnerContainerSize(newScrollViewSize);
+	if(percentScrolled >= 0) m_upgradeScrollView->jumpToPercentVertical(percentScrolled);
+
+	m_previewUpgradeBoxes = updatedPreviewUpgradeBoxes;
 }

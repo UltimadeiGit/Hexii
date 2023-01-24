@@ -11,7 +11,8 @@
 #include "CompoundLabel.h"
 #include "HexUpgradeBox.h"
 
-class HexInfoTab : public cocos2d::Layer {
+class HexInfoTab : 
+    public cocos2d::Layer {
 private:
     HexInfoTab();
 public:
@@ -38,8 +39,8 @@ private:
     // The amount of EXP the purchase button will give
     BigReal m_purchaseEXPButtonDesiredEXP = 0;
 
-    // The locked ones need to be kept track of in order to unlock them
-    std::vector<HexUpgradeBox*> m_lockedBoxes;
+    // The locked ones need to be kept track of in order to reveal them
+    std::vector<HexUpgradeBox*> m_previewUpgradeBoxes;
 
     ProgressBar* m_hexEXPBar;
     // Sprite displaying the focused hex
@@ -49,5 +50,5 @@ private:
     CompoundLabel* m_expLabel;
     CompoundLabel* m_yieldLabel;
     cocos2d::ui::Button* m_purchaseEXPButton;
-    cocos2d::ui::ScrollView* m_upgradesList;
+    cocos2d::ui::ScrollView* m_upgradeScrollView;
 };
