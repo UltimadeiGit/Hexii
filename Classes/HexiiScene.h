@@ -31,6 +31,7 @@ public:
 private:
     void onHexYield(Hex* hex);
 
+    BigReal getHexPurchaseCost(uint layer);
     void tryPurchaseHex(Hex* target);
 
     // Used to fix position vectors whose y component is flipped (i.e from a touch)

@@ -10,7 +10,7 @@ Hex::Hex(const unsigned int layer) : m_layer(layer), m_active(false),
 {}
 
 bool Hex::init() {
-	m_hex = Sprite::create(AutoPolygon::generatePolygon("HexagonInactive.png"));
+	m_hex = Sprite::create("gameplay/HexInactive.png"); //Sprite::create(AutoPolygon::generatePolygon("HexagonInactive.png"));
 	m_hex->setAnchorPoint(Vec2(0, 0));
 	
 	setContentSize(m_hex->getContentSize());
@@ -20,17 +20,20 @@ bool Hex::init() {
 	m_shader->setUniform<float>("progress", 0.0f);
 	m_shader->setUniform<Vec2>("hexCenter", Vec2(size.height * HEXAGON_HEIGHT_TO_WIDTH * 0.5f, size.height * 0.5f));
 	m_shader->setUniform<Vec2>("screenCenter", Director::getInstance()->getVisibleSize() / 2);
-	m_shader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("HexProgressOverlay.png"));
+	m_shader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("gameplay/HexProgressOverlay.png"));
 
 	// The shader applies to the hex sprite
 	m_hex->setProgramState(m_shader->programState);
 
-	m_debugLabel = Label::createWithTTF("TMP", "fonts/OCR.ttf", 20, Size::ZERO, TextHAlignment::CENTER);
-	m_debugLabel->setPosition(size / 2);
-	m_debugLabel->setTextColor(Color4B(160, 0, 120, 255));
-	m_debugLabel->enableShadow(Color4B::BLACK, Size(2, -2), 5);
+	m_purchaseCostLabel = CompoundLabel::create("", "fonts/OCR.ttf", "fonts/OCR.ttf");
+	m_purchaseCostLabel->setStyle(false, true, 45, Color4B::WHITE, Color4B::WHITE, 0, Color4B::WHITE, Size(1, -1), 4);
+	m_purchaseCostLabel->setIconTexture("icons/GreenMatter.png");
+	m_purchaseCostLabel->setSpacing(12.5f);
+	m_purchaseCostLabel->setCascadeOpacityEnabled(true);
+	m_purchaseCostLabel->setAnchorPoint(Vec2(0.5, 0.5));
+	m_purchaseCostLabel->setPosition(Vec2(size.width / 2 - 12.5f, size.height / 2));
 
-	m_hex->addChild(m_debugLabel);
+	m_hex->addChild(m_purchaseCostLabel);
 
 	m_shaded = RenderTexture::create(size.width, size.height);
 	m_shaded->getSprite()->setAnchorPoint(Vec2(0.5, 0.5));
@@ -111,24 +114,46 @@ BigReal Hex::getYieldSpeed() const {
 	;
 }
 
+void Hex::setActive(bool active) {
+	if (m_active == active) return;
+
+	m_active = active;
+	// Use the appropriate active texture
+	if (active) m_hex->setTexture(_director->getTextureCache()->addImage("gameplay/L" + std::to_string(m_layer) + "Hex.png"));
+	else m_hex->setTexture(_director->getTextureCache()->addImage("gameplay/HexInactive.png"));
+
+	// Cost label is only visible when the hex is inactive
+	m_purchaseCostLabel->setVisible(!active);
+
+	// TODO: Investigate this
+	// m_hex->setProgramState(nullptr)
+	m_hex->setProgramState(m_shader->programState);
+}
+
+void Hex::setPurchaseCost(BigReal cost) {
+	m_purchaseCostLabel->setVariablePartString(formatBigReal(cost));
+}
+
 void Hex::onTouchBegan() {
 	if (m_upgrades("StrengthToStrength")) addEXP(1);
+	
+	m_shader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("gameplay/HexProgressOverlayPressed.png"));
 
 	m_isPressed = true;
 }
 
 void Hex::onTouchEnded() {
+	m_shader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("gameplay/HexProgressOverlay.png"));
+
 	m_isPressed = false;
 }
 
-void Hex::setActive(bool active) {
-	if (m_active == active) return;
+void Hex::onHoverBegan() {
+	m_isHovered = true;
+}
 
-	this->getProgramState();
-
-	m_active = active;
-	m_hex->setTexture(_director->getTextureCache()->addImage(active ? "HexagonActive.png" : "HexagonInactive.png"));
-	m_hex->setProgramState(m_shader->programState);
+void Hex::onHoverEnd() {
+	m_isHovered = false;
 }
 
 BigReal Hex::getEXPRequiredForLevel(uint layer, BigInt level)
@@ -146,18 +171,24 @@ BigReal Hex::getEXPRequiredForLevel(uint layer, BigInt level)
 }
 
 void Hex::update(float dt) {
-	/*
-	m_debugLabel->setString(std::format("\
-Layer: {}\n \
-EXP: {}\n\
-LEVEL: {}",
-		m_layer, m_exp, m_level
-	));
-	*/
+	/// Update label
 
+	if (!m_active) {
+		if (m_isHovered) m_purchaseCostLabelOpacity += dt * 3;
+		else m_purchaseCostLabelOpacity -= dt * 2.5;
+
+		if (m_purchaseCostLabelOpacity < 0) m_purchaseCostLabelOpacity = 0.0f;
+		else if (m_purchaseCostLabelOpacity > 1) m_purchaseCostLabelOpacity = 1.0f;
+
+		printf("Opacity: %f\n", m_purchaseCostLabelOpacity);
+
+		m_purchaseCostLabel->setOpacity(m_purchaseCostLabelOpacity * 255);
+	}
+
+	// No further actions beyond this point if inactive
 	if (!m_active) return;
 
-	// Increase progress
+	/// Increase progress
 
 	m_progress += ((BigReal)dt * (1 + m_isPressed * 3)) * getYieldSpeed();
 	while (m_progress > 1.0f) {
@@ -165,28 +196,7 @@ LEVEL: {}",
 		if (yieldFunction) yieldFunction(this);
 	}
 
-	// Update shader uniforms
+	/// Update shader uniforms
 
 	m_shader->setUniform<float>("progress", m_progress);
 }
-
-/*
-
-cocos2d::PolygonInfo& Hex::getActivePinfo() {
-	/// TODO: Replace static variables with resource stuff
-	static cocos2d::PolygonInfo pinfo = AutoPolygon::generatePolygon("HexagonActive.png");
-	return pinfo;
-}
-
-cocos2d::PolygonInfo& Hex::getInactivePinfo() {
-	/// TODO: Replace static variables with resource stuff
-	static cocos2d::PolygonInfo pinfo = AutoPolygon::generatePolygon("HexagonInactive.png");
-	return pinfo;
-}
-
-cocos2d::PolygonInfo& Hex::getPinfo() {
-	return m_active ? getActivePinfo() : getInactivePinfo();
-}
-
-
-*/

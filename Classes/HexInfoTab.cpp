@@ -59,8 +59,9 @@ bool HexInfoTab::init() {
 	m_upgradesList = ui::ScrollView::create();
 	m_upgradesList->setAnchorPoint(Vec2(0.0, 0.0));
 	m_upgradesList->setDirection(ui::ScrollView::Direction::VERTICAL);
-	m_upgradesList->setInnerContainerSize(Size(415, 625)); // 415, 725
 	m_upgradesList->setContentSize(Size(415, 625)); // 415, 3625
+	m_upgradesList->setInnerContainerSize(Size(415, 0));
+	// m_upgradesList->setInnerContainerSize(m_upgradesList->getContentSize());
 	m_upgradesList->setBounceEnabled(true);
 	m_upgradesList->setPosition(Vec2(0, 864));
 	m_upgradesList->setFlippedY(true);
@@ -229,16 +230,27 @@ void HexInfoTab::updateUpgradesList() {
 	// The total number of locked boxes should be PREVIEW_COUNT, so this bonus list increases up to that
 	Upgrades::UpgradeList bonusList = Upgrades::getUpgradesFollowing(lastUpgrade, PREVIEW_COUNT - updatedLockedBoxes.size());
 
+	// Used to calculate how much the container size should be increased
+	int numberAdded = 0;
+
 	// When a level up happens, a locked upgrade may become available. If this happens, the upgrade is present in locked boxes\
 	and it is also returned in `list`. This upgrade shouldn't be added again, so i needs to start offsetted based on how many of \
 	these newly unlocked ones there are. Everything else afterwards is to be appended
 	for (unsigned int i = m_lockedBoxes.size() - updatedLockedBoxes.size(); i < list.size(); i++) {
 		addUpgradeToList(list[i]);
+		numberAdded++;
 	}
 
 	for (unsigned int i = 0; i < bonusList.size(); i++) {
 		updatedLockedBoxes.push_back(addUpgradeToList(bonusList[i]));
+		numberAdded++;
 	}
+
+	/// Update container size
+
+	Size newListSize = m_upgradesList->getContentSize();
+	newListSize.height += 160 * numberAdded;
+	m_upgradesList->setInnerContainerSize(Size(415, 625)); // 415, 725
 
 	m_lockedBoxes = updatedLockedBoxes;
 }

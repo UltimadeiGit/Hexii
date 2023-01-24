@@ -16,6 +16,20 @@ Hex* HexPlane::getHexAtPos(Vec2 posAxial) const {
     return nullptr;
 }
 
+std::vector<HexPlane::HexPosPair> HexPlane::getHexiiInLayer(uint layer) {
+    std::vector<HexPosPair> hexii;
+
+    for (auto it = m_hexMap.begin(); it != m_hexMap.end(); it++) {
+        HexPosPair hex;
+        hex.pos = it->first;
+        hex.hex = it->second;
+    
+        hexii.push_back(hex);
+    }
+
+    return hexii;
+}
+
 Hex* HexPlane::placeHexAtPos(cocos2d::Vec2 posAxial) {
     Hex* ret = placeHexAtPos(posAxial, Hex::create(layerOf(posAxial)));
     ret->setPosition(localPositionOf(posAxial));

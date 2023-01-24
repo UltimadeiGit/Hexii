@@ -16,9 +16,12 @@ public:
 
 public:
 	Hex* getHexAtPos(cocos2d::Vec2 posAxial) const;
-	
+	// Returns all the hexii contained in `layer`
+	std::vector<HexPosPair> getHexiiInLayer(uint layer);
+
 	// Sets and returns the hex at pos by initializing a new one
 	Hex* placeHexAtPos(cocos2d::Vec2 posAxial);
+
 
 	// Converts a hex coordinate system position to a game coordinate position in local space (of this layer)
 	cocos2d::Vec2 localPositionOf(const cocos2d::Vec2& posAxial) const;
@@ -31,6 +34,7 @@ public:
 	// Returns the hexii adjacent to the one at `posAxial`. Will always return 6 pairs unless `activeOnly` is true.
 	// nullptr indicates a hex does not exist at that coord
 	std::vector<HexPosPair> neighborsOf(cocos2d::Vec2 posAxial, bool activeOnly);
+	
 
 	void update(float dt) override;
 
