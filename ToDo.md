@@ -12,7 +12,7 @@
 - Hexii in outer layers should be a different color (DONE)
 - Improvements to non-purchased Hexii
 	* A hex should only become available for purchase if it is connected to a purchased hex of a lower layer (DONE)
-	* An affordable Hex that should have a glow animation
+	* An affordable Hex should have a glow animation
 	* Hovering over a Hex that has not been purchased should show the cost to buy it (DONE)
 	* Right clicking on a Hex that has not been purchased should show its cost in the sidebar, providing an alternative way of buying it
 		// It should not be possible to buy EXP for such a hex
@@ -28,6 +28,7 @@ KNOWN BUGS:
 * Upgrades list gets 2 extra previews incorrectly. Goes away when changing focus
 * Numbers are displayed incorrectly at certain exponents
 * Cost to purchase Hexii sometimes updated incorrectly
+* Hex isn't declicked properly
 
 
 THINGS TO DO BEFORE PRE-ALPHA RELEASE:
@@ -37,6 +38,5 @@ THINGS TO DO BEFORE PRE-ALPHA RELEASE:
 - Settings system
 - Saving and loading system
 - Splash screen
-- Relief effect shader!!
 - Try and find some sound effects
 - Should be able to zoom out and pin the camera on a Hex

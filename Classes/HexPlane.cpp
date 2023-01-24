@@ -20,6 +20,8 @@ std::vector<HexPlane::HexPosPair> HexPlane::getHexiiInLayer(uint layer) {
     std::vector<HexPosPair> hexii;
 
     for (auto it = m_hexMap.begin(); it != m_hexMap.end(); it++) {
+        if (it->second->getLayer() != layer) continue;
+
         HexPosPair hex;
         hex.pos = it->first;
         hex.hex = it->second;

@@ -386,3 +386,4 @@ FodyWeavers.xsd
 /proj.win32/engine/cocos/core/cmake_install.cmake
 /proj.win32/engine/cocos/core/ALL_BUILD.vcxproj.filters
 /proj.win32/engine/cocos/core/ALL_BUILD.vcxproj
+/proj.win32/Hexii.vcxproj.filters

@@ -96,12 +96,14 @@ BigReal Hex::getEXPCost() const {
 }
 
 BigReal Hex::getYield() const {
-	return (1 +
+	if (role == Role::HOME_L0) return 1e100;
+
+	return ((1 +
 	getYieldFromYieldUp1Upgrade()
 	) 
 		* (
 	getYieldFromYieldUp2Upgrade()
-	)
+	))
 	;
 }
 

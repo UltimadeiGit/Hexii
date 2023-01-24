@@ -18,7 +18,9 @@ bool HexiiScene::init() {
 	m_plane->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
 	Hex* l0Hex = m_plane->placeHexAtPos(Vec2(0, 0));
+	// TODO: This should be its own function
 	l0Hex->yieldFunction = CC_CALLBACK_1(HexiiScene::onHexYield, this);
+	l0Hex->setPurchaseCost(getHexPurchaseCost(0));
 
 	this->addChild(m_plane);
 
