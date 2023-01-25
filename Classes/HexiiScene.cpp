@@ -30,9 +30,8 @@ bool HexiiScene::init() {
 	m_debugLabel->setTextColor(Color4B(128, 128, 128, 255));
 	// m_debugLabel->enableGlow(Color4B(255, 0, 0, 255));
 	m_debugLabel->setPosition(Vec2(visibleSize.width / 2 + origin.x, 100));
-	this->addChild(this->m_debugLabel);	
+	this->addChild(this->m_debugLabel);
 
-#ifdef CC_PLATFORM_MOBILE
 	auto touchListener = EventListenerTouchOneByOne::create();
 
 	touchListener->onTouchBegan = CC_CALLBACK_2(HexiiScene::onTouchBegan, this);
@@ -41,7 +40,6 @@ bool HexiiScene::init() {
 	touchListener->onTouchMoved = CC_CALLBACK_2(HexiiScene::onTouchMoved, this);
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
-#endif
 
 #ifdef CC_PLATFORM_PC
 	auto mouseListener = EventListenerMouse::create();
@@ -71,11 +69,32 @@ bool HexiiScene::init() {
 	return true;
 }
 
+bool HexiiScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* ev) {
+	m_debugLabel->setString("Touched!!");
+
+	// Touch location in view uses inverted y for some inexplicable reason, so this corrects it
+	Vec2 touchPos = correctInvertedYVec(touch->getLocationInView());
+	Hex* hexTouched = m_plane->getHexAtPos(m_plane->axialPositionOf(touchPos - m_plane->getPosition()));
+
+	if (hexTouched == nullptr) return true;
+
+	if (hexTouched->getActive()) hexTouched->onTouchBegan();
+	// We clicked on an inactive target, but the hex does exist meaning it may be purchasable
+	else tryPurchaseHex(hexTouched);
+
+	return true;
+}
+
+void HexiiScene::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* ev) {
+	
+}
+
 #ifdef CC_PLATFORM_PC
 
 void HexiiScene::onMousePressed(cocos2d::EventMouse* mouse) { 
 	EventMouse::MouseButton pressType = mouse->getMouseButton();
 
+	/*
 	if (pressType == EventMouse::MouseButton::BUTTON_LEFT) {
 		if (m_mouseOverHex == nullptr) return;
 
@@ -83,6 +102,7 @@ void HexiiScene::onMousePressed(cocos2d::EventMouse* mouse) {
 		// We clicked on an inactive target, but the hex does exist meaning it may be purchasable
 		else tryPurchaseHex(m_mouseOverHex);
 	}
+	*/
 
 	// Right clicks
 	if (mouse->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) {
@@ -210,27 +230,3 @@ void HexiiScene::tryPurchaseHex(Hex* target) {
 Vec2 HexiiScene::correctInvertedYVec(const Vec2& vec) const {
 	return Vec2(vec.x, Director::getInstance()->getVisibleSize().height - vec.y);
 }
-
-#ifdef CC_PLATFORM_MOBILE
-
-// TODO: Implement. The functions below are outdated
-
-bool HexiiScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* ev) {
-	m_debugLabel->setString("Touched!!");
-
-	// Touch location in view uses inverted y for some inexplicable reason, so this corrects it
-	// Vec2 touchLocation = correctInvertedYVec(touch->getLocationInView());
-
-	return true;
-}
-
-void HexiiScene::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* ev) {
-	Vec2 touchLocation = correctInvertedYVec(touch->getLocationInView());
-
-	// The hex the mouse is over
-	Hex* target = m_plane->get(m_plane->round(m_plane->hexPositionOf(touchLocation - m_plane->getPosition())));
-
-	if (target) target->onTouchEnded(touch, ev);
-}
-
-#endif

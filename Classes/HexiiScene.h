@@ -12,12 +12,10 @@ public:
 
     virtual bool init();
 
-#ifdef CC_PLATFORM_MOBILE
     bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* ev);
     void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* ev);
     void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* ev) {}
     void onTouchCancelled(cocos2d::Touch* touch, cocos2d::Event* ev) {}
-#endif
 
 #ifdef CC_PLATFORM_PC
     void onMousePressed(cocos2d::EventMouse* mouse);

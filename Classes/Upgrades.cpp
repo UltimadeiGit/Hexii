@@ -17,7 +17,7 @@ Upgrades::Upgrades() {
 	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "YieldUp2" }, std::string_view{ "Increases yield by +5% per level" }, 900, 12));
 	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "SpeedUp2" }, std::string_view{ "Increases yield speed by a further +25%" }, 3000, 18));
 
-	if (m_upgrades.size() != Upgrades::UPGRADE_COUNT) err(std::format("Upgrades - Expected {} upgrades but got {} instead", UPGRADE_COUNT, m_upgrades.size()));
+	//if (m_upgrades.size() != Upgrades::UPGRADE_COUNT) err(std::format("Upgrades - Expected {} upgrades but got {} instead", UPGRADE_COUNT, m_upgrades.size()));
 }
 
 Upgrades* Upgrades::getInstance() {

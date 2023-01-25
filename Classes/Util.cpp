@@ -19,6 +19,7 @@ void err(const std::string& msg) {
 }
 
 std::string formatBigReal(BigReal val, bool floor, uint significantFigures, uint decimalPlaces) {
+#ifdef _FORMAT_
 	if (floor) val = std::floor(val);
 	std::string formatted;
 
@@ -78,6 +79,9 @@ std::string formatBigReal(BigReal val, bool floor, uint significantFigures, uint
 	*/
 
 	return formatted;
+#else
+	return std::to_string(val);
+#endif
 }
 
 std::string formatBigInt(BigInt val, uint significantFigures) {

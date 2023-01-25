@@ -13,7 +13,7 @@ bool HexInfoTab::init() {
 	m_hexEXPBar->setAnchorPoint(Vec2(0.0, 0.5));
 	m_hexEXPBar->setPosition(Vec2(30, 1102));
 
-	m_focusSprite = Sprite::create("HexagonInactive.png");
+	m_focusSprite = Sprite::create("gameplay/HexInactive.png");
 	m_focusSprite->setContentSize(Size(161 * HEXAGON_HEIGHT_TO_WIDTH, 161));
 	m_focusSprite->setAnchorPoint(Vec2(0.5, 0.5));
 	m_focusSprite->setPosition(Vec2(110, 1221));
@@ -259,7 +259,7 @@ void HexInfoTab::updateUpgradesList() {
 	Size newScrollViewSize = m_upgradeScrollView->getInnerContainerSize();
 
 	// Height is not allowed to go below the content height
-	newScrollViewSize.height = std::max((long)m_upgradeScrollView->getContentSize().height, 160 * m_upgradeScrollView->getChildrenCount());
+	newScrollViewSize.height = std::max((long)m_upgradeScrollView->getContentSize().height, (long)(160 * m_upgradeScrollView->getChildrenCount()));
 	
 	m_upgradeScrollView->setInnerContainerSize(newScrollViewSize);
 	if(percentScrolled >= 0) m_upgradeScrollView->jumpToPercentVertical(percentScrolled);

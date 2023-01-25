@@ -5,7 +5,7 @@
 USING_NS_CC;
 
 bool Sidebar::init() {
-    m_background = Sprite::createWithTexture(Director::getInstance()->getTextureCache()->addImage("SidebarBackground.png"));
+    m_background = Sprite::createWithTexture(Director::getInstance()->getTextureCache()->addImage("components/SidebarBackground.png"));
     m_background->setAnchorPoint(Vec2(0.0, 0.0));
 
     this->addChild(m_background);
@@ -33,9 +33,9 @@ bool Sidebar::init() {
         const std::string istr = std::to_string(i + 1);
 
         m_tabButtons[i] = ui::Button::create(
-            "tabs/Tab" + istr + "Neutral.png",
-            "tabs/Tab" + istr + "Selected.png",
-            "tabs/TabLocked.png"
+            "widgets/tabs/Tab" + istr + "Neutral.png",
+            "widgets/tabs/Tab" + istr + "Selected.png",
+            "widgets/tabs/TabLocked.png"
         );
 
         m_tabButtons[i]->setAnchorPoint(Vec2(0.0, 0.0));
@@ -94,14 +94,14 @@ void Sidebar::switchTab(unsigned short tab) {
     if (!m_tabButtons[tab]->isEnabled()) return;
 
     m_tabs[m_currentTab]->setVisible(false);
-    m_tabButtons[m_currentTab]->loadTextureNormal("tabs/Tab" + std::to_string(m_currentTab + 1) + "Neutral.png");
-    m_tabButtons[m_currentTab]->loadTexturePressed("tabs/Tab" + std::to_string(m_currentTab + 1) + "Selected.png");
+    m_tabButtons[m_currentTab]->loadTextureNormal("widgets/tabs/Tab" + std::to_string(m_currentTab + 1) + "Neutral.png");
+    m_tabButtons[m_currentTab]->loadTexturePressed("widgets/tabs/Tab" + std::to_string(m_currentTab + 1) + "Selected.png");
     m_tabButtons[m_currentTab]->setBright(false);
 
     m_currentTab = tab;
     m_tabs[tab]->setVisible(true);
     // There are four textures: tab is locked, tab is unpressed and not active, tab is pressed and not active or tab is active
-    m_tabButtons[tab]->loadTextureNormal("tabs/Tab" + std::to_string(tab + 1) + "Active.png");
-    m_tabButtons[tab]->loadTexturePressed("tabs/Tab" + std::to_string(tab + 1) + "Active.png");
+    m_tabButtons[tab]->loadTextureNormal("widgets/tabs/Tab" + std::to_string(tab + 1) + "Active.png");
+    m_tabButtons[tab]->loadTexturePressed("widgets/tabs/Tab" + std::to_string(tab + 1) + "Active.png");
     m_tabButtons[tab]->setBright(true);
 }

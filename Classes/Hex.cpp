@@ -1,8 +1,6 @@
 #include "Hex.h"
 #include "Maths.h"
 
-#include <format>
-
 USING_NS_CC;
 
 Hex::Hex(const unsigned int layer) : m_layer(layer), m_active(false),

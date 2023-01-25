@@ -387,3 +387,6 @@ FodyWeavers.xsd
 /proj.win32/engine/cocos/core/ALL_BUILD.vcxproj.filters
 /proj.win32/engine/cocos/core/ALL_BUILD.vcxproj
 /proj.win32/Hexii.vcxproj.filters
+/proj.android/.idea
+/proj.android/app
+/proj.android/gradle/wrapper
