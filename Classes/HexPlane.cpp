@@ -1,14 +1,144 @@
 #include "HexPlane.h"
 #include "Console.h"
 #include "Maths.h"
+#include "Currencies.h"
 
 USING_NS_CC;
 
 HexPlane::HexPlane(const float hexHeight) : m_hexHeight(hexHeight)
 {}
 
+bool HexPlane::init() {
+    /// Declare listeners
+
+    auto touchListener = EventListenerTouchOneByOne::create();
+
+    touchListener->onTouchBegan = CC_CALLBACK_2(HexPlane::onTouchBegan, this);
+    touchListener->onTouchEnded = CC_CALLBACK_2(HexPlane::onTouchEnded, this);
+
+    touchListener->setSwallowTouches(true);
+
+#ifdef CC_PLATFORM_PC
+    auto mouseListener = EventListenerMouse::create();
+
+    mouseListener->onMouseDown = CC_CALLBACK_1(HexPlane::onMousePressed, this);
+    mouseListener->onMouseUp = CC_CALLBACK_1(HexPlane::onMouseUp, this);
+    mouseListener->onMouseMove = CC_CALLBACK_1(HexPlane::onMouseMoved, this);
+
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+#endif
+
+    /// Add the listeners
+
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexYield", CC_CALLBACK_1(HexPlane::onHexYield, this)), this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexPurchase", CC_CALLBACK_1(HexPlane::onHexPurchase, this)), this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+    
+    // L0 hex
+    placeHexAtPos(Vec2(0, 0));
+
+    return true;
+}
+
+void HexPlane::update(float dt) {
+    // Update all hexii
+    for (auto& it = m_hexMap.begin(); it != m_hexMap.end(); it++) it->second->update(dt);
+}
+
+bool HexPlane::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* evnt) {
+    Vec2 touchPos = Director::getInstance()->convertToGL(touch->getLocationInView());
+
+    // Collide the touch with a hex
+    Hex* hexTouched = getHexAtPos(axialPositionOf(touchPos - getPosition()));
+
+    // Nothing left to do if not propagate to a hex
+    if (hexTouched == nullptr) return false;
+
+    hexTouched->onTouchBegan();
+
+    return true;
+}
+
+void HexPlane::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt) {}
+
+#ifdef CC_PLATFORM_PC
+
+void HexPlane::onMousePressed(cocos2d::EventMouse* mouse) {
+    EventMouse::MouseButton pressType = mouse->getMouseButton();
+
+    // Right clicks
+    if (pressType == EventMouse::MouseButton::BUTTON_RIGHT) {
+        // TODO: Implement a camera that can pan
+    }
+}
+
+void HexPlane::onMouseUp(cocos2d::EventMouse* mouse) {}
+
+void HexPlane::onMouseMoved(cocos2d::EventMouse* mouse) {
+    Hex* previousMouseOver = m_mouseOverHex;
+
+    m_mouseOverHex = getHexAtPos(round(axialPositionOf(mouse->getLocationInView() - getPosition())));
+
+    // Detect a change in mouseover hex
+    if (m_mouseOverHex != previousMouseOver) {
+        // If the mouse moved off a hex
+        if (previousMouseOver) previousMouseOver->onHoverEnd();
+
+        // If the mouse moved onto a hex
+        if (m_mouseOverHex) m_mouseOverHex->onHoverBegan();
+    }
+}
+
+#endif
+
+void HexPlane::onHexYield(EventCustom* evnt) {
+    Hex::EventHexYieldData* data = static_cast<Hex::EventHexYieldData*>(evnt->getUserData());
+
+    auto neighbors = neighborsOf(data->posAxial, true);
+    for (auto& neighbor : neighbors) if (neighbor.hex->getLayer() < data->layer) neighbor.hex->addEXP(data->yield);
+}
+
+void HexPlane::onHexPurchase(cocos2d::EventCustom* evnt) {
+    Hex::EventHexPurchaseData* data = static_cast<Hex::EventHexPurchaseData*>(evnt->getUserData());
+
+    // Any neighboring positions that don't yet have an inactive hex need to have one so they can be purchased
+
+    auto neighbors = neighborsOf(data->posAxial, false);
+
+    for (auto& neighbor : neighbors) {
+        // No need to set a hex if one is already in place. Only set a hex if it's in a higher layer
+        if (neighbor.hex != nullptr || layerOf(neighbor.pos) != data->layer + 1) continue;
+
+        placeHexAtPos(neighbor.pos);
+    }
+}
+
+Hex* HexPlane::placeHexAtPos(cocos2d::Vec2 posAxial) {
+    Hex* newHex = Hex::create(layerOf(posAxial), posAxial);
+
+    newHex->setPosition(localPositionOf(posAxial));
+
+    // Use the nearest point to the given pos
+    posAxial = round(posAxial);
+
+    // Verify a hex does not already exist at the given position
+    auto it = m_hexMap.find(posAxial);
+    if (it != m_hexMap.end()) {
+        warn("About to overwrite existing object at (" + std::to_string(posAxial.x) + "," + std::to_string(posAxial.y) + ")");
+
+        // Cleanup the existing hex at that pos
+        this->removeChild(it->second);
+        m_hexMap.erase(it);
+    }
+
+    m_hexMap.emplace(std::make_pair(posAxial, newHex));
+    this->addChild(newHex);
+    
+    return newHex;
+}
+
 Hex* HexPlane::getHexAtPos(Vec2 posAxial) const {
-    posAxial = roundVec2(posAxial);
+    posAxial = round(posAxial);
 
     auto it = m_hexMap.find(posAxial);
     if (it != m_hexMap.end()) return it->second;
@@ -32,97 +162,10 @@ std::vector<HexPlane::HexPosPair> HexPlane::getHexiiInLayer(uint layer) {
     return hexii;
 }
 
-Hex* HexPlane::placeHexAtPos(cocos2d::Vec2 posAxial) {
-    Hex* ret = placeHexAtPos(posAxial, Hex::create(layerOf(posAxial)));
-    ret->setPosition(localPositionOf(posAxial));
-    return ret;
-}
-
-Hex* HexPlane::placeHexAtPos(Vec2 posAxial, Hex* hex) {
-    // Use the nearest point to the given pos
-    posAxial = round(posAxial);
-
-    auto it = m_hexMap.find(posAxial);
-    if (it != m_hexMap.end()) {
-        warn("About to overwrite existing object at (" + std::to_string(posAxial.x) + "," + std::to_string(posAxial.y) + ")");
-        
-        // Cleanup the existing hex at that pos
-        
-        this->removeChild(it->second);
-        m_hexMap.erase(it);
-    }
-
-    // Nullptr is treated as simply deleting the hex at `pos`, so no emplace needed
-    if (hex == nullptr) return nullptr;    
-
-    /*
-    Size nodeSize = asNode->getContentSize();
-
-    auto dbgLabel = Label::createWithTTF("(" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")", "fonts/arial.ttf", 20.0f);
-    dbgLabel->setPosition(nodeSize.width * 0.5f, nodeSize.height * 0.5f);
-    dbgLabel->setTextColor(Color4B(127, 127, 127, 255));
-    asNode->addChild(dbgLabel);
-    */
-
-    m_hexMap.emplace(std::make_pair(posAxial, hex));
-    this->addChild(hex);
-
-    return hex;
-}
-
-
-cocos2d::Vec2 HexPlane::localPositionOf(const Vec2& posAxial) const {
-    // The y axis is just vertical, the x axis looks like a skew diagonal pointed upwards
-    // therefore each 1 local unit in x corresponds to 0.75 widths AND 0.5 heights
-
-    float localx = posAxial.x * 0.75f * m_hexHeight * HEXAGON_HEIGHT_TO_WIDTH;
-    float localy = (posAxial.y + (posAxial.x * 0.5f)) * m_hexHeight;
-
-    return Vec2(localx, localy);
-}
-
-
-cocos2d::Vec2 HexPlane::axialPositionOf(cocos2d::Vec2 posLocal) const {
-    // Formulae derived from the reverse of localPositionOf
-
-    const float recipNodeLength = 1.0f / m_hexHeight;
-
-    float hexx = posLocal.x * 2 * RECIP_SQRT_3 * recipNodeLength;
-    float hexy = (posLocal.y - (m_hexHeight * 0.5f) * hexx) * recipNodeLength;
-
-    return Vec2(hexx, hexy);
-}
-
-
-float HexPlane::layerOf(const Vec2& pos) {
-    // In a cube coord system, layer is simply max(|x|, |y|, |z|)
-    // Additionally, x + y + z = 0 so z = -x - y
-    // We use an axial system so z can be derived and layer from that
-
-    return std::max(std::max(std::abs(pos.x), std::abs(pos.y)), std::abs(-pos.x - pos.y));
-}
-
-
-cocos2d::Vec2 HexPlane::round(cocos2d::Vec2 pos) {
-    Vec3 cubeCoords(pos.x, pos.y, -pos.x - pos.y);
-    Vec3 rounded = roundVec3(cubeCoords);
-    Vec3 differences = absVec3(rounded - cubeCoords);
-
-    // Calculate the variable (x, y or z) that changed the most in the rounding process, then reset the constraint of \
-    // x + y + z = 0 by changing that most changed variable
-
-    if (differences.x > differences.y && differences.x > differences.z) rounded.x = -rounded.y - rounded.z;
-    else if (differences.y > differences.z) rounded.y = -rounded.x - rounded.z;
-    // Note: this line is here for completeness. It doesn't actually have any effect in an axial system
-    else differences.z = -rounded.x - rounded.y;
-
-    return Vec2(rounded.x, rounded.y);
-}
-
 std::vector<HexPlane::HexPosPair> HexPlane::neighborsOf(cocos2d::Vec2 posAxial, bool activeOnly) {
     // Enforce integer coords
     posAxial = round(posAxial);
-    
+
     std::vector<HexPosPair> neighbors;
 
     // I've opted for hard code rather than programatically calculating the positions because this is so much cleaner
@@ -143,11 +186,47 @@ std::vector<HexPlane::HexPosPair> HexPlane::neighborsOf(cocos2d::Vec2 posAxial, 
     return neighbors;
 }
 
-void HexPlane::update(float dt) {
-    // Update all hexii
-    auto it = m_hexMap.begin();
-    while (it != m_hexMap.end()) {
-        it->second->update(dt);
-        it++;
-    }
+cocos2d::Vec2 HexPlane::localPositionOf(const Vec2& posAxial) const {
+    // The y axis is just vertical, the x axis looks like a skew diagonal pointed upwards
+    // therefore each 1 local unit in x corresponds to 0.75 widths AND 0.5 heights
+
+    float localx = posAxial.x * 0.75f * m_hexHeight * HEXAGON_HEIGHT_TO_WIDTH;
+    float localy = (posAxial.y + (posAxial.x * 0.5f)) * m_hexHeight;
+
+    return Vec2(localx, localy);
+}
+
+cocos2d::Vec2 HexPlane::axialPositionOf(cocos2d::Vec2 posLocal) const {
+    // Formulae derived from the reverse of localPositionOf
+
+    const float recipNodeLength = 1.0f / m_hexHeight;
+
+    float hexx = posLocal.x * 2 * RECIP_SQRT_3 * recipNodeLength;
+    float hexy = (posLocal.y - (m_hexHeight * 0.5f) * hexx) * recipNodeLength;
+
+    return Vec2(hexx, hexy);
+}
+
+float HexPlane::layerOf(const Vec2& pos) {
+    // In a cube coord system, layer is simply max(|x|, |y|, |z|)
+    // Additionally, x + y + z = 0 so z = -x - y
+    // We use an axial system so z can be derived and layer from that
+
+    return std::max(std::max(std::abs(pos.x), std::abs(pos.y)), std::abs(-pos.x - pos.y));
+}
+
+cocos2d::Vec2 HexPlane::round(cocos2d::Vec2 pos) {
+    Vec3 cubeCoords(pos.x, pos.y, -pos.x - pos.y);
+    Vec3 rounded = roundVec3(cubeCoords);
+    Vec3 differences = absVec3(rounded - cubeCoords);
+
+    // Calculate the variable (x, y or z) that changed the most in the rounding process, then reset the constraint of \
+    // x + y + z = 0 by changing that most changed variable
+
+    if (differences.x > differences.y && differences.x > differences.z) rounded.x = -rounded.y - rounded.z;
+    else if (differences.y > differences.z) rounded.y = -rounded.x - rounded.z;
+    // Note: this line is here for completeness. It doesn't actually have any effect in an axial system
+    else differences.z = -rounded.x - rounded.y;
+
+    return Vec2(rounded.x, rounded.y);
 }

@@ -5,6 +5,7 @@
 #include <functional>
 #include "CompoundLabel.h"
 #include "Upgrades.h"
+#include "Hex.h"
 
 class HexUpgradeBox :
 	public cocos2d::ui::Widget {
@@ -25,16 +26,22 @@ public:
 	inline const UpgradePtr getUpgrade() const { return m_focus; }
 
 	// Sets the upgrade information for this box and the state of purchase
-	void setUpgrade(UpgradePtr upgrade, State state = State::LOCKED);
+	void setUpgrade(UpgradePtr upgrade, Hex* upgradeOwner, State state = State::LOCKED);
 	// State of locked, revealed or purchased
 	void setState(State state);
 
-	void onPurchaseUpgradeButtonPressed(Ref*);
-
-	std::function<void(UpgradePtr)> purchaseUpgradeFunction;
+	
 private:
+	void onPurchaseUpgradeButtonPressed(cocos2d::Ref*);
+	void onHexLevelUp(cocos2d::EventCustom* evnt);
+
+	void updateContributionLabelString();
+
 	// The upgrade for which this box is displaying information
-	UpgradePtr m_focus;
+	UpgradePtr m_focus = nullptr;
+	bool m_focusHasContribution = false;
+	// The hex that owns the focus upgrade
+	Hex* m_owner = nullptr;
 
 	// Keep track of whether or not the cost is affordable
 	bool m_isAffordable = false;
@@ -45,6 +52,7 @@ private:
 	cocos2d::Label* m_lockedLabel = nullptr;
 	cocos2d::Sprite* m_icon = nullptr;
 	cocos2d::Label* m_description = nullptr;
+	cocos2d::Label* m_contributionLabel = nullptr;
 	CompoundLabel* m_costLabel = nullptr;
 	cocos2d::ui::Button* m_purchaseUpgradeButton = nullptr;	
 };

@@ -15,8 +15,11 @@ class HexInfoTab :
     public cocos2d::Layer {
 private:
     HexInfoTab();
-public:
+    HexInfoTab(const HexInfoTab&) = delete;
+    HexInfoTab(HexInfoTab&&) = delete;
+
     bool init();
+public:
     virtual void update(float dt) override;
 
     void setFocus(Hex* focus);    
@@ -24,17 +27,20 @@ public:
     CREATE_FUNC(HexInfoTab);
 
 private:
+    /// Events
+
+    void onHexLevelUp(cocos2d::EventCustom* evnt);
+    // Whenever a hex is clicked, possibly switch focus to that
+    void onHexFocus(cocos2d::EventCustom* evnt);
+
     // Called whenever focus changes or hex levels up
-    void updateUpgradesList();
+    void updateUpgradesList(BigInt levelBefore, BigInt level);
     HexUpgradeBox* addUpgradeToList(UpgradePtr upgrade);
 
-    void purchaseUpgrade(UpgradePtr upgrade);
     void purchaseEXP();
 
     // The hex whose details are listed in this tab
     Hex* m_focus = nullptr;
-    // Stored to detect changes to focus level
-    BigInt m_storedFocuslevel = 0;
 
     // The amount of EXP the purchase button will give
     BigReal m_purchaseEXPButtonDesiredEXP = 0;

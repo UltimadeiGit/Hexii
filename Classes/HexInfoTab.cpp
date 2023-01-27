@@ -67,6 +67,14 @@ bool HexInfoTab::init() {
 	// Invisible scrollbar
 	m_upgradeScrollView->setScrollBarOpacity(0);
 
+	/// Events
+
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexLevelUp", CC_CALLBACK_1(HexInfoTab::onHexLevelUp, this)), this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexFocus", CC_CALLBACK_1(HexInfoTab::onHexFocus, this)), this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexPurchase", CC_CALLBACK_1(HexInfoTab::onHexFocus, this)), this);
+
+	setVisible(false);
+
 	this->addChild(m_hexEXPBar);
 	this->addChild(m_focusSprite);
 	this->addChild(m_layerLabel);
@@ -80,43 +88,30 @@ bool HexInfoTab::init() {
 }
 
 void HexInfoTab::update(float dt) {
-	if (m_focus == nullptr) {
-		if(isVisible()) setVisible(false);
-		return;
-	}
+	if (!m_focus) return;
 
-	BigInt level = m_focus->getLevel();
+	// Useful variables that may change every frame
+
 	BigReal exp = m_focus->getEXP();
-	BigReal expRequiredForNextLevel = m_focus->getEXPRequiredForLevel(level + 1);
-	BigReal expDistanceFromNextLevel = expRequiredForNextLevel - exp;
+	BigReal expDistanceFromNextLevel = m_focus->getEXPRequiredForNextLevel() - m_focus->getTotalEXP();
+	BigReal expRequiredForNextLevel = exp + expDistanceFromNextLevel;
 
-	/// Update labels for hex stats
+	printf("EXP Stuff: %.2f current, %.2f required, %.2f distance\n", exp, expRequiredForNextLevel, expDistanceFromNextLevel);
 
-	m_levelLabel->setVariablePartString(std::to_string(level));
+	/// Update EXP label
+
 	m_expLabel->setVariablePartString(formatBigReal(exp));
-	m_yieldLabel->setVariablePartString(formatBigReal(m_focus->getYield()));
-	
-	/// Update progress bar and sprite
+
+	/// Update progress bar
 
 	// Ratio of current exp into this level over the exp needed to level up
 	m_hexEXPBar->setProgress(exp / expRequiredForNextLevel);
-	m_focusSprite->setTexture(m_focus->getShadedRenderTexture());
-
-	/// Update upgrades
-
-	for (auto& i : m_upgradeScrollView->getChildren()) i->update(dt);
-
-	// Level changed
-	if (level > m_storedFocuslevel) {
-		updateUpgradesList();
-		m_storedFocuslevel = level;
-	}
 
 	/// Update buttons
 
-	m_purchaseEXPButtonDesiredEXP = expRequiredForNextLevel * 0.01;
+	m_purchaseEXPButtonDesiredEXP = expRequiredForNextLevel * 0.05;
 	if (m_purchaseEXPButtonDesiredEXP < 1) m_purchaseEXPButtonDesiredEXP = 1;
-	m_purchaseEXPButtonDesiredEXP = std::floor(m_purchaseEXPButtonDesiredEXP);
+	m_purchaseEXPButtonDesiredEXP = std::floorf(m_purchaseEXPButtonDesiredEXP);
 	// Since exp costs increase after a level up, only buy at most the exp required to reach the next level
 	if (m_purchaseEXPButtonDesiredEXP > expDistanceFromNextLevel) m_purchaseEXPButtonDesiredEXP = expDistanceFromNextLevel;
 
@@ -132,12 +127,35 @@ void HexInfoTab::update(float dt) {
 		m_purchaseEXPButton->setEnabled(true);
 	}
 
-	if (m_purchaseEXPButton->isEnabled() && m_purchaseEXPButton->isHighlighted()) {
-		// Every 1/60th of a second, try and purchase EXP if held down
-		if (Director::getInstance()->getTotalFrames() % (int)std::ceil(Director::getInstance()->getFrameRate() / 60) == 0) {
-			purchaseEXP();
-		}
-	}
+	// Every 1/60th of a second, try and purchase EXP if held down
+	if (m_purchaseEXPButton->isEnabled() && m_purchaseEXPButton->isHighlighted() &&
+		Director::getInstance()->getTotalFrames() % (int)std::ceil(Director::getInstance()->getFrameRate() / 60) == 0
+		) purchaseEXP();
+
+	/// Update upgrades
+
+	for (auto& i : m_upgradeScrollView->getChildren()) i->update(dt);
+}
+
+void HexInfoTab::onHexLevelUp(cocos2d::EventCustom* evnt) {
+	Hex::EventHexLevelUpData* data = static_cast<Hex::EventHexLevelUpData*>(evnt->getUserData());
+
+	// Only update this box if the hex that leveled up was this tab's focus
+	if (data->subject != m_focus) return;
+
+	/// Update labels for hex stats
+
+	m_levelLabel->setVariablePartString(std::to_string(data->level));
+	m_yieldLabel->setVariablePartString(formatBigReal(m_focus->getYield()));
+
+	updateUpgradesList(data->levelBefore, data->level);
+}
+
+void HexInfoTab::onHexFocus(cocos2d::EventCustom* evnt) {
+	Hex::EventHexFocusData* data = static_cast<Hex::EventHexFocusData*>(evnt->getUserData());
+
+	// TODO: Implement locking
+	if (data->active) setFocus(data->subject);
 }
 
 void HexInfoTab::setFocus(Hex* focus) {
@@ -150,24 +168,20 @@ void HexInfoTab::setFocus(Hex* focus) {
 	setVisible(m_focus);
 	if (!m_focus) return;
 
-	// Update variables that change with focus but not per frame
-
+	BigInt level = m_focus->getLevel();
 	uint layer = m_focus->getLayer();
 
-	m_storedFocuslevel = 0;
+	// Update variables that change with focus but not per frame
+
 	m_layerLabel->setString("L" + std::to_string(layer));
 	m_yieldLabel->setIconTexture(layer == 0 ? "icons/GreenMatter.png" : "icons/EXP.png");
+	m_yieldLabel->setVariablePartString(formatBigReal(m_focus->getYield()));
+	m_levelLabel->setVariablePartString(std::to_string(level));
+	m_focusSprite->setTexture(m_focus->getShadedRenderTexture());
 
 	m_upgradeScrollView->removeAllChildrenWithCleanup(true);
 	m_previewUpgradeBoxes.clear();
-	updateUpgradesList();
-
-	m_storedFocuslevel = m_focus->getLevel();
-}
-
-void HexInfoTab::purchaseUpgrade(UpgradePtr upgrade) {
-	Currencies::instance()->addGreenMatter(-upgrade->greenMatterCost);
-	m_focus->unlockUpgrade(std::string(upgrade->name));
+	updateUpgradesList(0, level);
 }
 
 void HexInfoTab::purchaseEXP() {
@@ -180,30 +194,30 @@ void HexInfoTab::purchaseEXP() {
 }
 
 HexUpgradeBox* HexInfoTab::addUpgradeToList(UpgradePtr upgrade) {
+	// TODO: This function should add all upgrades in one go and then just change the visibility later
+
 	HexUpgradeBox* upgradeBox = HexUpgradeBox::create();
 	HexUpgradeBox::State state;
 
 	// Set the state of the upgrade box (whether it's locked, revealed or fully purchased)
 
 	if (upgrade->unlockLevel > m_focus->getLevel()) state = HexUpgradeBox::State::LOCKED;
-	else if (m_focus->getUpgrade(std::string(upgrade->name))) state = HexUpgradeBox::State::PURCHASED;
+	else if (m_focus->getUpgrade(fmt::format(upgrade->name))) state = HexUpgradeBox::State::PURCHASED;
 	else state = HexUpgradeBox::State::REVEALED;
 
-	upgradeBox->setUpgrade(upgrade, state);
+	upgradeBox->setUpgrade(upgrade, m_focus, state);
 	upgradeBox->setAnchorPoint(Vec2(0, 1));
 	upgradeBox->setPosition(Vec2(0, 160 * m_upgradeScrollView->getChildrenCount()));
-	upgradeBox->purchaseUpgradeFunction = CC_CALLBACK_1(HexInfoTab::purchaseUpgrade, this);
 
 	m_upgradeScrollView->addChild(upgradeBox);
 
 	return upgradeBox;
 }
 
-void HexInfoTab::updateUpgradesList() {
+
+void HexInfoTab::updateUpgradesList(BigInt levelBefore, BigInt level) {
 	// Number of preview upgrade boxes that should be displayed
 	constexpr int PREVIEW_COUNT = 2;
-
-	BigInt level = m_focus->getLevel();
 
 	// Update the locked boxes
 
@@ -225,7 +239,7 @@ void HexInfoTab::updateUpgradesList() {
 
 	/// Grabs all upgrades that are currently available for purchase, plus the next two
 
-	Upgrades::UpgradeList list = Upgrades::getUpgradesBetweenLevels(m_storedFocuslevel + 1, level);
+	Upgrades::UpgradeList list = Upgrades::getUpgradesBetweenLevels(levelBefore + 1, level);
 
 	// The latest upgrade referenced so far
 	UpgradePtr lastUpgrade = nullptr;

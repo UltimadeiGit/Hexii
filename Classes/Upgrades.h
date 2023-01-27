@@ -4,14 +4,16 @@
 #include <string_view>
 #include <cocos2d.h>
 #include <memory>
+#include <fmt/format.h>
 #include "Maths.h"
 
 struct Upgrade {
 public:
-	Upgrade(const std::string_view name, const std::string_view description, BigReal greenMatterCost, BigInt unlockLevel);
+	Upgrade(const fmt::string_view name, const fmt::string_view description, const fmt::string_view contributionDescription, BigReal greenMatterCost, BigInt unlockLevel);
 
-	std::string_view name;
-	std::string_view description;
+	fmt::string_view name;
+	fmt::string_view description;
+	fmt::string_view contributionDescription;
 
 	BigReal greenMatterCost;
 	BigInt unlockLevel;
@@ -22,22 +24,25 @@ public:
 typedef std::shared_ptr<Upgrade> UpgradePtr;
 
 class Upgrades {
+public:
+	typedef std::vector<UpgradePtr> UpgradeList;
+
+	static constexpr uint UPGRADE_COUNT = 5;
+
 private:
 	Upgrades();
 	Upgrades(const Upgrades&) = delete;
 	Upgrades(Upgrades&&) = delete;
 
 public:
-	typedef std::vector<UpgradePtr> UpgradeList;
-
 	static Upgrades* getInstance();
 	static const UpgradeList& getUpgrades();
 	// Lists upgrades that are unlocked between the given levels
-	static const UpgradeList getUpgradesBetweenLevels(uint lower, uint higher);
+	static const UpgradeList getUpgradesBetweenLevels(BigInt lower, BigInt higher);
 	// Fetches up to the next `count` upgrades after `pivot`. If nullptr, this will just return the first `count` upgrades in order
-	static const UpgradeList getUpgradesFollowing(UpgradePtr pivot, uint count);
+	static const UpgradeList getUpgradesFollowing(UpgradePtr pivot, BigInt count);
 	
-	static constexpr uint UPGRADE_COUNT = 5;
+	
 private:
 	static Upgrades* m_instance;
 

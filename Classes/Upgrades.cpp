@@ -5,17 +5,17 @@ USING_NS_CC;
 
 Upgrades* Upgrades::m_instance = nullptr;
 
-Upgrade::Upgrade(const std::string_view name, const std::string_view description, BigReal greenMatterCost, BigInt unlockLevel)
-	: name(name), description(description), greenMatterCost(greenMatterCost), unlockLevel(unlockLevel),
-	icon(Director::getInstance()->getTextureCache()->addImage("icons/upgrades/" + std::string(name) + ".png"))
+Upgrade::Upgrade(const fmt::string_view name, const fmt::string_view description, const fmt::string_view contributionDescription, BigReal greenMatterCost, BigInt unlockLevel)
+	: name(name), description(description), contributionDescription(contributionDescription), greenMatterCost(greenMatterCost), unlockLevel(unlockLevel),
+	icon(Director::getInstance()->getTextureCache()->addImage("icons/upgrades/" + fmt::to_string(name) + ".png"))
 {}
 
 Upgrades::Upgrades() {
-	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "YieldUp1" }, std::string_view{ "Increases yield by +0.5 per level" }, 30, 1));
-	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "SpeedUp1" }, std::string_view{ "Increases yield speed by +25%" }, 120, 3));
-	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "StrengthToStrength" }, std::string_view{ "Clicking on this hex provides it 1 EXP" }, 600, 6));
-	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "YieldUp2" }, std::string_view{ "Increases yield by +5% per level" }, 900, 12));
-	m_upgrades.push_back(std::make_shared<Upgrade>(std::string_view{ "SpeedUp2" }, std::string_view{ "Increases yield speed by a further +25%" }, 3000, 18));
+	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "YieldUp1" }, fmt::string_view{ "Increases yield by +0.5 per level" }, fmt::string_view{"Currently: +{}"}, 30, 1));
+	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "SpeedUp1" }, fmt::string_view{ "Increases yield speed by +25%" }, fmt::string_view{ "--" }, 120, 3));
+	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "StrengthToStrength" }, fmt::string_view{ "Clicking on this hex provides it 1 EXP" }, fmt::string_view{ "--" }, 600, 6));
+	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "YieldUp2" }, fmt::string_view{ "Increases yield by +5% per level" }, fmt::string_view{ "Currently: +{}%" }, 900, 12));
+	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "SpeedUp2" }, fmt::string_view{ "Increases yield speed by a further +25%" }, fmt::string_view{ "--" }, 3000, 18));
 
 	//if (m_upgrades.size() != Upgrades::UPGRADE_COUNT) err(std::format("Upgrades - Expected {} upgrades but got {} instead", UPGRADE_COUNT, m_upgrades.size()));
 }
@@ -32,7 +32,7 @@ const Upgrades::UpgradeList& Upgrades::getUpgrades() {
 	return Upgrades::getInstance()->m_upgrades;
 }
 
-const Upgrades::UpgradeList Upgrades::getUpgradesBetweenLevels(uint lower, uint higher) {
+const Upgrades::UpgradeList Upgrades::getUpgradesBetweenLevels(BigInt lower, BigInt higher) {
 	UpgradeList& fullList = Upgrades::getInstance()->m_upgrades;
 	UpgradeList subList;
 
@@ -49,7 +49,7 @@ const Upgrades::UpgradeList Upgrades::getUpgradesBetweenLevels(uint lower, uint 
 	return subList;
 }
 
-const Upgrades::UpgradeList Upgrades::getUpgradesFollowing(UpgradePtr pivot, uint count) {
+const Upgrades::UpgradeList Upgrades::getUpgradesFollowing(UpgradePtr pivot, BigInt count) {
 	UpgradeList& fullList = Upgrades::getInstance()->m_upgrades;
 	UpgradeList subList;
 	

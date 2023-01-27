@@ -1,10 +1,12 @@
 #include "Hex.h"
 #include "Maths.h"
+#include "Currencies.h"
+#include "ColorSchemes.h"
 
 USING_NS_CC;
 
-Hex::Hex(const unsigned int layer) : m_layer(layer), m_active(false),
-	m_baseYieldSpeed((BigReal)1.0 / (layer + 1)), role(layer == 0 ? Role::HOME_L0 : Role::HOME)
+Hex::Hex(const uint layer, const Vec2 posAxial) : m_layer(layer), m_posAxial(posAxial),
+	m_baseYieldSpeed((BigReal)1.0 / (layer + 1)), m_role(layer == 0 ? Role::HOME_L0 : Role::HOME)
 {}
 
 bool Hex::init() {
@@ -36,6 +38,15 @@ bool Hex::init() {
 	m_shaded = RenderTexture::create(size.width, size.height);
 	m_shaded->getSprite()->setAnchorPoint(Vec2(0.5, 0.5));
 
+	/// Events
+
+	auto touchListener = EventListenerTouchOneByOne::create();
+
+	touchListener->onTouchBegan = [](cocos2d::Touch*, cocos2d::Event*) { return true; };
+	touchListener->onTouchEnded = CC_CALLBACK_2(Hex::onTouchEnded, this);
+
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+
 	this->addChild(m_hex);
 	this->addChild(m_shaded);
 	
@@ -55,17 +66,147 @@ void Hex::visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTransfor
 	Node::visit(renderer, parentTransform, parentFlags);
 }
 
-void Hex::addEXP(BigReal exp) {
-	m_exp += exp;
-	BigReal expRequired = 0;
-	while (m_exp >= (expRequired = getEXPRequiredForLevel(m_level + 1))) {
-		m_level++;
-		m_exp -= expRequired;
+void Hex::update(float dt) {
+	if (m_active) updateActive(dt);
+	else updateInactive(dt);
+
+	/// Update shader uniforms
+
+	m_shader->setUniform<float>("progress", m_progress);
+}
+
+void Hex::updateActive(float dt) {
+	/// Increase progress
+
+	m_progress += dt * (1 + m_isPressed * 3) * getYieldSpeed();
+
+	// Trigger yield
+	if (m_progress >= 1.0f) {
+		// Fractional part
+		uint timesToYield = (uint)std::floor(m_progress);
+		m_progress -= timesToYield;
+
+		yield(timesToYield);
 	}
+}
+
+void Hex::updateInactive(float dt) {
+	// While inactive, hovering over the hex will show the cost to buy it and clicking on it will progress the purchase
+
+	bool affordable = Currencies::getGreenMatter() >= getPurchaseCost();
+	BigReal cost = getPurchaseCostFromLayer(m_layer);
+
+	/// Cost label
+
+	// Increase opacity while hovering, decrease when the user moves away
+	if (m_isHovered) m_purchaseCostLabelOpacity += dt * 3;
+	else m_purchaseCostLabelOpacity -= dt * 2.5;
+
+	// Clamp to [0, 1]
+	if (m_purchaseCostLabelOpacity < 0) m_purchaseCostLabelOpacity = 0.0f;
+	else if (m_purchaseCostLabelOpacity > 1) m_purchaseCostLabelOpacity = 1.0f;
+
+	m_purchaseCostLabel->setOpacity(m_purchaseCostLabelOpacity * 255);
+	m_purchaseCostLabel->setStyle(false, true, 0, affordable ? AFFORDABLE_COLOR : UNAFFORDABLE_COLOR);
+
+	// While the cost label is visible, continuously update its string where necessary
+	if (m_purchaseCostLabelOpacity > 0) m_purchaseCostLabel->setVariablePartString(formatBigReal(cost));
+
+	/// Purchasing
+
+	// If unaffordable, this function has finished
+	if (!affordable) return;
+
+	BigReal yieldSpeed = dt * 0.5;
+
+	// Reverse progress if the user decides to cancel the purchase by depressing
+	if (!m_isPressed && m_progress > 0) yieldSpeed *= -1;
+
+	m_progress += yieldSpeed;
+	// Clamp to [0, ..
+	if (m_progress < 0) m_progress = 0.0f;
+
+	if (m_progress >= 1.0f) {
+		m_progress = 0.0f;
+
+		purchase(cost);
+	}
+}
+
+void Hex::addEXP(BigReal exp) {
+	m_totalEXP += exp;
+	m_exp += exp;
+
+	// Nothing further to do if not leveling up
+	if (m_totalEXP < m_expRequiredForNextLevel) return;
+
+	// Before level up, record current level
+	BigInt levelBefore = m_level;
+	m_level = getLevelFromEXP(m_totalEXP, m_layer);
+
+	// Before updating the exp requirement for the next level, update how much exp into the current level this hex is now
+	if (m_level - levelBefore == 1) m_exp = m_totalEXP - m_expRequiredForNextLevel;
+	else m_exp = m_totalEXP - getEXPRequiredToReachLevelFromLayer(m_level - 1, m_layer);
+
+	m_expRequiredForNextLevel = getEXPRequiredToReachLevelFromLayer(m_level + 1, m_layer);
+
+	_eventDispatcher->dispatchCustomEvent("onHexLevelUp", new EventHexLevelUpData{ this, levelBefore, m_level, m_exp, m_totalEXP, m_expRequiredForNextLevel });
 }
 
 void Hex::unlockUpgrade(const std::string& name) {
 	m_upgrades[name] = true;
+}
+
+BigReal Hex::getPurchaseCostFromLayer(uint layer) {
+	BigReal cost = 6;
+
+	switch (layer) {
+	case 0:
+		break;
+	case 1:
+		cost = (BigReal)300 * (std::powl(3, Currencies::getHexiiCountInLayer(1)));
+		break;
+	case 2:
+		cost = (BigReal)120000 * std::powl(1.5, Currencies::getHexiiCountInLayer(2));
+		break;
+	case 3:
+		cost = (BigReal)3e7 * std::powl(1.25, Currencies::getHexiiCountInLayer(3));
+		break;
+	default:
+		cost = 1.79e308;
+		break;
+	}
+	cost = std::floorl(cost);
+
+	return cost;
+}
+
+BigReal Hex::getEXPRequiredToReachLevelFromLayer(BigReal level, uint layer) {
+	// = A(b^level - 1) where \
+		b = (1.2 + layer/50) \
+		A = 6b / (b - 1)
+
+	// First level is hardcoded
+	if (level == 0) return 0;
+	level -= 1;
+
+	// Derived from EXP required at `level` to level up, which is simply 6 * b^level
+
+	BigReal base = 1.2 + (layer * 0.02);
+	return std::ceill(6 + ((6 * base) / (base - 1)) * (std::powl(base, level) - 1));
+}
+
+BigReal Hex::getLevelFromEXP(BigInt exp, uint layer) {
+	// = log_b(exp/A + 1) 
+	// Inverse function of getEXPRequiredToReachLevelFromLayer
+
+	// The first level is hardcoded
+	if (exp < 6) return 0;
+	exp -= 6;
+
+	const BigReal base = 1.2 + (layer * 0.02);
+	const BigReal operand = 1 + exp / ((6 * base) / (base - 1));
+	return std::floorl(1 + std::logl(operand) / std::logl(base));
 }
 
 // +0.5 per level
@@ -88,13 +229,22 @@ BigReal Hex::getYieldSpeedFactorFromSpeedUp2Upgrade() const {
 	return 0.25 * m_upgrades("SpeedUp2");
 }
 
+BigReal Hex::getContributionFromUpgrade(const std::string& upgradeName) const {
+	if (upgradeName == "YieldUp1") return getYieldFromYieldUp1Upgrade();
+	else if (upgradeName == "YieldUp2") return getYieldFromYieldUp2Upgrade();
+	else if (upgradeName == "SpeedUp1") return getYieldSpeedFactorFromSpeedUp1Upgrade();
+	else if (upgradeName == "SpeedUp2") return getYieldSpeedFactorFromSpeedUp2Upgrade();
+
+	return 0;
+}
+
 BigReal Hex::getEXPCost() const {
 	// Cost = 6^(layer) * (level + 1)
 	return std::powl(6, m_layer) * (m_level + 1);
 }
 
 BigReal Hex::getYield() const {
-	if (role == Role::HOME_L0) return 1e100;
+	if (m_role == Role::HOME_L0) return 1e100;
 
 	return ((1 +
 	getYieldFromYieldUp1Upgrade()
@@ -130,19 +280,20 @@ void Hex::setActive(bool active) {
 	m_hex->setProgramState(m_shader->programState);
 }
 
-void Hex::setPurchaseCost(BigReal cost) {
-	m_purchaseCostLabel->setVariablePartString(formatBigReal(cost));
-}
-
 void Hex::onTouchBegan() {
 	if (m_upgrades("StrengthToStrength")) addEXP(1);
 	
 	m_shader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("gameplay/HexProgressOverlayPressed.png"));
 
 	m_isPressed = true;
+
+	_eventDispatcher->dispatchCustomEvent("onHexFocus", new EventHexFocusData{ this, m_active });
 }
 
-void Hex::onTouchEnded() {
+void Hex::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt) {
+	// Ignore this event if it doesn't apply to this hex
+	if (!m_isPressed) return;
+
 	m_shader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("gameplay/HexProgressOverlay.png"));
 
 	m_isPressed = false;
@@ -156,45 +307,23 @@ void Hex::onHoverEnd() {
 	m_isHovered = false;
 }
 
-BigReal Hex::getEXPRequiredForLevel(uint layer, BigInt level)
-{
-	// n = level
-	// a_1 = 6 * (layer + 1)
-	// d = 6 * (layer + 2)
+void Hex::yield(uint times) {
+	BigReal yield = getYield() * times;
 
-	// a_n = a_1 + (n - 1)d
-	// a_n = [6 * (layer + 1)] + level(12 + 6 * (layer + 1))
-	// a_n = [6 * (layer + 1)](level + 1) + (level * 12)
+	// Layer 0 produces green matter. Outer layers produce EXP for adjacent hexii of lower layers
+	if (m_role == Hex::Role::HOME_L0) Currencies::instance()->addGreenMatter(yield);
 
-	if (level == 0) return 0;
-	return (6 * (layer + 1)) + (level - 1) * (6 * (layer + 2));
+	_eventDispatcher->dispatchCustomEvent("onHexYield", new EventHexYieldData{ this, m_role, yield, m_posAxial, m_layer });
 }
 
-void Hex::update(float dt) {
-	/// Update label
+void Hex::purchase(BigReal cost) {
+	// Note: at this point it is assumed that cost is affordable
 
-	if (!m_active) {
-		if (m_isHovered) m_purchaseCostLabelOpacity += dt * 3;
-		else m_purchaseCostLabelOpacity -= dt * 2.5;
+	m_purchaseCostLabelOpacity = 0.0f;
+	setActive(true);
 
-		if (m_purchaseCostLabelOpacity < 0) m_purchaseCostLabelOpacity = 0.0f;
-		else if (m_purchaseCostLabelOpacity > 1) m_purchaseCostLabelOpacity = 1.0f;
+	Currencies::instance()->addGreenMatter(-cost);
+	Currencies::instance()->addHexInLayer(m_layer);
 
-		m_purchaseCostLabel->setOpacity(m_purchaseCostLabelOpacity * 255);
-	}
-
-	// No further actions beyond this point if inactive
-	if (!m_active) return;
-
-	/// Increase progress
-
-	m_progress += ((BigReal)dt * (1 + m_isPressed * 3)) * getYieldSpeed();
-	while (m_progress > 1.0f) {
-		m_progress = m_progress - floor(m_progress);
-		if (yieldFunction) yieldFunction(this);
-	}
-
-	/// Update shader uniforms
-
-	m_shader->setUniform<float>("progress", m_progress);
+	_eventDispatcher->dispatchCustomEvent("onHexPurchase", new EventHexPurchaseData{ this, m_active, m_posAxial, m_layer });
 }

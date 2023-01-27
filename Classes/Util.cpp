@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <fmt/format.h>
 
 #include "Console.h"
 #include "Maths.h"
@@ -19,7 +20,7 @@ void err(const std::string& msg) {
 }
 
 std::string formatBigReal(BigReal val, bool floor, uint significantFigures, uint decimalPlaces) {
-#ifdef _FORMAT_
+//#ifdef _FORMAT_
 	if (floor) val = std::floor(val);
 	std::string formatted;
 
@@ -29,7 +30,7 @@ std::string formatBigReal(BigReal val, bool floor, uint significantFigures, uint
 
 	// Switch to exponential form after 10000
 	if (exponent >= 4 && exponent >= significantFigures - 1) {
-		formatted = std::format("{:.{}e}", val, significantFigures - 1);
+		formatted = fmt::format("{:.{}e}", val, significantFigures - 1);
 		
 		// The string before e+...
 		std::string mantissaStr = formatted.substr(0, significantFigures + 1);
@@ -40,7 +41,7 @@ std::string formatBigReal(BigReal val, bool floor, uint significantFigures, uint
 
 		formatted = mantissaStr + "e" + exponentStr;
 	}
-	else formatted = std::format("{:.{}f}", val, decimalPlaces);
+	else formatted = fmt::format("{:.{}f}", val, decimalPlaces);
 
 	/*
 	// +2 is to account for the extra characters 'e' and the exponent being added in scientific notation
@@ -79,9 +80,9 @@ std::string formatBigReal(BigReal val, bool floor, uint significantFigures, uint
 	*/
 
 	return formatted;
-#else
-	return std::to_string(val);
-#endif
+//#else
+//	return std::to_string(val);
+//#endif
 }
 
 std::string formatBigInt(BigInt val, uint significantFigures) {

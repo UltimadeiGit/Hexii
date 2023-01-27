@@ -14,42 +14,12 @@ bool HexiiScene::init() {
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	m_plane = HexPlane::create(270 + 10);
-
 	m_plane->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-
-	Hex* l0Hex = m_plane->placeHexAtPos(Vec2(0, 0));
-	// TODO: This should be its own function
-	l0Hex->yieldFunction = CC_CALLBACK_1(HexiiScene::onHexYield, this);
-	l0Hex->setPurchaseCost(getHexPurchaseCost(0));
-
-	this->addChild(m_plane);
-
-	this->scheduleUpdate();
 
 	m_debugLabel = Label::createWithTTF("TMP", "fonts/arial.ttf", 20.0f);
 	m_debugLabel->setTextColor(Color4B(128, 128, 128, 255));
 	// m_debugLabel->enableGlow(Color4B(255, 0, 0, 255));
 	m_debugLabel->setPosition(Vec2(visibleSize.width / 2 + origin.x, 100));
-	this->addChild(this->m_debugLabel);
-
-	auto touchListener = EventListenerTouchOneByOne::create();
-
-	touchListener->onTouchBegan = CC_CALLBACK_2(HexiiScene::onTouchBegan, this);
-	touchListener->onTouchEnded = CC_CALLBACK_2(HexiiScene::onTouchEnded, this);
-	touchListener->onTouchCancelled = CC_CALLBACK_2(HexiiScene::onTouchEnded, this);
-	touchListener->onTouchMoved = CC_CALLBACK_2(HexiiScene::onTouchMoved, this);
-
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
-
-#ifdef CC_PLATFORM_PC
-	auto mouseListener = EventListenerMouse::create();
-
-	mouseListener->onMouseDown = CC_CALLBACK_1(HexiiScene::onMousePressed, this);
-	mouseListener->onMouseUp = CC_CALLBACK_1(HexiiScene::onMouseUp, this);
-	mouseListener->onMouseMove = CC_CALLBACK_1(HexiiScene::onMouseMoved, this);
-
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
-#endif
 
 	for (int i = 0; i < 10; i++) {
 		m_debugNodes[i] = DrawNode::create(3.0f);
@@ -60,78 +30,17 @@ bool HexiiScene::init() {
 	m_sidebar->setPosition(Vec2(0, 35));
 
 	m_currencyHUD = CurrencyHUD::create();
-	// m_currencyHUD->setAnchorPoint(Vec2(0.5f, 0.0f));
 	m_currencyHUD->setPosition(Vec2(origin.x + visibleSize.width / 2, visibleSize.height + origin.y));
+	
+	scheduleUpdate();
 
+	this->addChild(m_plane);
 	this->addChild(m_sidebar);
 	this->addChild(m_currencyHUD);
+	this->addChild(m_debugLabel);	
 
 	return true;
 }
-
-bool HexiiScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* ev) {
-	m_debugLabel->setString("Touched!!");
-
-	// Touch location in view uses inverted y for some inexplicable reason, so this corrects it
-	Vec2 touchPos = correctInvertedYVec(touch->getLocationInView());
-	Hex* hexTouched = m_plane->getHexAtPos(m_plane->axialPositionOf(touchPos - m_plane->getPosition()));
-
-	if (hexTouched == nullptr) return true;
-
-	if (hexTouched->getActive()) hexTouched->onTouchBegan();
-	// We clicked on an inactive target, but the hex does exist meaning it may be purchasable
-	else tryPurchaseHex(hexTouched);
-
-	return true;
-}
-
-void HexiiScene::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* ev) {
-	
-}
-
-#ifdef CC_PLATFORM_PC
-
-void HexiiScene::onMousePressed(cocos2d::EventMouse* mouse) { 
-	EventMouse::MouseButton pressType = mouse->getMouseButton();
-
-	/*
-	if (pressType == EventMouse::MouseButton::BUTTON_LEFT) {
-		if (m_mouseOverHex == nullptr) return;
-
-		if (m_mouseOverHex->getActive()) m_mouseOverHex->onTouchBegan();
-		// We clicked on an inactive target, but the hex does exist meaning it may be purchasable
-		else tryPurchaseHex(m_mouseOverHex);
-	}
-	*/
-
-	// Right clicks
-	if (mouse->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) {
-		if (m_mouseOverHex) m_sidebar->getHexInfoTab()->setFocus(m_mouseOverHex);
-	}
-}
-
-void HexiiScene::onMouseUp(cocos2d::EventMouse* mouse) {
-	if (m_mouseOverHex) m_mouseOverHex->onTouchEnded();
-}
-
-void HexiiScene::onMouseMoved(cocos2d::EventMouse* mouse) {
-	m_debugLabel->setString("(" + std::to_string(mouse->getLocationInView().x) + ", " + std::to_string(mouse->getLocationInView().y) + ")");
-
-	Hex* previousMouseOver = m_mouseOverHex;
-	m_mouseOverHex = m_plane->getHexAtPos(m_plane->round(m_plane->axialPositionOf(mouse->getLocationInView() - m_plane->getPosition())));
-	// if(!m_mouseOverHex->getActive()) m_mouseOverHex->
-
-	// Change in mouse over hex
-	if (m_mouseOverHex != previousMouseOver) {
-		// If the mouse moved off a hex
-		if (previousMouseOver) previousMouseOver->onHoverEnd();
-
-		// If this mouse moved onto a hex
-		if (m_mouseOverHex) m_mouseOverHex->onHoverBegan();
-	}	
-}
-
-#endif
 
 void HexiiScene::update(float dt) {
 	SimpleShaderManager::getInstance()->updateShaderTime();
@@ -139,94 +48,4 @@ void HexiiScene::update(float dt) {
 	m_plane->update(dt);
 	m_sidebar->update(dt);
 	m_currencyHUD->update(dt);
-}
-
-void HexiiScene::onHexYield(Hex* hex) {
-	// Layer 0 produces green matter. Outer layers produce EXP for adjacent hexii of lower layers
-
-	int layer = hex->getLayer();
-	BigReal yield = hex->getYield();
-	if (hex->role == Hex::Role::HOME_L0) {
-		Currencies::instance()->addGreenMatter(yield);
-		return;
-	}
-	
-	auto neighbors = m_plane->neighborsOf(m_plane->axialPositionOf(hex->getPosition()), true);
-	for (auto& neighbor : neighbors) if (neighbor.hex->getLayer() < layer) neighbor.hex->addEXP(yield);
-}
-
-BigReal HexiiScene::getHexPurchaseCost(uint layer) {
-	BigReal cost = 6;
-	switch (layer) {
-	case 0:
-		break;
-	case 1:
-		cost = (BigReal)300 * (std::powl(3, m_hexiiCountPerLayer[1]));
-		break;
-	case 2:
-		cost = (BigReal)120000 * std::powl(1.5, m_hexiiCountPerLayer[2]);
-		break;
-	case 3:
-		cost = (BigReal)3e7 * std::powl(1.25, m_hexiiCountPerLayer[3]);
-		break;
-	default:
-		cost = 1.79e308;
-		break;
-	}
-	cost = std::floorl(cost);
-
-	return cost;
-}
-
-void HexiiScene::tryPurchaseHex(Hex* target) {
-	// Check if it's affordable
-	uint layer = target->getLayer();
-
-	BigReal cost = getHexPurchaseCost(layer);
-	
-	// Not affordable
-	if (cost > Currencies::getGreenMatter()) return;
-
-	// Affordable; buy it!
-
-	Currencies::instance()->addGreenMatter(-cost);
-
-	target->setActive(true);
-	m_sidebar->getHexInfoTab()->setFocus(target);
-	m_hexiiCountPerLayer[layer]++;
-
-	// After a purchase, the cost of the next hex in that layer is increased so they need to be updated
-
-	// 6 * layer is the maximum count in that layer. Cost doesn't need to be updated if all the hexii in that layer have already been bought
-	if (m_hexiiCountPerLayer[layer] < 6 * layer) {
-		BigReal nextCost = getHexPurchaseCost(layer);
-		auto hexiiInLayer = m_plane->getHexiiInLayer(layer);
-
-		for (uint i = 0; i < hexiiInLayer.size(); i++) {
-			hexiiInLayer[i].hex->setPurchaseCost(nextCost);
-		}
-	}
-
-	// TODO: Remove debug stuff
-	constexpr uint MAXIMUM_LAYER = 3;
-
-	if (layer == MAXIMUM_LAYER) return;
-
-	// Any neighboring positions that don't yet have an inactive hex need to have one so they can be purchased
-
-	auto neighbors = m_plane->neighborsOf(m_plane->axialPositionOf(target->getPosition()), false);
-	BigReal higherLayerCost = getHexPurchaseCost(layer + 1);
-
-	for (auto& neighbor : neighbors) {
-		// No need to set a hex if one is already in place. Only set a hex if it's in a higher layer
-		if (neighbor.hex != nullptr || m_plane->layerOf(neighbor.pos) != layer + 1) continue;
-		
-		Hex* newHex = m_plane->placeHexAtPos(neighbor.pos);
-		newHex->yieldFunction = CC_CALLBACK_1(HexiiScene::onHexYield, this);
-		newHex->setPurchaseCost(higherLayerCost);
-	}
-}
-
-Vec2 HexiiScene::correctInvertedYVec(const Vec2& vec) const {
-	return Vec2(vec.x, Director::getInstance()->getVisibleSize().height - vec.y);
 }
