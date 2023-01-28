@@ -1,6 +1,6 @@
 #define PI 3.14159265358979323846 
 #define HALF_PI 1.5707963267948
-#define PROGRESS_MODIFIER 1.1
+#define PROGRESS_MODIFIER 1.15
 // Multiplier required to make the reverse direction animation start at 2pi (but still finish at 0)
 #define REVERSE_ANIM_MULTI (1.0 / (PROGRESS_MODIFIER - 1.0))
 #define ALT_PI HALF_PI * PROGRESS_MODIFIER
@@ -16,6 +16,8 @@ void main()
     vec4 color = texture2D(u_texture, cc_FragTexCoord1);
     vec4 overlay = texture2D(overlayTex, cc_FragTexCoord1);
 
+    if(progress <= 0.01) progress = 0.0;
+
     // Progress is multiplied up to fit in an animation and make it feel more natural
     float altProgress = progress * PROGRESS_MODIFIER;
     float allowedAngle = altProgress * HALF_PI;
@@ -26,9 +28,11 @@ void main()
     // The minus means that it works clockwise (because in this case atan is guaranteed to return 0 < atan < HALF_PI)
     float angle = HALF_PI - atan(relativeCoord.y, relativeCoord.x);
     
-    if(altProgress <= 1.0 && angle < allowedAngle){
+    if(altProgress > 0.0 && altProgress <= 1.0 && angle < allowedAngle) {
         color = mix(color, overlay, overlay.a);
-    } else if(altProgress > 1.0 && angle < REVERSE_ANIM_MULTI * (ALT_PI - allowedAngle)) {
+    }
+    // Reverse direction animation
+    else if(altProgress > 1.0 && angle < REVERSE_ANIM_MULTI * (ALT_PI - allowedAngle)) {
         color = mix(color, overlay, overlay.a);
     }
 

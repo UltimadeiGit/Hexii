@@ -1,35 +1,27 @@
 ----
 
-27/01/2023 TODO List:
-
-- Should be able to zoom out and pin the camera on a Hex
-	* Left clicking a hex should select it, unless a Hex is locked
-	* Selecting a hex moves the camera over to it
-	* There should be arrows on the hex info tab that allow you to move between Hexii
-
-- Particle system for yields
-	* Whenever the L0 hex yields, it should pop out green matter
-	* Whenever another hex yields, it should pop out exp that travels in a straight line to its destination hex
-	- STRETCH: Star particles for when a hex levels up
-
-----
-
 28/01/2023 TODO List:
 
-- Implement tooltips
-    * Cost of EXP should be displayed in a tooltip when you hover over the purchase button
-	* On mobile, this should be a little i button which can be tapped to show the tooltip
+- Camera
+	* Should be able to zoom out 
+	* Should be able to pin the camera on a Hex (DONE)
+	* Left clicking a hex should select it, unless a Hex is locked (DONE)
+
+- Particle system for yields
+	* Whenever the L0 hex yields, it should pop out green matter (DONE)
+	* Whenever another hex yields, it should pop out exp that travels in a straight line to its destination hex (DONE)
+	- STRETCH: Star particles for when a hex levels up
 
 - Green matter to EXP button (DONE)
 	* Holding down the button will attempt to grant 1/10th of the EXP cost to next level, per second (DONE)
 
-- Settings system
-	* Initially, 
 - Saving and loading system
 
 ----
 
 29/01/2023 TODO List:
+
+- Settings system
 
 - Achievements system
 	* An achievement for each layer (e.g when you first buy L0, an L1 hex, L2 etc)
@@ -43,12 +35,13 @@
 
 GENERAL TODO List (Any day):
 
+- Implement tooltips
+    * Cost of EXP should be displayed in a tooltip when you hover over the purchase button
+	* On mobile, this should be a little i button which can be tapped to show the tooltip
 - Hex yield speed should be displayed 
 - EXP required for next level should be displayed 
 - Upgrades should cost more based on the layer
 - Improvements to non-purchased Hexii
 	* An affordable Hex should have a glow animation
-	* Right clicking on a Hex that has not been purchased should show its cost in the sidebar, providing an alternative way of buying it
-		// It should not be possible to buy EXP for such a hex
 - UI Scale improvements
 - Ensure mobile support

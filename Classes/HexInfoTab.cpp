@@ -3,8 +3,7 @@
 
 USING_NS_CC;
 
-HexInfoTab::HexInfoTab() : m_focus(nullptr), m_hexEXPBar(nullptr), m_focusSprite(nullptr), m_layerLabel(nullptr), m_levelLabel(nullptr),
-	m_expLabel(nullptr), m_yieldLabel(nullptr), m_upgradeScrollView(nullptr) {}
+HexInfoTab::HexInfoTab() {}
 
 bool HexInfoTab::init() {
 	setContentSize(Size(420, 1320));
@@ -52,6 +51,7 @@ bool HexInfoTab::init() {
 	m_yieldLabel->setAnchorPoint(Vec2(0.5, 0.5));
 	m_yieldLabel->setPosition(Vec2(300, 1186));
 
+	// TODO: Why is the functionality for this button not in a callback?
 	m_purchaseEXPButton = ui::Button::create("widgets/buttons/ButtonEXPPurchaseNeutral.png", "widgets/buttons/ButtonEXPPurchaseSelected.png", "widgets/buttons/ButtonEXPPurchaseDisabled.png");
 	m_purchaseEXPButton->setAnchorPoint(Vec2(0.5, 0.5));
 	m_purchaseEXPButton->setPosition(Vec2(315, 1106));
@@ -66,6 +66,11 @@ bool HexInfoTab::init() {
 	m_upgradeScrollView->setFlippedY(true);
 	// Invisible scrollbar
 	m_upgradeScrollView->setScrollBarOpacity(0);
+
+	m_pinButton = ui::Button::create("widgets/PinDisabled.png", "widgets/PinSelected.png", "widgets/PinDisabled.png");
+	m_pinButton->setAnchorPoint(Vec2(0.5, 0.5));
+	m_pinButton->setPosition(Vec2(388, 1316));
+	m_pinButton->addTouchEventListener(CC_CALLBACK_2(HexInfoTab::onPinButtonPressed, this));
 
 	/// Events
 
@@ -83,6 +88,7 @@ bool HexInfoTab::init() {
 	this->addChild(m_yieldLabel);
 	this->addChild(m_purchaseEXPButton);
 	this->addChild(m_upgradeScrollView);
+	this->addChild(m_pinButton);
 
 	return true;
 }
@@ -96,9 +102,9 @@ void HexInfoTab::update(float dt) {
 	BigReal expDistanceFromNextLevel = m_focus->getEXPRequiredForNextLevel() - m_focus->getTotalEXP();
 	BigReal expRequiredForNextLevel = exp + expDistanceFromNextLevel;
 
-	printf("EXP Stuff: %.2f current, %.2f required, %.2f distance\n", exp, expRequiredForNextLevel, expDistanceFromNextLevel);
+	//printf("EXP Stuff: %.2f current, %.2f required, %.2f distance\n", exp, expRequiredForNextLevel, expDistanceFromNextLevel);
 
-	/// Update EXP label
+	/// Update labels
 
 	m_expLabel->setVariablePartString(formatBigReal(exp));
 
@@ -158,10 +164,28 @@ void HexInfoTab::onHexFocus(cocos2d::EventCustom* evnt) {
 	if (data->active) setFocus(data->subject);
 }
 
+void HexInfoTab::onHexUpgradePurchase(cocos2d::EventCustom* evnt) {
+	m_yieldLabel->setVariablePartString(formatBigReal(m_focus->getYield()));
+}
+
+void HexInfoTab::onPinButtonPressed(Ref*, cocos2d::ui::Widget::TouchEventType evntType) {
+	// Only care about the release
+	if (evntType != ui::Widget::TouchEventType::ENDED) return;
+
+	// Pin / unpin
+
+	m_pinned = !m_pinned;
+
+	if(m_pinned) m_pinButton->loadTextureNormal("widgets/PinActive.png"); 
+	else m_pinButton->loadTextureNormal("widgets/PinDisabled.png");
+
+	_eventDispatcher->dispatchCustomEvent("onPinButtonPressed", new bool(m_pinned));
+}
+
 void HexInfoTab::setFocus(Hex* focus) {
 	// TODO: This function is *slow*. Needs optimization
 
-	if (m_focus == focus) return;
+	if (m_focus == focus || m_pinned) return;
 
 	m_focus = focus;
 	// If a focus exists, visible otherwise not

@@ -5,6 +5,7 @@
 #include "Maths.h"
 #include "BoolMap.h"
 #include "CompoundLabel.h"
+#include "Upgrades.h"
 
 #include <functional>
 
@@ -38,6 +39,8 @@ public:
 	struct EventHexFocusData {
 		Hex* subject;
 		bool active;
+		cocos2d::Vec2 posAxial;
+		uint layer;
 	};
 	
 	struct EventHexPurchaseData {
@@ -45,6 +48,11 @@ public:
 		bool active;
 		cocos2d::Vec2 posAxial;
 		uint layer;
+	};
+
+	struct EventHexUpgradePurchaseData {
+		Hex* subject;
+		UpgradePtr upgrade;
 	};
 	
 private:
@@ -67,6 +75,8 @@ public:
 	inline cocos2d::Texture2D* getShadedRenderTexture() const { return m_shaded->getSprite()->getTexture(); }
 
 	void setActive(bool active);
+	// Note: applyChildren is ignored
+	void setCameraMask(unsigned short mask, bool applyChildren = false) override;
 
 	/// Gameplay values
 
@@ -76,7 +86,10 @@ public:
 	BigReal getYieldFromYieldUp2Upgrade() const;
 	BigReal getYieldSpeedFactorFromSpeedUp1Upgrade() const;
 	BigReal getYieldSpeedFactorFromSpeedUp2Upgrade() const;
-	BigReal getContributionFromUpgrade(const std::string& upgradeName) const;
+	// Returns how much of the yield is coming from the given upgrade. Returns as a multiplier, or if `asConstant` is set, returns the
+	// total yield the multiplier translates to
+	BigReal getContributionFromUpgrade(const std::string& upgradeName, bool asConstant) const;
+	inline static BigReal multiplierToPercentageContribution(BigReal multiplierContribution) { return (multiplierContribution - 1) * 100; }
 
 	// Hex stats
 
@@ -93,7 +106,10 @@ public:
 	inline bool getUpgrade(const std::string& name) const { return m_upgrades(name); }
 
 	void addEXP(BigReal exp);
-	void unlockUpgrade(const std::string& name);
+	void unlockUpgrade(UpgradePtr upgrade);
+	// Adds `hex` as a target to receive part of this hex's yields. `angleBetween` is the counterclockwise angle from the horizontal
+	// between this and `hex`, measured in degrees
+	void addYieldTarget(Hex* hex, float angleBetween);
 
 	/// Info values
 	
@@ -120,6 +136,13 @@ private:
 	// Updates parts of the hex that are only available while inactive i.e purchasing functionality
 	void updateInactive(float dt);
 
+	// Returns the total yield from constant bonuses (e.g +0.5 per level)
+	BigReal getConstantYield() const;
+	// Returns the total yield multiplier from additive bonuses
+	BigReal getAdditiveYield() const;
+	// Returns the total yield multiplier from multiplicative bonuses
+	BigReal getMultiplicativeYield() const;
+
 	// Yield some number of times (usually once)
 	void yield(uint times);
 	// Purchases this hex
@@ -138,7 +161,9 @@ private:
 
 	// Hexagon sprite
 	cocos2d::Sprite* m_hex = nullptr;
-	// A shader will apply to the whole Hex after the progress outline to do a relief effect
+	// Multiple systems may be needed to send exp particles to the different yield targets
+	std::vector<cocos2d::ParticleSystem*> m_yieldParticles;
+	// Shows the hex after the progress shader has applied
 	cocos2d::RenderTexture* m_shaded = nullptr;
 
 	SimpleShader* m_shader = nullptr;
@@ -152,6 +177,8 @@ private:
 	BigReal m_exp = 0;
 	BigReal m_totalEXP = 0;
 	BigReal m_expRequiredForNextLevel = 6;
+	// Non-L0 hexii yield EXP to adjacent hexii of lower layers. These are the yield targets
+	std::vector<Hex*> m_yieldTargets;
 
 	bool m_isPressed = false;
 	bool m_isHovered = false;

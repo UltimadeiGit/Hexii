@@ -11,11 +11,11 @@ Upgrade::Upgrade(const fmt::string_view name, const fmt::string_view description
 {}
 
 Upgrades::Upgrades() {
-	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "YieldUp1" }, fmt::string_view{ "Increases yield by +0.5 per level" }, fmt::string_view{"Currently: +{}"}, 30, 1));
-	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "SpeedUp1" }, fmt::string_view{ "Increases yield speed by +25%" }, fmt::string_view{ "--" }, 120, 3));
+	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "YieldUp1" }, fmt::string_view{ "Increases yield by +0.5 per level" }, fmt::string_view{"+{}"}, 30, 1));
+	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "SpeedUp1" }, fmt::string_view{ "Increases yield speed by +50%" }, fmt::string_view{ "--" }, 120, 3));
 	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "StrengthToStrength" }, fmt::string_view{ "Clicking on this hex provides it 1 EXP" }, fmt::string_view{ "--" }, 600, 6));
-	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "YieldUp2" }, fmt::string_view{ "Increases yield by +5% per level" }, fmt::string_view{ "Currently: +{}%" }, 900, 12));
-	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "SpeedUp2" }, fmt::string_view{ "Increases yield speed by a further +25%" }, fmt::string_view{ "--" }, 3000, 18));
+	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "YieldUp2" }, fmt::string_view{ "Increases yield by +5% per level" }, fmt::string_view{ "+{}% (+{})" }, 900, 12));
+	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "SpeedUp2" }, fmt::string_view{ "Increases yield speed by a further +50%" }, fmt::string_view{ "--" }, 3000, 18));
 
 	//if (m_upgrades.size() != Upgrades::UPGRADE_COUNT) err(std::format("Upgrades - Expected {} upgrades but got {} instead", UPGRADE_COUNT, m_upgrades.size()));
 }

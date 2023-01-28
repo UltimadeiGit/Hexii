@@ -16,7 +16,7 @@ bool HexUpgradeBox::init() {
     m_purchaseUpgradeButton = ui::Button::create("widgets/buttons/ButtonGreenNeutral.png", "widgets/buttons/ButtonGreenSelected.png", "widgets/buttons/ButtonDisabled.png");
     m_purchaseUpgradeButton->setAnchorPoint(Vec2(1.0, 0.0));
     m_purchaseUpgradeButton->setPosition(Vec2(415, 0));
-    m_purchaseUpgradeButton->addTouchEventListener(CC_CALLBACK_1(HexUpgradeBox::onPurchaseUpgradeButtonPressed, this));
+    m_purchaseUpgradeButton->addTouchEventListener(CC_CALLBACK_2(HexUpgradeBox::onPurchaseUpgradeButtonPressed, this));
 
     m_costLabel = CompoundLabel::create("", "fonts/Agency.ttf", "fonts/Agency.ttf");
     m_costLabel->setStyle(false, true, 39, UNAFFORDABLE_COLOR, Color4B::BLACK, 3, Color4B::BLACK, Size(0, 0), 0);
@@ -57,6 +57,7 @@ bool HexUpgradeBox::init() {
     setState(State::LOCKED);
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexLevelUp", CC_CALLBACK_1(HexUpgradeBox::onHexLevelUp, this)), this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexUpgradePurchase", CC_CALLBACK_1(HexUpgradeBox::onHexUpgradePurchase, this)), this);
 
     return true;
 }
@@ -124,17 +125,18 @@ void HexUpgradeBox::setState(State state) {
     else m_background->setTexture("components/HexUpgradeBoxBackground.png");
 }
 
-void HexUpgradeBox::onPurchaseUpgradeButtonPressed(Ref*) {
+void HexUpgradeBox::onPurchaseUpgradeButtonPressed(Ref*, ui::Widget::TouchEventType evntType) {
+    // Nothing to do except on the mouse release
+    if (evntType != Widget::TouchEventType::ENDED) return;
     if (!m_isAffordable) return;
+
     // Guaranteed to be affordable from this point
 
     setState(State::PURCHASED);
 
     // Pay and unlock
     Currencies::instance()->addGreenMatter(-m_focus->greenMatterCost);
-    m_owner->unlockUpgrade(fmt::format(m_focus->name));
-
-    updateContributionLabelString();
+    m_owner->unlockUpgrade(m_focus);
 }
 
 void HexUpgradeBox::onHexLevelUp(cocos2d::EventCustom* evnt) {
@@ -147,7 +149,21 @@ void HexUpgradeBox::onHexLevelUp(cocos2d::EventCustom* evnt) {
     updateContributionLabelString();
 }
 
+void HexUpgradeBox::onHexUpgradePurchase(cocos2d::EventCustom* evnt) {
+    Hex::EventHexUpgradePurchaseData* data = static_cast<Hex::EventHexUpgradePurchaseData*>(evnt->getUserData());
+
+    if (data->subject != m_owner) return;
+
+    // Upgrade purchase may require a contribution refresh
+    updateContributionLabelString();
+}
+
 void HexUpgradeBox::updateContributionLabelString() {
-    if (m_focusHasContribution)
-        m_contributionLabel->setString(fmt::format(m_focus->contributionDescription, m_owner->getContributionFromUpgrade(fmt::to_string(m_focus->name))));
+    if (m_focusHasContribution) {
+        std::string upgradeName = fmt::to_string(m_focus->name);
+        m_contributionLabel->setString(fmt::format(m_focus->contributionDescription,
+            formatBigReal(m_owner->getContributionFromUpgrade(upgradeName, false), false, 2, 0),
+            formatBigReal(m_owner->getContributionFromUpgrade(upgradeName, true), true, 2, 0)
+        ));
+    }        
 }

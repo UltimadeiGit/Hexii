@@ -32,8 +32,9 @@ public:
 
 	
 private:
-	void onPurchaseUpgradeButtonPressed(cocos2d::Ref*);
+	void onPurchaseUpgradeButtonPressed(cocos2d::Ref*, Widget::TouchEventType evntType);
 	void onHexLevelUp(cocos2d::EventCustom* evnt);
+	void onHexUpgradePurchase(cocos2d::EventCustom* evnt);
 
 	void updateContributionLabelString();
 

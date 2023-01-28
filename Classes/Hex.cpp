@@ -12,7 +12,7 @@ Hex::Hex(const uint layer, const Vec2 posAxial) : m_layer(layer), m_posAxial(pos
 bool Hex::init() {
 	m_hex = Sprite::create("gameplay/HexInactive.png"); //Sprite::create(AutoPolygon::generatePolygon("HexagonInactive.png"));
 	m_hex->setAnchorPoint(Vec2(0, 0));
-	
+
 	setContentSize(m_hex->getContentSize());
 	auto& size = getContentSize();
 
@@ -34,6 +34,49 @@ bool Hex::init() {
 	m_purchaseCostLabel->setPosition(Vec2(size.width / 2 - 12.5f, size.height / 2));
 
 	m_hex->addChild(m_purchaseCostLabel);
+	
+	/// Particles
+	if (m_role == Role::HOME_L0) {
+		ParticleSystemQuad* l0Particles = ParticleSystemQuad::createWithTotalParticles(18);
+		l0Particles->setPosition(Vec2(0, 0));
+		l0Particles->setCameraMask(2);
+
+		// Gravity
+		l0Particles->setEmitterMode(ParticleSystem::Mode::GRAVITY);
+		l0Particles->setGravity(Vec2(0, 0));
+		l0Particles->setPosVar(Vec2(20, 20));
+
+		// Radial acceleration
+		l0Particles->setRadialAccel(200);
+		l0Particles->setRadialAccelVar(0);
+
+		// Speed of particles
+		l0Particles->setSpeed(140);
+		l0Particles->setSpeedVar(14);
+
+		// Angle
+		l0Particles->setAngle(90);
+		l0Particles->setAngleVar(30);
+
+		l0Particles->setLife(0.6);
+
+		// Size
+		l0Particles->setStartSize(100.0f);
+		l0Particles->setStartSizeVar(5.0f);
+		l0Particles->setEndSize(50.0f);
+
+		// Color
+		l0Particles->setStartColor(Color4F(1.0f, 1.0f, 1.0f, 10.0));
+		l0Particles->setStartColorVar(Color4F(0.0f, 0.0f, 0.0f, 0.0f));
+		l0Particles->setEndColor(Color4F(0.0f, 1.0f, 0.0f, 0.0));
+		l0Particles->setEndColorVar(Color4F(0.0f, 0.0f, 0.0f, 0.0f));
+
+		l0Particles->setTexture(Director::getInstance()->getTextureCache()->addImage("icons/GreenMatterB.png"));
+
+		m_yieldParticles.push_back(l0Particles);
+	}
+
+	/// Shaded
 
 	m_shaded = RenderTexture::create(size.width, size.height);
 	m_shaded->getSprite()->setAnchorPoint(Vec2(0.5, 0.5));
@@ -49,21 +92,24 @@ bool Hex::init() {
 
 	this->addChild(m_hex);
 	this->addChild(m_shaded);
+	if (m_yieldParticles.size() > 0) this->addChild(m_yieldParticles[0]);
 	
 	return true;
 }
 
 void Hex::visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags) {
-	m_shaded->beginWithClear(0, 0, 0, 0);
+	// Only the default camera should be used to render to the render texture.
+	if (!isVisitableByVisitingCamera()) {
+		m_shaded->beginWithClear(0, 0, 0, 0);
 
-	m_hex->setVisible(true);
-	m_hex->visit(renderer, Mat4::IDENTITY, parentFlags);
-	// Prevents the sprite from being drawn in addition to the shaded version later on
-	m_hex->setVisible(false);
+		m_hex->setVisible(true);
+		m_hex->visit(renderer, Mat4::IDENTITY, parentFlags);
+		// Prevents the sprite from being drawn in addition to the shaded version later on
+		m_hex->setVisible(false);
 
-	m_shaded->end();
-
-	Node::visit(renderer, parentTransform, parentFlags);
+		m_shaded->end();
+	}
+	else Node::visit(renderer, parentTransform, parentFlags);
 }
 
 void Hex::update(float dt) {
@@ -117,12 +163,13 @@ void Hex::updateInactive(float dt) {
 	// If unaffordable, this function has finished
 	if (!affordable) return;
 
-	BigReal yieldSpeed = dt * 0.5;
+	BigReal yieldSpeed = 5 * dt * 0.5;
 
-	// Reverse progress if the user decides to cancel the purchase by depressing
-	if (!m_isPressed && m_progress > 0) yieldSpeed *= -1;
+	// Reverse progress if the user decides to cancel the purchase by depressing \
+	cannot be cancelled after the reverse animation has started (which is where `1 / 1.1` comes from)
+	if (!m_isPressed && m_progress > 0 && m_progress < (1 / 1.15)) yieldSpeed *= -1;
 
-	m_progress += yieldSpeed;
+	if (m_isPressed || m_progress > 0) m_progress += yieldSpeed;
 	// Clamp to [0, ..
 	if (m_progress < 0) m_progress = 0.0f;
 
@@ -153,8 +200,54 @@ void Hex::addEXP(BigReal exp) {
 	_eventDispatcher->dispatchCustomEvent("onHexLevelUp", new EventHexLevelUpData{ this, levelBefore, m_level, m_exp, m_totalEXP, m_expRequiredForNextLevel });
 }
 
-void Hex::unlockUpgrade(const std::string& name) {
-	m_upgrades[name] = true;
+void Hex::unlockUpgrade(UpgradePtr upgrade) {
+	m_upgrades[fmt::to_string(upgrade->name)] = true;
+	_eventDispatcher->dispatchCustomEvent("onHexUpgradePurchase", new EventHexUpgradePurchaseData{ this, upgrade });
+}
+
+void Hex::addYieldTarget(Hex* hex, float angleBetween) {
+	m_yieldTargets.push_back(hex);
+
+	/// Particles
+
+	ParticleSystemQuad* yieldTargetParticles = ParticleSystemQuad::createWithTotalParticles(12);
+	yieldTargetParticles->setPosition(Vec2(0, 0));
+	yieldTargetParticles->setCameraMask(getCameraMask());
+
+	// Gravity
+	yieldTargetParticles->setEmitterMode(ParticleSystem::Mode::GRAVITY);
+	yieldTargetParticles->setGravity(Vec2(0, 0));
+
+	// Radial acceleration
+	yieldTargetParticles->setRadialAccel(-20);
+	yieldTargetParticles->setRadialAccelVar(0);
+
+	// Speed of particles
+	yieldTargetParticles->setSpeed(140);
+	yieldTargetParticles->setSpeedVar(0);
+
+	// Angle
+	yieldTargetParticles->setAngle(angleBetween);
+	yieldTargetParticles->setAngleVar(0);
+
+	yieldTargetParticles->setLife(1.2);
+
+	// Size
+	yieldTargetParticles->setStartSize(90.0f);
+	yieldTargetParticles->setStartSizeVar(5.0f);
+	yieldTargetParticles->setEndSize(110.0f);
+
+	// Color
+	yieldTargetParticles->setStartColor(Color4F(1.0f, 1.0f, 1.0f, 1.4));
+	yieldTargetParticles->setStartColorVar(Color4F(0.0f, 0.0f, 0.0f, 0.0f));
+	yieldTargetParticles->setEndColor(Color4F(0.8f, 1.0f, 0.8f, 0.0));
+	yieldTargetParticles->setEndColorVar(Color4F(0.0f, 0.0f, 0.0f, 0.0f));
+
+	yieldTargetParticles->setTexture(Director::getInstance()->getTextureCache()->addImage("particles/EXPParticle.png"));
+
+	m_yieldParticles.push_back(yieldTargetParticles);
+
+	this->addChild(yieldTargetParticles);
 }
 
 BigReal Hex::getPurchaseCostFromLayer(uint layer) {
@@ -173,7 +266,7 @@ BigReal Hex::getPurchaseCostFromLayer(uint layer) {
 		cost = (BigReal)3e7 * std::powl(1.25, Currencies::getHexiiCountInLayer(3));
 		break;
 	default:
-		cost = 1.79e308;
+		cost = 1e20;
 		break;
 	}
 	cost = std::floorl(cost);
@@ -219,23 +312,34 @@ BigReal Hex::getYieldFromYieldUp2Upgrade() const {
 	return 1.0 + (0.05 * m_level) * m_upgrades("YieldUp2");
 }
 
-// +25%
+// +50%
 BigReal Hex::getYieldSpeedFactorFromSpeedUp1Upgrade() const {
-	return 0.25 * m_upgrades("SpeedUp1");
+	return 2.5 * m_upgrades("SpeedUp1");
 }
 
-// +25%
+// +50%
 BigReal Hex::getYieldSpeedFactorFromSpeedUp2Upgrade() const {
-	return 0.25 * m_upgrades("SpeedUp2");
+	return 2.5 * m_upgrades("SpeedUp2");
 }
 
-BigReal Hex::getContributionFromUpgrade(const std::string& upgradeName) const {
-	if (upgradeName == "YieldUp1") return getYieldFromYieldUp1Upgrade();
-	else if (upgradeName == "YieldUp2") return getYieldFromYieldUp2Upgrade();
-	else if (upgradeName == "SpeedUp1") return getYieldSpeedFactorFromSpeedUp1Upgrade();
-	else if (upgradeName == "SpeedUp2") return getYieldSpeedFactorFromSpeedUp2Upgrade();
+BigReal Hex::getContributionFromUpgrade(const std::string& upgradeName, bool asConstant) const {
+	// Constant yield upgrades will always return constants (of course)
 
-	return 0;
+	BigReal contribution = 0;
+
+	if (upgradeName == "YieldUp1") contribution = getYieldFromYieldUp1Upgrade();
+
+	else if (!asConstant) {
+		if (upgradeName == "YieldUp2") contribution = getYieldFromYieldUp2Upgrade();
+		else return 0;
+
+		contribution = multiplierToPercentageContribution(contribution);
+	}
+	else {
+		if (upgradeName == "YieldUp2") contribution = (getYieldFromYieldUp2Upgrade() - 1) * getConstantYield();
+	}
+
+	return contribution;
 }
 
 BigReal Hex::getEXPCost() const {
@@ -243,16 +347,25 @@ BigReal Hex::getEXPCost() const {
 	return std::powl(6, m_layer) * (m_level + 1);
 }
 
+BigReal Hex::getConstantYield() const {
+	return 
+		1 +
+		getYieldFromYieldUp1Upgrade()
+	;
+}
+
+BigReal Hex::getAdditiveYield() const {
+	return getYieldFromYieldUp2Upgrade();
+}
+
+BigReal Hex::getMultiplicativeYield() const {
+	return 1;
+}
+
 BigReal Hex::getYield() const {
 	if (m_role == Role::HOME_L0) return 1e100;
 
-	return ((1 +
-	getYieldFromYieldUp1Upgrade()
-	) 
-		* (
-	getYieldFromYieldUp2Upgrade()
-	))
-	;
+	return getConstantYield() * getAdditiveYield() * getMultiplicativeYield();
 }
 
 BigReal Hex::getYieldSpeed() const {
@@ -280,14 +393,19 @@ void Hex::setActive(bool active) {
 	m_hex->setProgramState(m_shader->programState);
 }
 
+void Hex::setCameraMask(unsigned short mask, bool applyChildren) {
+	Node::setCameraMask(mask, false);
+	for(uint i = 0; i < m_yieldParticles.size(); i++) m_yieldParticles[i]->setCameraMask(mask, true);
+	m_shaded->setCameraMask(mask, true);
+}
+
 void Hex::onTouchBegan() {
 	if (m_upgrades("StrengthToStrength")) addEXP(1);
 	
 	m_shader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("gameplay/HexProgressOverlayPressed.png"));
-
 	m_isPressed = true;
 
-	_eventDispatcher->dispatchCustomEvent("onHexFocus", new EventHexFocusData{ this, m_active });
+	if(m_active) _eventDispatcher->dispatchCustomEvent("onHexFocus", new EventHexFocusData{ this, m_active, m_posAxial, m_layer});
 }
 
 void Hex::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt) {
@@ -310,9 +428,26 @@ void Hex::onHoverEnd() {
 void Hex::yield(uint times) {
 	BigReal yield = getYield() * times;
 
-	// Layer 0 produces green matter. Outer layers produce EXP for adjacent hexii of lower layers
+	// Layer 0 produces green matter. Outer layers produce EXP for adjacent hexii of lower layers (stored in `m_yieldTargets`)
 	if (m_role == Hex::Role::HOME_L0) Currencies::instance()->addGreenMatter(yield);
+	else {
+		uint yieldTargetCount = m_yieldTargets.size();
+		// The yield is split evenly across its targets
+		yield /= yieldTargetCount;
 
+		for (uint i = 0; i < yieldTargetCount; i++) {
+			m_yieldTargets[i]->addEXP(yield);
+		}
+	}
+
+	// Update particles
+	for (uint i = 0; i < m_yieldParticles.size(); i++) {
+		if (m_yieldParticles[i]->getParticleCount() < m_yieldParticles[i]->getTotalParticles()) m_yieldParticles[i]->addParticles(1);
+		auto a = m_yieldParticles[i]->getCameraMask();
+		auto b = this->getCameraMask();
+		printf("%d\n", m_yieldParticles[i]->getParticleCount());
+	}
+	// Dispatch the event for any other nodes to pick up on and respond to (e.g to update UI label values)
 	_eventDispatcher->dispatchCustomEvent("onHexYield", new EventHexYieldData{ this, m_role, yield, m_posAxial, m_layer });
 }
 
@@ -325,5 +460,7 @@ void Hex::purchase(BigReal cost) {
 	Currencies::instance()->addGreenMatter(-cost);
 	Currencies::instance()->addHexInLayer(m_layer);
 
+	// Trigger the purchase event and also then focus to this hex
 	_eventDispatcher->dispatchCustomEvent("onHexPurchase", new EventHexPurchaseData{ this, m_active, m_posAxial, m_layer });
+	_eventDispatcher->dispatchCustomEvent("onHexFocus", new EventHexFocusData{ this, m_active, m_posAxial, m_layer });
 }

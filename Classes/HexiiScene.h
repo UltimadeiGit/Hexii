@@ -8,6 +8,8 @@
 class HexiiScene :
     public cocos2d::Scene {
 private:
+    static constexpr int CAMERA_MOVE_TAG = 1;
+
     bool init();
 
 public:
@@ -25,6 +27,8 @@ private:
 
     cocos2d::DrawNode* m_debugNodes[10];
     cocos2d::Label* m_debugLabel;
+    cocos2d::ParticleSun* m_particles1;
+    cocos2d::ParticleSystem* m_particles;
 
     cocos2d::Vec2 m_mousePos;
 

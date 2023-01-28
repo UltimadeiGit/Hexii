@@ -32,10 +32,24 @@ bool HexPlane::init() {
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexYield", CC_CALLBACK_1(HexPlane::onHexYield, this)), this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexPurchase", CC_CALLBACK_1(HexPlane::onHexPurchase, this)), this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexFocus", CC_CALLBACK_1(HexPlane::onHexFocus, this)), this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onPinButtonPressed", CC_CALLBACK_1(HexPlane::onPinButtonPressed, this)), this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
     
+    /// Init the camera
+
+    m_camera = Camera::create();
+    m_camera->setPosition(getPosition());
+    m_camera->setDepth(-1);
+    m_camera->setCameraFlag(CameraFlag::USER1);
+    //m_camera->runAction(RepeatForever::create(MoveBy::create(0.1, Vec2(-5.0, 0))));
+
+    setCameraMask((unsigned short)m_camera->getCameraFlag(), false);
+
     // L0 hex
     placeHexAtPos(Vec2(0, 0));
+
+    this->addChild(m_camera);
 
     return true;
 }
@@ -46,7 +60,7 @@ void HexPlane::update(float dt) {
 }
 
 bool HexPlane::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* evnt) {
-    Vec2 touchPos = Director::getInstance()->convertToGL(touch->getLocationInView());
+    Vec2 touchPos = getTouchPos(touch);
 
     // Collide the touch with a hex
     Hex* hexTouched = getHexAtPos(axialPositionOf(touchPos - getPosition()));
@@ -75,9 +89,11 @@ void HexPlane::onMousePressed(cocos2d::EventMouse* mouse) {
 void HexPlane::onMouseUp(cocos2d::EventMouse* mouse) {}
 
 void HexPlane::onMouseMoved(cocos2d::EventMouse* mouse) {
+    Vec2 mousePos = getMousePos(mouse);
+
     Hex* previousMouseOver = m_mouseOverHex;
 
-    m_mouseOverHex = getHexAtPos(round(axialPositionOf(mouse->getLocationInView() - getPosition())));
+    m_mouseOverHex = getHexAtPos(round(axialPositionOf(mousePos - getPosition())));
 
     // Detect a change in mouseover hex
     if (m_mouseOverHex != previousMouseOver) {
@@ -94,8 +110,9 @@ void HexPlane::onMouseMoved(cocos2d::EventMouse* mouse) {
 void HexPlane::onHexYield(EventCustom* evnt) {
     Hex::EventHexYieldData* data = static_cast<Hex::EventHexYieldData*>(evnt->getUserData());
 
-    auto neighbors = neighborsOf(data->posAxial, true);
-    for (auto& neighbor : neighbors) if (neighbor.hex->getLayer() < data->layer) neighbor.hex->addEXP(data->yield);
+    // TODO: Remove
+    //auto neighbors = neighborsOf(data->posAxial, true);
+    //for (auto& neighbor : neighbors) if (neighbor.hex->getLayer() < data->layer) neighbor.hex->addEXP(data->yield);
 }
 
 void HexPlane::onHexPurchase(cocos2d::EventCustom* evnt) {
@@ -106,17 +123,69 @@ void HexPlane::onHexPurchase(cocos2d::EventCustom* evnt) {
     auto neighbors = neighborsOf(data->posAxial, false);
 
     for (auto& neighbor : neighbors) {
-        // No need to set a hex if one is already in place. Only set a hex if it's in a higher layer
-        if (neighbor.hex != nullptr || layerOf(neighbor.pos) != data->layer + 1) continue;
+        // For each of the neighbors, one of five things will happen \
+        Case 0: The neighbor is of the same layer. Nothing should happen in this case \
+        Case 1: The neighbor does not exist yet and is of a lower layer. Nothing should happen in this case \
+        Case 2: The neighbor does not exist yet and is of a higher layer, meaning an inactive hex should be set at that position \
+        Case 3: The neighbor does exist and is of a lower layer, meaning this hex being purchase should have that neighbor added as a yield target \
+        Case 4: The neighbor does exist and is of a higher layer, meaning that neighbor should add this hex being purchased as a yield target
 
-        placeHexAtPos(neighbor.pos);
+        uint neighborLayer = layerOf(neighbor.pos);
+        
+        // Case 0
+        if (neighborLayer == data->layer) continue;
+
+        // Cases 1 & 2
+        if (neighbor.hex == nullptr) {
+            // Case 1
+            if (neighborLayer < data->layer) continue;
+
+            // Case 2
+            else neighbor.hex = placeHexAtPos(neighbor.pos);
+        }
+        // Cases 3 & 4
+        else {
+            // TODO: Probably a smarter, faster way of calculating this angle using hexagon geometry?
+
+            // Case 3
+            if (neighborLayer < data->layer)
+                data->subject->addYieldTarget(neighbor.hex, CC_RADIANS_TO_DEGREES(Vec2(localPositionOf(neighbor.pos) - localPositionOf(data->posAxial)).getAngle()));
+
+            // Case 4
+            else
+                neighbor.hex->addYieldTarget(data->subject, CC_RADIANS_TO_DEGREES(Vec2(localPositionOf(data->posAxial) - localPositionOf(neighbor.pos)).getAngle()));
+        }
     }
+}
+
+void HexPlane::onHexFocus(cocos2d::EventCustom* evnt) {
+    Hex::EventHexFocusData* data = static_cast<Hex::EventHexFocusData*>(evnt->getUserData());
+
+    // Can't pan when pinned
+    if (m_pinned) return;
+
+    // Pan over to the hex
+
+    Vec2 hexLocalPos = localPositionOf(data->posAxial);
+
+    auto* panAction = EaseQuadraticActionInOut::create(MoveTo::create(0.4, Vec3(hexLocalPos.x, hexLocalPos.y, m_camera->getPositionZ())));
+    panAction->setTag(ACTION_TAG_PAN_CAMERA);
+
+    m_camera->stopActionByTag(ACTION_TAG_PAN_CAMERA);
+    m_camera->runAction(panAction);
+}
+
+void HexPlane::onPinButtonPressed(cocos2d::EventCustom* evnt) {
+    bool pressed = *static_cast<bool*>(evnt->getUserData());
+
+    // Toggle pinned state
+    m_pinned = !m_pinned;
 }
 
 Hex* HexPlane::placeHexAtPos(cocos2d::Vec2 posAxial) {
     Hex* newHex = Hex::create(layerOf(posAxial), posAxial);
-
     newHex->setPosition(localPositionOf(posAxial));
+    newHex->setCameraMask((unsigned short)m_camera->getCameraFlag(), false);
 
     // Use the nearest point to the given pos
     posAxial = round(posAxial);

@@ -16,6 +16,8 @@ public:
 	};
 
 private:
+	static constexpr int ACTION_TAG_PAN_CAMERA = 1;
+
 	bool init();
 
 public:
@@ -58,6 +60,9 @@ private:
 	void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt);
 	void onHexYield(cocos2d::EventCustom* evnt);
 	void onHexPurchase(cocos2d::EventCustom* evnt);
+	void onHexFocus(cocos2d::EventCustom* evnt);
+
+	void onPinButtonPressed(cocos2d::EventCustom* evnt);
 
 #ifdef CC_PLATFORM_PC
 	// Used for right clicks especially
@@ -69,8 +74,18 @@ private:
 	Hex* m_mouseOverHex = nullptr;
 #endif // CC_PLATFORM_PC
 
+	// Utility
+
+	cocos2d::Vec2 getTouchPos(cocos2d::Touch* touch) const { return touch->getLocation() + m_camera->getPosition(); }
+	cocos2d::Vec2 getMousePos(cocos2d::EventMouse* mouse) const { return mouse->getLocationInView() + m_camera->getPosition(); }
+
 	// The vertical height of each hex. This must remain constant for the plane to have any sensible use
 	const float m_hexHeight;
+
+	// The camera for the hexii
+	cocos2d::Camera* m_camera = nullptr;
+	// If pinned, the camera won't be panned when a hex is touched
+	bool m_pinned = false;
 
 	// The plane's internal storage
 	std::map<cocos2d::Vec2, Hex*> m_hexMap;	

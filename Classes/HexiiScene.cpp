@@ -31,13 +31,13 @@ bool HexiiScene::init() {
 
 	m_currencyHUD = CurrencyHUD::create();
 	m_currencyHUD->setPosition(Vec2(origin.x + visibleSize.width / 2, visibleSize.height + origin.y));
-	
+
 	scheduleUpdate();
 
 	this->addChild(m_plane);
 	this->addChild(m_sidebar);
 	this->addChild(m_currencyHUD);
-	this->addChild(m_debugLabel);	
+	this->addChild(m_debugLabel);
 
 	return true;
 }
@@ -45,7 +45,13 @@ bool HexiiScene::init() {
 void HexiiScene::update(float dt) {
 	SimpleShaderManager::getInstance()->updateShaderTime();
 
+	//m_debugLabel->setString("(" + std::to_string(a.x) + ", " + std::to_string(a.y) + ")");
+
 	m_plane->update(dt);
 	m_sidebar->update(dt);
 	m_currencyHUD->update(dt);
+
+	getDefaultCamera();
+
+	getDefaultCamera()->setPosition(getDefaultCamera()->getPosition() + dt * Vec2(10.0, 10.0));
 }
