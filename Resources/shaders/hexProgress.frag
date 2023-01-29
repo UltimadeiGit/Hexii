@@ -16,8 +16,6 @@ void main()
     vec4 color = texture2D(u_texture, cc_FragTexCoord1);
     vec4 overlay = texture2D(overlayTex, cc_FragTexCoord1);
 
-    if(progress <= 0.01) progress = 0.0;
-
     // Progress is multiplied up to fit in an animation and make it feel more natural
     float altProgress = progress * PROGRESS_MODIFIER;
     float allowedAngle = altProgress * HALF_PI;

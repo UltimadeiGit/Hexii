@@ -63,8 +63,14 @@ bool Sidebar::init() {
     for (uint i = 0; i < 5; i++) if (m_unlockListeners[i] != nullptr) _eventDispatcher->addEventListenerWithSceneGraphPriority(m_unlockListeners[i], this);
 
     setContentSize(m_background->getContentSize());
+    printf("Size of frame: %.3f %.3f\n", Director::getInstance()->getOpenGLView()->getFrameSize().width, Director::getInstance()->getOpenGLView()->getFrameSize().height);
+   
+#if CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID
     // Sidebar wants to fit in 95% of the height
-    setScale((Director::getInstance()->getOpenGLView()->getDesignResolutionSize().height * 0.95) / _contentSize.height);
+    setScale((Director::getInstance()->getOpenGLView()->getFrameSize().height * 0.95) / _contentSize.height);
+#else
+    setScale((Director::getInstance()->getOpenGLView()->getFrameSize().height * 0.8) / _contentSize.height);
+#endif
 
     setFocusEnabled(false);
     setSwallowTouches(true);

@@ -6,7 +6,7 @@
 
 class Resources {
 public:
-	static constexpr uint MAX_LAYERS = 7;
+	static constexpr uint MAX_LAYERS = 3;
 
 private:
 	// Singleton pattern
@@ -32,6 +32,11 @@ public:
 	// Adds to the count of the hexii in `layer`
 	void addHexInLayer(uint layer);
 
+	/// Global power
+
+	inline BigReal getGlobalPowerUpgradeBonus() const { return m_globalPowerUpgradeBonus; }
+	void addGlobalPowerUpgradeBonus() { m_globalPowerUpgradeBonus += 1; }
+
 	/// Sidebar tabs
 
 	inline bool getTabEnabled(uint tabNumber) const { CC_ASSERT(tabNumber < 5); return m_tabsEnabled[tabNumber]; }
@@ -42,6 +47,7 @@ private:
 
 	BigReal m_greenMatter = 6;
 	uint m_hexiiCountPerLayer[MAX_LAYERS] = { 0 };
+	BigReal m_globalPowerUpgradeBonus = 0;
 	bool m_tabsEnabled[5] = { false };
 };
 

@@ -109,6 +109,10 @@ public:
 	BigReal getYieldFromYieldUp2Upgrade() const;
 	BigReal getYieldSpeedFactorFromSpeedUp1Upgrade() const;
 	BigReal getYieldSpeedFactorFromSpeedUp2Upgrade() const;
+	BigReal getChanceFromCriticalChance1Upgrade() const;
+	BigReal getYieldFromCriticalBonus1Upgrade() const;
+	BigReal getActiveBonusFromStrongArmUpgrade() const;
+	BigReal getAdjacencyBonusFromSupportUpgrade() const;
 	// Returns how much of the yield is coming from the given upgrade. Returns as a multiplier, or if `asConstant` is set, returns the
 	// total yield the multiplier translates to
 	BigReal getContributionFromUpgrade(const std::string& upgradeName, bool asConstant) const;
@@ -120,11 +124,17 @@ public:
 	inline BigReal getEXP() const { return m_exp; }
 	inline BigReal getTotalEXP() const { return m_totalEXP; }
 	inline BigReal getEXPRequiredForNextLevel() const { return m_expRequiredForNextLevel; }
+	BigReal getUpgradePurchaseCostMultiplier() const;
 	inline BigReal getPurchaseCost() const { return getPurchaseCostFromLayer(m_layer); }
 	// The cost of purchasing 1 EXP for this hex
 	BigReal getEXPCost() const;
-	BigReal getYield() const;
+	BigReal getYield(bool critical = false) const;
 	BigReal getYieldSpeed() const;
+	// Between 0 and 1
+	BigReal getCriticalChance() const;
+	// Value as if the yield is critical
+	BigReal getCriticalBonus() const;
+	BigReal getActiveBonus() const;
 	inline Role getRole() const { return m_role; }
 	inline bool getUpgrade(const std::string& name) const { return m_upgrades(name); }
 	inline const BoolMap& getUpgrades() const { return m_upgrades; }
@@ -152,9 +162,11 @@ public:
 	// Note: These functions must be dispatched by the plane since it requires hexagon collision detection
 
 	void onTouchBegan();
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 	// Displays the cost label gradually
-	void onHoverBegan();
-	void onHoverEnd();
+	inline void onHoverBegan() { m_isHovered = true; }
+	inline void onHoverEnd() {	m_isHovered = false; }
+#endif
 
 private:
 	void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt);
@@ -215,6 +227,7 @@ private:
 
 	bool m_isPressed = false;
 	bool m_isHovered = false;
+	time_t m_timeOfLastPress = 0;
 
 	const Role m_role;
 	// Associates the upgrade names with a bool value depending on if they've been acquired

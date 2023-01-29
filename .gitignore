@@ -390,3 +390,5 @@ FodyWeavers.xsd
 /proj.android/.idea
 /proj.android/app
 /proj.android/gradle/wrapper
+/fmt-9.1.0/doc
+/proj.win32/fmt-9.1.0

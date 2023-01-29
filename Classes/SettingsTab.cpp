@@ -30,7 +30,7 @@ bool SettingsTab::init() {
 
 void SettingsTab::update(float dt) {
     m_autosaveLabel->setVariablePartString(
-        formatBigReal(Settings::getInstance()->getSetting("autosaveFrequencySeconds") - SaveData::getInstance()->getTimeSinceLastSave()));
+        formatBigReal(Settings::getInstance()->getSetting("autosaveFrequencySeconds").get<float>() - SaveData::getInstance()->getTimeSinceLastSave()));
 }
 
 void SettingsTab::onSaveButtonPressed(Ref*, cocos2d::ui::Widget::TouchEventType evntType) {

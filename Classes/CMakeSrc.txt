@@ -2,7 +2,6 @@
 Classes/AppDelegate.cpp
 Classes/BoolMap.cpp
 Classes/CompoundLabel.cpp
-Classes/Currencies.cpp
 Classes/CurrencyHUD.cpp
 Classes/HelloWorldScene.cpp
 Classes/Hex.cpp
@@ -12,6 +11,9 @@ Classes/HexPlane.cpp
 Classes/HexUpgradeBox.cpp
 Classes/Maths.cpp
 Classes/ProgressBar.cpp
+Classes/Resources.cpp
+Classes/SaveData.cpp
+Classes/Settings.cpp
 Classes/SettingsTab.cpp
 Classes/Sidebar.cpp
 Classes/SimpleShader.cpp
@@ -24,8 +26,8 @@ Classes/BoolMap.h
 Classes/ColorSchemes.h
 Classes/CompoundLabel.h
 Classes/Console.h
-Classes/Currencies.h
 Classes/CurrencyHUD.h
+Classes/EventHexLevelUpData.h
 Classes/HelloWorldScene.h
 Classes/Hex.h
 Classes/HexiiScene.h
@@ -35,8 +37,13 @@ Classes/HexUpgradeBox.h
 Classes/Maths.h
 Classes/Memory.h
 Classes/ProgressBar.h
+Classes/Resources.h
+Classes/SaveData.h
+Classes/Settings.h
 Classes/SettingsTab.h
 Classes/Sidebar.h
 Classes/SimpleShader.h
 Classes/Upgrades.h
+Classes/JSON_FWD.hpp
+Classes/JSON.hpp
 )

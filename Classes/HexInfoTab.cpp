@@ -36,23 +36,24 @@ bool HexInfoTab::init() {
 	m_pinButton = ui::Button::create("widgets/PinDisabled.png", "widgets/PinSelected.png", "widgets/PinDisabled.png");
 	m_pinButton->setAnchorPoint(Vec2(0.5, 0.5));
 	m_pinButton->setPosition(Vec2(390, 1303));
+	m_pinButton->setScale(2.0f);
 	m_pinButton->addTouchEventListener(CC_CALLBACK_2(HexInfoTab::onPinButtonPressed, this));
 
 	/// Labels
 
-	m_levelLabel = CompoundLabel::create("Level ", "fonts/SpeakPro.ttf", "fonts/SpeakPro.ttf");
+	m_levelLabel = CompoundLabel::create("Level ", "fonts/SpeakPro-Heavy.ttf", "fonts/SpeakPro-Heavy.ttf");
 	m_levelLabel->setStyle(true, true, 48, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
 	m_levelLabel->setAnchorPoint(Vec2(0.0, 0.5));
 	m_levelLabel->setPosition(Vec2(22, 795));
 
-	m_expLabel = CompoundLabel::create("EXP:", "fonts/SpeakPro.ttf", "fonts/SpeakPro.ttf");
+	m_expLabel = CompoundLabel::create("EXP:", "fonts/SpeakPro-Heavy.ttf", "fonts/SpeakPro-Heavy.ttf");
 	m_expLabel->setStyle(true, true, 48, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
 	m_expLabel->setIconTexture("icons/EXP.png");
 	m_expLabel->setSpacing(15.0f);
 	m_expLabel->setAnchorPoint(Vec2(0.0, 0.5));
 	m_expLabel->setPosition(Vec2(22, 735));
 
-	m_yieldLabel = CompoundLabel::create("Yield:", "fonts/SpeakPro.ttf", "fonts/SpeakPro.ttf");
+	m_yieldLabel = CompoundLabel::create("Yield:", "fonts/SpeakPro-Heavy.ttf", "fonts/SpeakPro-Heavy.ttf");
 	m_yieldLabel->setStyle(true, true, 48, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
 	m_yieldLabel->setIconTexture("icons/GreenMatter.png");
 	m_yieldLabel->setSpacing(15.0f);
@@ -65,15 +66,16 @@ bool HexInfoTab::init() {
 	m_purchaseEXPButton = ui::Button::create("widgets/buttons/PurchaseEXPButtonNeutral.png", "widgets/buttons/PurchaseEXPButtonSelected.png", "widgets/buttons/PurchaseEXPButtonDisabled.png");
 	m_purchaseEXPButton->setAnchorPoint(Vec2(0.5, 0.5));
 	m_purchaseEXPButton->setPosition(Vec2(213, 940));
+	m_purchaseEXPButton->addTouchEventListener(CC_CALLBACK_2(HexInfoTab::onPurchaseEXPButtonPressed, this));
 
-	m_purchaseEXPGreenMatterCostLabel = CompoundLabel::create("", "fonts/SpeakPro.ttf", "fonts/SpeakPro.ttf");
+	m_purchaseEXPGreenMatterCostLabel = CompoundLabel::create("", "fonts/SpeakPro-Heavy.ttf", "fonts/SpeakPro-Heavy.ttf");
 	m_purchaseEXPGreenMatterCostLabel->setStyle(true, true, 32, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
 	m_purchaseEXPGreenMatterCostLabel->setIconTexture("icons/GreenMatter.png");
 	m_purchaseEXPGreenMatterCostLabel->setSpacing(5.0f);
 	m_purchaseEXPGreenMatterCostLabel->setAnchorPoint(Vec2(1.0, 0.5));
 	m_purchaseEXPGreenMatterCostLabel->setPosition(Vec2(155, 45));
 
-	m_purchaseEXPDesiredEXPLabel = CompoundLabel::create("", "fonts/SpeakPro.ttf", "fonts/SpeakPro.ttf");
+	m_purchaseEXPDesiredEXPLabel = CompoundLabel::create("", "fonts/SpeakPro-Heavy.ttf", "fonts/SpeakPro-Heavy.ttf");
 	m_purchaseEXPDesiredEXPLabel->setStyle(true, true, 32, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
 	m_purchaseEXPDesiredEXPLabel->setIconTexture("icons/EXP.png");
 	m_purchaseEXPDesiredEXPLabel->setSpacing(5.0f);
@@ -127,7 +129,7 @@ void HexInfoTab::update(float dt) {
 
 	/// Update labels
 
-	m_expLabel->setVariablePartString(formatBigReal(exp));
+	m_expLabel->setVariablePartString(formatBigReal(exp) + " / " + formatBigReal(expRequiredForNextLevel));
 
 	/// Update progress bar
 
@@ -160,9 +162,9 @@ void HexInfoTab::update(float dt) {
 	}
 
 	// Every 1/60th of a second, try and purchase EXP if held down
-	if (m_purchaseEXPButton->isEnabled() && m_purchaseEXPButton->isHighlighted() &&
-		Director::getInstance()->getTotalFrames() % (int)std::ceil(Director::getInstance()->getFrameRate() / 60) == 0
-		) purchaseEXP();
+	//if (m_purchaseEXPButton->isEnabled() && m_purchaseEXPButton->isHighlighted() &&
+	//	Director::getInstance()->getTotalFrames() % (int)std::ceil(Director::getInstance()->getFrameRate() / 60) == 0
+	//	) purchaseEXP();
 
 	/// Update upgrades
 
@@ -192,6 +194,13 @@ void HexInfoTab::onHexFocus(cocos2d::EventCustom* evnt) {
 
 void HexInfoTab::onHexUpgradePurchase(cocos2d::EventCustom* evnt) {
 	m_yieldLabel->setVariablePartString(formatBigReal(m_focus->getYield()));
+}
+
+void HexInfoTab::onPurchaseEXPButtonPressed(Ref*, cocos2d::ui::Widget::TouchEventType evntType) {
+	// Only care about the release
+	if (evntType != ui::Widget::TouchEventType::ENDED) return;
+
+	if (m_purchaseEXPButton->isEnabled()) purchaseEXP();
 }
 
 void HexInfoTab::onPinButtonPressed(Ref*, cocos2d::ui::Widget::TouchEventType evntType) {

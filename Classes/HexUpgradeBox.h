@@ -24,6 +24,7 @@ public:
 	CREATE_FUNC(HexUpgradeBox);
 
 	inline const UpgradePtr getUpgrade() const { return m_focus; }
+	BigReal getCost() const { return m_focus->greenMatterCost * m_owner->getUpgradePurchaseCostMultiplier(); }
 
 	// Sets the upgrade information for this box and the state of purchase
 	void setUpgrade(UpgradePtr upgrade, Hex* upgradeOwner, State state = State::LOCKED);

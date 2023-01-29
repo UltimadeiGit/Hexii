@@ -34,6 +34,7 @@ private:
     void onHexFocus(cocos2d::EventCustom* evnt);
     void onHexUpgradePurchase(cocos2d::EventCustom* evnt);
 
+    void onPurchaseEXPButtonPressed(Ref*, cocos2d::ui::Widget::TouchEventType evntType);
     void onPinButtonPressed(Ref*, cocos2d::ui::Widget::TouchEventType evntType);
 
     // Called whenever focus changes or hex levels up

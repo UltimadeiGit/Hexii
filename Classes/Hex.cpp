@@ -2,13 +2,14 @@
 #include "Maths.h"
 #include "Resources.h"
 #include "ColorSchemes.h"
+#include "HexPlane.h"
 #include "JSON.hpp"
 
 USING_NS_CC;
 using namespace nlohmann;
 
 Hex::Hex(const uint layer, const Vec2 posAxial) : m_layer(layer), m_posAxial(posAxial),
-	m_baseYieldSpeed((BigReal)1.0 / (layer + 1)), m_role(layer == 0 ? Role::HOME_L0 : Role::HOME)
+	m_baseYieldSpeed((BigReal)1.0 / ((2 * layer) + 1)), m_role(layer == 0 ? Role::HOME_L0 : Role::HOME)
 {}
 
 Hex::Hex(const json& data) : m_layer(data.at("layer")), m_posAxial(data.at("posAxial")), m_baseYieldSpeed((BigReal)1.0 / (m_layer + 1)), m_role(m_layer == 0 ? Role::HOME_L0 : Role::HOME) {
@@ -163,7 +164,7 @@ void Hex::update(float dt) {
 void Hex::updateActive(float dt) {
 	/// Increase progress
 
-	m_progress += dt * (1 + m_isPressed * 3) * getYieldSpeed();
+	m_progress += dt * (1 + m_isPressed * getActiveBonus()) * getYieldSpeed();
 
 	// Trigger yield
 	if (m_progress >= 1.0f) {
@@ -182,6 +183,14 @@ void Hex::updateInactive(float dt) {
 	BigReal cost = getPurchaseCostFromLayer(m_layer);
 
 	/// Cost label
+
+#if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+	time_t currentTime;
+	time(&currentTime);
+
+	if (currentTime - m_timeOfLastPress < 1.0f) m_isHovered = true;
+	else m_isHovered = false;
+#endif
 
 	// Increase opacity while hovering, decrease when the user moves away
 	if (m_isHovered) m_purchaseCostLabelOpacity += dt * 3;
@@ -202,7 +211,7 @@ void Hex::updateInactive(float dt) {
 	// If unaffordable, this function has finished
 	if (!affordable) return;
 
-	BigReal yieldSpeed = 5 * dt * 0.5;
+	BigReal yieldSpeed = dt * 0.5;
 
 	// Reverse progress if the user decides to cancel the purchase by depressing \
 	cannot be cancelled after the reverse animation has started (which is where `1 / 1.1` comes from)
@@ -241,7 +250,7 @@ void Hex::levelUp(bool suppressEvent) {
 
 	// Before updating the exp requirement for the next level, update how much exp into the current level this hex is now
 	if (m_level - levelBefore == 1) m_exp = m_totalEXP - m_expRequiredForNextLevel;
-	else m_exp = m_totalEXP - getEXPRequiredToReachLevelFromLayer(m_level - 1, m_layer);
+	else m_exp = m_totalEXP - getEXPRequiredToReachLevelFromLayer(m_level, m_layer);
 
 	m_expRequiredForNextLevel = getEXPRequiredToReachLevelFromLayer(m_level + 1, m_layer);
 
@@ -312,7 +321,7 @@ BigReal Hex::getPurchaseCostFromLayer(uint layer) {
 	case 0:
 		break;
 	case 1:
-		cost = (BigReal)300 * (std::powl(3, Resources::getInstance()->getHexiiCountInLayer(1)));
+		cost = (BigReal)900 * (std::powl(3, Resources::getInstance()->getHexiiCountInLayer(1)));
 		break;
 	case 2:
 		cost = (BigReal)120000 * std::powl(1.5, Resources::getInstance()->getHexiiCountInLayer(2));
@@ -357,24 +366,43 @@ BigReal Hex::getLevelFromEXP(BigInt exp, uint layer) {
 	return std::floorl(1 + std::logl(operand) / std::logl(base));
 }
 
-// +0.5 per level
+// +1 per level
 BigReal Hex::getYieldFromYieldUp1Upgrade() const {
-	return std::ceil(0.5 * m_level) * m_upgrades("YieldUp1");
+	return m_level * (m_layer + 1) * m_upgrades("YieldUp1");
 }
 
-// +5% per level
+// x1.03 per level
 BigReal Hex::getYieldFromYieldUp2Upgrade() const {
-	return 1.0 + (0.05 * m_level) * m_upgrades("YieldUp2");
+	return m_upgrades("YieldUp2") ? std::powl(1.03, m_level) : 1.0;
 }
 
 // +50%
 BigReal Hex::getYieldSpeedFactorFromSpeedUp1Upgrade() const {
-	return 2.5 * m_upgrades("SpeedUp1");
+	return 0.5 * m_upgrades("SpeedUp1");
+}
+
+// +2% per level
+BigReal Hex::getYieldSpeedFactorFromSpeedUp2Upgrade() const {
+	return (0.02 * m_level * m_upgrades("SpeedUp2"));
+}
+
+// 2% plus log_1.5(level)
+BigReal Hex::getChanceFromCriticalChance1Upgrade() const {
+	return m_upgrades("CriticalChance1") ? 0.02 + 0.01 * (std::logl(m_level) / 0.17609) : 0;
+}
+
+// +100% 
+BigReal Hex::getYieldFromCriticalBonus1Upgrade() const {
+	return 1 + m_upgrades("CriticalBonus1");
 }
 
 // +50%
-BigReal Hex::getYieldSpeedFactorFromSpeedUp2Upgrade() const {
-	return 2.5 * m_upgrades("SpeedUp2");
+BigReal Hex::getActiveBonusFromStrongArmUpgrade() const {
+	return 1 + 0.5 * m_upgrades("StrongArm");
+}
+
+BigReal Hex::getAdjacencyBonusFromSupportUpgrade() const {
+	return (0.01 * std::powl(m_layer, 2) * m_upgrades("Support"));
 }
 
 BigReal Hex::getContributionFromUpgrade(const std::string& upgradeName, bool asConstant) const {
@@ -382,14 +410,18 @@ BigReal Hex::getContributionFromUpgrade(const std::string& upgradeName, bool asC
 
 	BigReal contribution = 0;
 
+	// Constant only here:
+
 	if (upgradeName == "YieldUp1") contribution = getYieldFromYieldUp1Upgrade();
 
+	// Multipliers here
 	else if (!asConstant) {
-		if (upgradeName == "YieldUp2") contribution = getYieldFromYieldUp2Upgrade();
+		if (upgradeName == "YieldUp2") contribution = multiplierToPercentageContribution(getYieldFromYieldUp2Upgrade());
+		else if (upgradeName == "CriticalChance1") contribution = 100 * getChanceFromCriticalChance1Upgrade();
+		else if (upgradeName == "SpeedUp2") contribution = 100 * getYieldSpeedFactorFromSpeedUp2Upgrade();
 		else return 0;
-
-		contribution = multiplierToPercentageContribution(contribution);
 	}
+	// Multipliers here, formated as constants
 	else {
 		if (upgradeName == "YieldUp2") contribution = (getYieldFromYieldUp2Upgrade() - 1) * getConstantYield();
 	}
@@ -397,9 +429,16 @@ BigReal Hex::getContributionFromUpgrade(const std::string& upgradeName, bool asC
 	return contribution;
 }
 
+BigReal Hex::getUpgradePurchaseCostMultiplier() const {
+	// Multiplier = 30 ^ layer
+	if (m_layer == 0) return 1;
+	return std::powl(30, m_layer);
+}
+
 BigReal Hex::getEXPCost() const {
-	// Cost = 6^(layer) * (level + 1)
-	return std::powl(6, m_layer) * (m_level + 1);
+	// Cost =  10 * 6^(layer) * (level + 1)
+	BigReal discountMultiplier = m_upgrades("Discount") ? (BigReal)1 / (10 * (m_layer + 1)) : 1;
+	return 10 * std::powl(6, m_layer) * (m_level + 1) * discountMultiplier;
 }
 
 BigReal Hex::getConstantYield() const {
@@ -410,17 +449,17 @@ BigReal Hex::getConstantYield() const {
 }
 
 BigReal Hex::getAdditiveYield() const {
-	return getYieldFromYieldUp2Upgrade();
-}
-
-BigReal Hex::getMultiplicativeYield() const {
 	return 1;
 }
 
-BigReal Hex::getYield() const {
-	if (m_role == Role::HOME_L0) return 1e100;
+BigReal Hex::getMultiplicativeYield() const {
+	return getYieldFromYieldUp2Upgrade();
+}
 
-	return getConstantYield() * getAdditiveYield() * getMultiplicativeYield();
+BigReal Hex::getYield(bool critical) const {
+	// if (m_role == Role::HOME_L0) return 1e100;
+
+	return getConstantYield() * getAdditiveYield() * getMultiplicativeYield() * (1 + critical * getCriticalBonus()) * (1 + HexPlane::getInstance()->getAdjacencyBonuses(this));
 }
 
 BigReal Hex::getYieldSpeed() const {
@@ -430,6 +469,18 @@ BigReal Hex::getYieldSpeed() const {
 	getYieldSpeedFactorFromSpeedUp2Upgrade()
 	)
 	;
+}
+
+BigReal Hex::getCriticalChance() const {
+	return getChanceFromCriticalChance1Upgrade();
+}
+
+BigReal Hex::getCriticalBonus() const {
+	return 2.5 * getYieldFromCriticalBonus1Upgrade();
+}
+
+BigReal Hex::getActiveBonus() const {
+	return 2 * getActiveBonusFromStrongArmUpgrade();
 }
 
 void Hex::setActive(bool active) {
@@ -457,8 +508,8 @@ void Hex::setCameraMask(unsigned short mask, bool applyChildren) {
 }
 
 void Hex::onTouchBegan() {
-	if (m_upgrades("StrengthToStrength")) addEXP(1);
-	
+	time(&m_timeOfLastPress);
+		
 	m_shader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("gameplay/HexProgressOverlayPressed.png"));
 	m_isPressed = true;
 
@@ -474,16 +525,10 @@ void Hex::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt) {
 	m_isPressed = false;
 }
 
-void Hex::onHoverBegan() {
-	m_isHovered = true;
-}
-
-void Hex::onHoverEnd() {
-	m_isHovered = false;
-}
-
 void Hex::yield(uint times) {
-	BigReal yield = getYield() * times;
+	bool critical = cocos2d::rand_0_1() < getCriticalChance();
+	if (critical) printf("CRIT!\n");
+	BigReal yield = getYield(critical) * times;
 
 	// Layer 0 produces green matter. Outer layers produce EXP for adjacent hexii of lower layers (stored in `m_yieldTargets`)
 	if (m_role == Hex::Role::HOME_L0) Resources::getInstance()->addGreenMatter(yield);
@@ -499,9 +544,13 @@ void Hex::yield(uint times) {
 
 	// Update particles
 	for (uint i = 0; i < m_yieldParticles.size(); i++) {
-		if (m_yieldParticles[i]->getParticleCount() < m_yieldParticles[i]->getTotalParticles()) m_yieldParticles[i]->addParticles(1);
-		auto a = m_yieldParticles[i]->getCameraMask();
-		auto b = this->getCameraMask();
+		int particlesAvailable = m_yieldParticles[i]->getTotalParticles() - m_yieldParticles[i]->getParticleCount();
+
+		if (particlesAvailable > 0) {
+			m_yieldParticles[i]->addParticles(1);
+			particlesAvailable -= 1;
+			if (particlesAvailable > 0 && critical) m_yieldParticles[i]->addParticles(1);
+		}
 	}
 	// Dispatch the event for any other nodes to pick up on and respond to (e.g to update UI label values)
 	_eventDispatcher->dispatchCustomEvent("onHexYield", new EventHexYieldData{ this, m_role, yield, m_posAxial, m_layer });

@@ -131,10 +131,13 @@ else()
     target_link_libraries(${APP_NAME} -Wl,--whole-archive cpp_android_spec -Wl,--no-whole-archive)
 endif()
 
+add_subdirectory(${COCOS2DX_ROOT_PATH}/../fmt-9.1.0)
+target_link_libraries(${APP_NAME} fmt-header-only)
 target_link_libraries(${APP_NAME} cocos2d)
 target_include_directories(${APP_NAME}
         PRIVATE Classes
         PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/
+        PRIVATE includes
 )
 
 # mark app resources

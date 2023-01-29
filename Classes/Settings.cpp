@@ -8,7 +8,7 @@ Settings* Settings::m_instance = nullptr;
 Settings::Settings() {
     // Default settings
 
-    changeSetting("autosaveFrequencySeconds", 30, true);
+    changeSetting("autosaveFrequencySeconds", (float)30, true);
 }
 
 Settings* Settings::getInstance() {

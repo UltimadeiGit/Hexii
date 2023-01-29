@@ -104,7 +104,7 @@ bool HexPlane::init(const json& data) {
 
 void HexPlane::update(float dt) {
     // Update all hexii
-    for (auto& it = m_hexMap.begin(); it != m_hexMap.end(); it++) it->second->update(dt);
+    for (auto it = m_hexMap.begin(); it != m_hexMap.end(); it++) it->second->update(dt);
 }
 
 bool HexPlane::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* evnt) {
@@ -123,7 +123,7 @@ bool HexPlane::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* evnt) {
 
 void HexPlane::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt) {}
 
-#ifdef CC_PLATFORM_PC
+#if CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID
 
 void HexPlane::onMousePressed(cocos2d::EventMouse* mouse) {
     EventMouse::MouseButton pressType = mouse->getMouseButton();
@@ -296,7 +296,7 @@ std::vector<HexPlane::HexPosPair> HexPlane::getHexiiInLayer(uint layer) const {
     return hexii;
 }
 
-std::vector<HexPlane::HexPosPair> HexPlane::neighborsOf(cocos2d::Vec2 posAxial, bool activeOnly) {
+std::vector<HexPlane::HexPosPair> HexPlane::neighborsOf(cocos2d::Vec2 posAxial, bool activeOnly) const {
     // Enforce integer coords
     posAxial = round(posAxial);
 
@@ -363,6 +363,16 @@ cocos2d::Vec2 HexPlane::round(cocos2d::Vec2 pos) {
     else differences.z = -rounded.x - rounded.y;
 
     return Vec2(rounded.x, rounded.y);
+}
+
+BigReal HexPlane::getAdjacencyBonuses(const Hex* target) const {
+    auto neighbors = this->neighborsOf(target->getAxialPosition(), true);
+    BigReal bonus = 0;
+    for (uint i = 0; i < neighbors.size(); i++) {
+        bonus += neighbors[i].hex->getAdjacencyBonusFromSupportUpgrade();
+    }
+
+    return bonus;
 }
 
 void to_json(nlohmann::json& j, const HexPlane& plane) {

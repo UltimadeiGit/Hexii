@@ -66,7 +66,7 @@ void HexUpgradeBox::update(float dt) {
     // Update whether or not upgrade is affordable. Only relevant when in the REVEALED state
 
     if (m_upgradeState == State::REVEALED) {
-        if (Resources::getInstance()->getGreenMatter() >= m_focus->greenMatterCost) {
+        if (Resources::getInstance()->getGreenMatter() >= getCost()) {
             // Currently marked as unaffordable but it has become affordable, so change the style
             if (!m_isAffordable) {
                 m_isAffordable = true;
@@ -88,7 +88,7 @@ void HexUpgradeBox::setUpgrade(UpgradePtr upgrade, Hex* upgradeOwner, State stat
     m_icon->setTexture(m_focus->icon);
     m_description->setString(fmt::to_string(m_focus->description));
     m_lockedLabel->setString("Reveal at\nLevel " + formatBigInt(m_focus->unlockLevel));
-    m_costLabel->setVariablePartString(formatBigReal(m_focus->greenMatterCost));
+    m_costLabel->setVariablePartString(formatBigReal(getCost()));
     m_focusHasContribution = m_focus->contributionDescription != "--";
     updateContributionLabelString();
 
@@ -135,7 +135,7 @@ void HexUpgradeBox::onPurchaseUpgradeButtonPressed(Ref*, ui::Widget::TouchEventT
     setState(State::PURCHASED);
 
     // Pay and unlock
-    Resources::getInstance()->addGreenMatter(-m_focus->greenMatterCost);
+    Resources::getInstance()->addGreenMatter(-getCost());
     m_owner->unlockUpgrade(m_focus);
 }
 

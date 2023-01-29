@@ -45,7 +45,7 @@ public:
 	std::vector<HexPosPair> getHexiiInLayer(uint layer) const;
 	// Returns the hexii adjacent to the one at `posAxial`. Will always return 6 pairs unless `activeOnly` is true.
 	// nullptr indicates a hex does not exist at that coord
-	std::vector<HexPosPair> neighborsOf(cocos2d::Vec2 posAxial, bool activeOnly);
+	std::vector<HexPosPair> neighborsOf(cocos2d::Vec2 posAxial, bool activeOnly) const;
 	
 	/// Position conversion
 
@@ -59,6 +59,11 @@ public:
 	static float layerOf(const cocos2d::Vec2& posAxial);
 	// Rounds `posAxial` to the nearest hex that contains it
 	static cocos2d::Vec2 round(cocos2d::Vec2 posAxial);	
+
+	// For hexii
+
+	// Gets the adjacency bonuses owed to `target` from any adjacent hexii offering bonuses
+	BigReal getAdjacencyBonuses(const Hex* target) const;
 	
 private:
 	/// Events
@@ -71,7 +76,7 @@ private:
 
 	void onPinButtonPressed(cocos2d::EventCustom* evnt);
 
-#ifdef CC_PLATFORM_PC
+#if CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID
 	// Used for right clicks especially
 	void onMousePressed(cocos2d::EventMouse* mouse);
 	void onMouseUp(cocos2d::EventMouse* mouse);

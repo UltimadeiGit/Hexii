@@ -19,6 +19,7 @@ bool Resources::load(const nlohmann::json& data) {
     data.at("greenMatter").get_to(m_greenMatter);
     data.at("hexiiCountPerLayer").get_to(m_hexiiCountPerLayer);
     data.at("tabsEnabled").get_to(m_tabsEnabled);
+    if (data.contains("globalPowerUpgradeBonus")) data.at("globalPowerUpgradeBonus").get_to(m_globalPowerUpgradeBonus);
 
     return true;
 }
@@ -44,6 +45,7 @@ void to_json(nlohmann::json& j, const Resources& resources) {
 
     j = json{
         {"greenMatter", resources.getGreenMatter()},
+        {"globalPowerUpgradeBonus", resources.getGlobalPowerUpgradeBonus()},
         {"hexiiCountPerLayer", hexiiCountPerLayer},
         {"tabsEnabled", tabsEnabled}
     };
