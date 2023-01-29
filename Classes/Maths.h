@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cocos2d.h"
+#include "JSON_FWD.hpp"
 #include <math.h>
 
 typedef long double BigReal;
@@ -26,3 +27,8 @@ extern cocos2d::Vec2 roundVec2(const cocos2d::Vec2& target);
 extern cocos2d::Vec3 roundVec3(const cocos2d::Vec3& target);
 extern cocos2d::Vec2 absVec2(const cocos2d::Vec2& target);
 extern cocos2d::Vec3 absVec3(const cocos2d::Vec3& target);
+
+namespace cocos2d {
+	extern void to_json(nlohmann::json& j, const cocos2d::Vec2& vec);
+	extern void from_json(const nlohmann::json& j, cocos2d::Vec2& vec);
+}

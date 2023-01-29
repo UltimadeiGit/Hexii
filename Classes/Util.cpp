@@ -3,8 +3,10 @@
 
 #include "Console.h"
 #include "Maths.h"
+#include "JSON.hpp"
 
 USING_NS_CC;
+using namespace nlohmann;
 
 // cpp file for all util headers
 
@@ -103,4 +105,17 @@ Vec2 absVec2(const cocos2d::Vec2& target) {
 
 Vec3 absVec3(const Vec3& target) {
 	return Vec3(abs(target.x), abs(target.y), abs(target.z));
+}
+
+namespace cocos2d {
+
+	void to_json(json& j, const cocos2d::Vec2& vec) {
+		j = json::object({ { "x", vec.x }, { "y", vec.y } });
+	}
+
+	void from_json(const json& j, cocos2d::Vec2& vec) {
+		j.at("x").get_to(vec.x);
+		j.at("y").get_to(vec.y);
+	}
+
 }

@@ -1,4 +1,11 @@
 #include "BoolMap.h"
+#include "JSON.hpp"
+
+using namespace nlohmann;
+
+BoolMap::BoolMap(const nlohmann::json& data) {
+    data.at("values").get_to(m_values);
+}
 
 void BoolMap::set(const std::string& name, bool value) {
     this->operator[](name) = value;
@@ -27,4 +34,8 @@ bool& BoolMap::operator[](const std::string& name) {
     }
 
     return it->second;
+}
+
+void to_json(json& j, const BoolMap& boolMap) {
+    j = json{ { "values", boolMap.getMap() } };
 }

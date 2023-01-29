@@ -3,6 +3,7 @@
 #include <map>
 
 #include "Hex.h"
+#include "JSON_FWD.hpp"
 
 // 2D Plane with a Hexagon based coordinate system (axial coordinates)
 // _Ty must inherit from cocos2d::Node
@@ -23,6 +24,9 @@ private:
 public:
 	// arg1: Hex height
 	CREATE_FUNC_WITH_CTOR_1(HexPlane, const float);
+	CREATE_FUNC_JSON(HexPlane);
+
+	inline static HexPlane* getInstance() { return HexPlane::m_instance; }
 
 	void update(float dt) override;
 
@@ -30,12 +34,15 @@ public:
 
 	// Sets and returns the hex at pos by initializing a new one
 	Hex* placeHexAtPos(cocos2d::Vec2 posAxial);
+	// Sets `hex` at the specified pos
+	Hex* placeHexAtPos(Hex* hex, cocos2d::Vec2 posAxial);
 
 	/// Retrieval
 
+	inline const float getHexHeight() const { return m_hexHeight; }
 	Hex* getHexAtPos(cocos2d::Vec2 posAxial) const;
 	// Returns all the hexii contained in `layer`
-	std::vector<HexPosPair> getHexiiInLayer(uint layer);
+	std::vector<HexPosPair> getHexiiInLayer(uint layer) const;
 	// Returns the hexii adjacent to the one at `posAxial`. Will always return 6 pairs unless `activeOnly` is true.
 	// nullptr indicates a hex does not exist at that coord
 	std::vector<HexPosPair> neighborsOf(cocos2d::Vec2 posAxial, bool activeOnly);
@@ -89,4 +96,8 @@ private:
 
 	// The plane's internal storage
 	std::map<cocos2d::Vec2, Hex*> m_hexMap;	
+
+	static HexPlane* m_instance;
 };
+
+extern void to_json(nlohmann::json& j, const HexPlane& plane);

@@ -6,6 +6,8 @@
 #include "BoolMap.h"
 #include "CompoundLabel.h"
 #include "Upgrades.h"
+#include "JSON_FWD.hpp"
+#include "ProgressBar.h"
 
 #include <functional>
 
@@ -61,6 +63,27 @@ private:
 public:
 	// arg1: Layer, arg2: axial position
 	CREATE_FUNC_WITH_CTOR_2(Hex, const uint, const cocos2d::Vec2);
+	CREATE_FUNC_JSON(Hex);
+	
+	/*
+private: 
+	Hex(const nlohmann::json& data); 
+	bool init(const nlohmann::json& data); 
+public: 
+	inline static Hex* create(const nlohmann::json& data) { 
+		Hex* pRet = new Hex(data);
+		if (pRet && pRet->init(data)) { 
+			pRet->autorelease(); 
+			return pRet; 
+		} 
+		else { 
+			CCLOGERROR("Unknown error occurred"); 
+			delete pRet; 
+			pRet = nullptr; 
+			return nullptr; 
+		}
+	}
+	*/
 
 	/// Node functions
 
@@ -104,8 +127,13 @@ public:
 	BigReal getYieldSpeed() const;
 	inline Role getRole() const { return m_role; }
 	inline bool getUpgrade(const std::string& name) const { return m_upgrades(name); }
+	inline const BoolMap& getUpgrades() const { return m_upgrades; }
+	// Required for the json stuff
+	inline const std::vector<Hex*>& getYieldTargets() const { return m_yieldTargets; }
 
-	void addEXP(BigReal exp);
+	// If suppressEvent is true, the onHexLevelUp will not be triggered. Used for internals
+	void addEXP(BigReal exp, bool suppressEvent = false);
+	void levelUp(bool suppressEvent = false);
 	void unlockUpgrade(UpgradePtr upgrade);
 	// Adds `hex` as a target to receive part of this hex's yields. `angleBetween` is the counterclockwise angle from the horizontal
 	// between this and `hex`, measured in degrees
@@ -136,6 +164,9 @@ private:
 	// Updates parts of the hex that are only available while inactive i.e purchasing functionality
 	void updateInactive(float dt);
 
+	// Refreshes the progress bar progress
+	void updateProgressBar();
+
 	// Returns the total yield from constant bonuses (e.g +0.5 per level)
 	BigReal getConstantYield() const;
 	// Returns the total yield multiplier from additive bonuses
@@ -161,6 +192,8 @@ private:
 
 	// Hexagon sprite
 	cocos2d::Sprite* m_hex = nullptr;
+	ProgressBar* m_expBar = nullptr;
+	cocos2d::ParticleSystem* m_levelUpParticles = nullptr;
 	// Multiple systems may be needed to send exp particles to the different yield targets
 	std::vector<cocos2d::ParticleSystem*> m_yieldParticles;
 	// Shows the hex after the progress shader has applied
@@ -187,3 +220,5 @@ private:
 	// Associates the upgrade names with a bool value depending on if they've been acquired
 	BoolMap m_upgrades;		
 };
+
+extern void to_json(nlohmann::json& j, const Hex& hex);

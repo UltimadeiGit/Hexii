@@ -54,14 +54,18 @@ private:
     // If pinned, touching a hex won't change this info tab's focus
     bool m_pinned = false;
 
-    ProgressBar* m_hexEXPBar = nullptr;
+    cocos2d::Sprite* m_backgroundOverlay = nullptr;
     // Sprite displaying the focused hex
     cocos2d::Sprite* m_focusSprite = nullptr;
     cocos2d::Label* m_layerLabel = nullptr;
     CompoundLabel* m_levelLabel = nullptr;
     CompoundLabel* m_expLabel = nullptr;
     CompoundLabel* m_yieldLabel = nullptr;
+
     cocos2d::ui::Button* m_purchaseEXPButton = nullptr;
+    CompoundLabel* m_purchaseEXPGreenMatterCostLabel = nullptr;
+    CompoundLabel* m_purchaseEXPDesiredEXPLabel = nullptr;
+
     cocos2d::ui::Button* m_pinButton = nullptr;
     cocos2d::ui::ScrollView* m_upgradeScrollView = nullptr;
 };

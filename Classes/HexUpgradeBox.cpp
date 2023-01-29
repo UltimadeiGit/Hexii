@@ -1,6 +1,6 @@
 #include "HexUpgradeBox.h"
 #include "ColorSchemes.h"
-#include "Currencies.h"
+#include "Resources.h"
 
 #include <fmt/format.h>
 
@@ -66,7 +66,7 @@ void HexUpgradeBox::update(float dt) {
     // Update whether or not upgrade is affordable. Only relevant when in the REVEALED state
 
     if (m_upgradeState == State::REVEALED) {
-        if (Currencies::getGreenMatter() >= m_focus->greenMatterCost) {
+        if (Resources::getInstance()->getGreenMatter() >= m_focus->greenMatterCost) {
             // Currently marked as unaffordable but it has become affordable, so change the style
             if (!m_isAffordable) {
                 m_isAffordable = true;
@@ -135,7 +135,7 @@ void HexUpgradeBox::onPurchaseUpgradeButtonPressed(Ref*, ui::Widget::TouchEventT
     setState(State::PURCHASED);
 
     // Pay and unlock
-    Currencies::instance()->addGreenMatter(-m_focus->greenMatterCost);
+    Resources::getInstance()->addGreenMatter(-m_focus->greenMatterCost);
     m_owner->unlockUpgrade(m_focus);
 }
 

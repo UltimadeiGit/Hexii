@@ -1,5 +1,5 @@
 #include "HexInfoTab.h"
-#include "Currencies.h"
+#include "Resources.h"
 
 USING_NS_CC;
 
@@ -8,87 +8,110 @@ HexInfoTab::HexInfoTab() {}
 bool HexInfoTab::init() {
 	setContentSize(Size(420, 1320));
 
-	m_hexEXPBar = ProgressBar::create(155, 6);
-	m_hexEXPBar->setAnchorPoint(Vec2(0.0, 0.5));
-	m_hexEXPBar->setPosition(Vec2(30, 1102));
+	/// Background overlay
+
+	m_backgroundOverlay = Sprite::create("components/HexInfoTabBackgroundOverlay.png");
+	m_backgroundOverlay->setAnchorPoint(Vec2(0, 0));
+	m_backgroundOverlay->setPosition(Vec2(1, 591));
+
+	/// Hex sprite
 
 	m_focusSprite = Sprite::create("gameplay/HexInactive.png");
-	m_focusSprite->setContentSize(Size(161 * HEXAGON_HEIGHT_TO_WIDTH, 161));
+	m_focusSprite->setContentSize(Size(283 * HEXAGON_HEIGHT_TO_WIDTH, 283));
 	m_focusSprite->setAnchorPoint(Vec2(0.5, 0.5));
-	m_focusSprite->setPosition(Vec2(110, 1221));
+	m_focusSprite->setPosition(Vec2(213, 1144));
 	m_focusSprite->setFlippedY(true);
 
-	m_layerLabel = Label::createWithTTF("--", "fonts/OCR.ttf", 20, Size::ZERO, TextHAlignment::CENTER);
+	m_layerLabel = Label::createWithTTF("--", "fonts/SpeakPro-Heavy.ttf", 72, Size::ZERO, TextHAlignment::CENTER);
 	m_layerLabel->setTextColor(Color4B::WHITE);
 	m_layerLabel->enableOutline(Color4B::BLACK, 1);
-	m_layerLabel->enableShadow(Color4B::BLACK, Size::ZERO, 2);
+	m_layerLabel->enableShadow(Color4B::BLACK, Size::ZERO, 12);
 	m_layerLabel->setAnchorPoint(Vec2(0.5, 0.5));
-	m_layerLabel->setPosition(Vec2(112, 1317));
+	m_layerLabel->setPosition(Vec2(283 * HEXAGON_HEIGHT_TO_WIDTH * 0.5, 283 * 0.5));
 
-	m_layerLabel = Label::createWithTTF("--", "fonts/OCR.ttf", 20, Size::ZERO, TextHAlignment::CENTER);
-	m_layerLabel->setTextColor(Color4B::WHITE);
-	m_layerLabel->enableOutline(Color4B::BLACK, 1);
-	m_layerLabel->enableShadow(Color4B::BLACK, Size::ZERO, 2);
-	m_layerLabel->setAnchorPoint(Vec2(0.5, 0.5));
-	m_layerLabel->setPosition(Vec2(112, 1317));
+	m_focusSprite->addChild(m_layerLabel);
 
-	m_levelLabel = CompoundLabel::create("Level ", "fonts/OCR.ttf", "fonts/OCR.ttf");
-	m_levelLabel->setStyle(true, true, 36, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
-	m_levelLabel->setAnchorPoint(Vec2(0.5, 0.5));
-	m_levelLabel->setPosition(Vec2(300, 1276));
+	/// Pin button
 
-	m_expLabel = CompoundLabel::create("EXP:", "fonts/OCR.ttf", "fonts/OCR.ttf");
-	m_expLabel->setStyle(true, true, 26, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
+	m_pinButton = ui::Button::create("widgets/PinDisabled.png", "widgets/PinSelected.png", "widgets/PinDisabled.png");
+	m_pinButton->setAnchorPoint(Vec2(0.5, 0.5));
+	m_pinButton->setPosition(Vec2(390, 1303));
+	m_pinButton->addTouchEventListener(CC_CALLBACK_2(HexInfoTab::onPinButtonPressed, this));
+
+	/// Labels
+
+	m_levelLabel = CompoundLabel::create("Level ", "fonts/SpeakPro.ttf", "fonts/SpeakPro.ttf");
+	m_levelLabel->setStyle(true, true, 48, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
+	m_levelLabel->setAnchorPoint(Vec2(0.0, 0.5));
+	m_levelLabel->setPosition(Vec2(22, 795));
+
+	m_expLabel = CompoundLabel::create("EXP:", "fonts/SpeakPro.ttf", "fonts/SpeakPro.ttf");
+	m_expLabel->setStyle(true, true, 48, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
 	m_expLabel->setIconTexture("icons/EXP.png");
 	m_expLabel->setSpacing(15.0f);
-	m_expLabel->setAnchorPoint(Vec2(0.5, 0.5));
-	m_expLabel->setPosition(Vec2(300, 1231));
+	m_expLabel->setAnchorPoint(Vec2(0.0, 0.5));
+	m_expLabel->setPosition(Vec2(22, 735));
 
-	m_yieldLabel = CompoundLabel::create("Yield:", "fonts/OCR.ttf", "fonts/OCR.ttf");
-	m_yieldLabel->setStyle(true, true, 26, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
+	m_yieldLabel = CompoundLabel::create("Yield:", "fonts/SpeakPro.ttf", "fonts/SpeakPro.ttf");
+	m_yieldLabel->setStyle(true, true, 48, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
 	m_yieldLabel->setIconTexture("icons/GreenMatter.png");
 	m_yieldLabel->setSpacing(15.0f);
-	m_yieldLabel->setAnchorPoint(Vec2(0.5, 0.5));
-	m_yieldLabel->setPosition(Vec2(300, 1186));
+	m_yieldLabel->setAnchorPoint(Vec2(0.0, 0.5));
+	m_yieldLabel->setPosition(Vec2(22, 675));
+
+	/// Purchase EXP button
 
 	// TODO: Why is the functionality for this button not in a callback?
-	m_purchaseEXPButton = ui::Button::create("widgets/buttons/ButtonEXPPurchaseNeutral.png", "widgets/buttons/ButtonEXPPurchaseSelected.png", "widgets/buttons/ButtonEXPPurchaseDisabled.png");
+	m_purchaseEXPButton = ui::Button::create("widgets/buttons/PurchaseEXPButtonNeutral.png", "widgets/buttons/PurchaseEXPButtonSelected.png", "widgets/buttons/PurchaseEXPButtonDisabled.png");
 	m_purchaseEXPButton->setAnchorPoint(Vec2(0.5, 0.5));
-	m_purchaseEXPButton->setPosition(Vec2(315, 1106));
+	m_purchaseEXPButton->setPosition(Vec2(213, 940));
+
+	m_purchaseEXPGreenMatterCostLabel = CompoundLabel::create("", "fonts/SpeakPro.ttf", "fonts/SpeakPro.ttf");
+	m_purchaseEXPGreenMatterCostLabel->setStyle(true, true, 32, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
+	m_purchaseEXPGreenMatterCostLabel->setIconTexture("icons/GreenMatter.png");
+	m_purchaseEXPGreenMatterCostLabel->setSpacing(5.0f);
+	m_purchaseEXPGreenMatterCostLabel->setAnchorPoint(Vec2(1.0, 0.5));
+	m_purchaseEXPGreenMatterCostLabel->setPosition(Vec2(155, 45));
+
+	m_purchaseEXPDesiredEXPLabel = CompoundLabel::create("", "fonts/SpeakPro.ttf", "fonts/SpeakPro.ttf");
+	m_purchaseEXPDesiredEXPLabel->setStyle(true, true, 32, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(2, -2), 2);
+	m_purchaseEXPDesiredEXPLabel->setIconTexture("icons/EXP.png");
+	m_purchaseEXPDesiredEXPLabel->setSpacing(5.0f);
+	m_purchaseEXPDesiredEXPLabel->setAnchorPoint(Vec2(0.0, 0.5));
+	m_purchaseEXPDesiredEXPLabel->setPosition(Vec2(225, 45));
+
+	m_purchaseEXPButton->addChild(m_purchaseEXPGreenMatterCostLabel);
+	m_purchaseEXPButton->addChild(m_purchaseEXPDesiredEXPLabel);
+
+	/// Upgrades
 
 	m_upgradeScrollView = ui::ScrollView::create();
 	m_upgradeScrollView->setAnchorPoint(Vec2(0.0, 0.0));
 	m_upgradeScrollView->setDirection(ui::ScrollView::Direction::VERTICAL);
-	m_upgradeScrollView->setContentSize(Size(415, 625)); // 415, 3625
-	m_upgradeScrollView->setInnerContainerSize(Size(415, 625));
+	m_upgradeScrollView->setContentSize(Size(415, 451)); // 415, 3625
+	m_upgradeScrollView->setInnerContainerSize(Size(415, 451));
 	m_upgradeScrollView->setBounceEnabled(true);
-	m_upgradeScrollView->setPosition(Vec2(0, 864));
+	m_upgradeScrollView->setPosition(Vec2(0, 572));
 	m_upgradeScrollView->setFlippedY(true);
 	// Invisible scrollbar
 	m_upgradeScrollView->setScrollBarOpacity(0);
-
-	m_pinButton = ui::Button::create("widgets/PinDisabled.png", "widgets/PinSelected.png", "widgets/PinDisabled.png");
-	m_pinButton->setAnchorPoint(Vec2(0.5, 0.5));
-	m_pinButton->setPosition(Vec2(388, 1316));
-	m_pinButton->addTouchEventListener(CC_CALLBACK_2(HexInfoTab::onPinButtonPressed, this));
 
 	/// Events
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexLevelUp", CC_CALLBACK_1(HexInfoTab::onHexLevelUp, this)), this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexFocus", CC_CALLBACK_1(HexInfoTab::onHexFocus, this)), this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexPurchase", CC_CALLBACK_1(HexInfoTab::onHexFocus, this)), this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexUpgradePurchase", CC_CALLBACK_1(HexInfoTab::onHexUpgradePurchase, this)), this);
 
 	setVisible(false);
 
-	this->addChild(m_hexEXPBar);
+	this->addChild(m_backgroundOverlay);
+	this->addChild(m_pinButton);
 	this->addChild(m_focusSprite);
-	this->addChild(m_layerLabel);
 	this->addChild(m_levelLabel);
 	this->addChild(m_expLabel);
 	this->addChild(m_yieldLabel);
 	this->addChild(m_purchaseEXPButton);
 	this->addChild(m_upgradeScrollView);
-	this->addChild(m_pinButton);
 
 	return true;
 }
@@ -102,8 +125,6 @@ void HexInfoTab::update(float dt) {
 	BigReal expDistanceFromNextLevel = m_focus->getEXPRequiredForNextLevel() - m_focus->getTotalEXP();
 	BigReal expRequiredForNextLevel = exp + expDistanceFromNextLevel;
 
-	//printf("EXP Stuff: %.2f current, %.2f required, %.2f distance\n", exp, expRequiredForNextLevel, expDistanceFromNextLevel);
-
 	/// Update labels
 
 	m_expLabel->setVariablePartString(formatBigReal(exp));
@@ -111,7 +132,6 @@ void HexInfoTab::update(float dt) {
 	/// Update progress bar
 
 	// Ratio of current exp into this level over the exp needed to level up
-	m_hexEXPBar->setProgress(exp / expRequiredForNextLevel);
 
 	/// Update buttons
 
@@ -121,8 +141,14 @@ void HexInfoTab::update(float dt) {
 	// Since exp costs increase after a level up, only buy at most the exp required to reach the next level
 	if (m_purchaseEXPButtonDesiredEXP > expDistanceFromNextLevel) m_purchaseEXPButtonDesiredEXP = expDistanceFromNextLevel;
 
+	// Update the corersponding label
+	m_purchaseEXPDesiredEXPLabel->setVariablePartString(formatBigReal(m_purchaseEXPButtonDesiredEXP));
+
+	BigReal costToPurchaseDesiredEXP = m_purchaseEXPButtonDesiredEXP * m_focus->getEXPCost();
+	m_purchaseEXPGreenMatterCostLabel->setVariablePartString(formatBigReal(costToPurchaseDesiredEXP));
+
 	// If the exp provided by the button is unaffordable, grey out the button. Otherwise, enabled it again
-	if (Currencies::getGreenMatter() < m_purchaseEXPButtonDesiredEXP * m_focus->getEXPCost()) {
+	if (Resources::getInstance()->getGreenMatter() < costToPurchaseDesiredEXP) {
 		if (m_purchaseEXPButton->isEnabled()) {
 			m_purchaseEXPButton->setBright(false);
 			m_purchaseEXPButton->setEnabled(false);
@@ -188,9 +214,8 @@ void HexInfoTab::setFocus(Hex* focus) {
 	if (m_focus == focus || m_pinned) return;
 
 	m_focus = focus;
-	// If a focus exists, visible otherwise not
-	setVisible(m_focus);
-	if (!m_focus) return;
+
+	if (!m_focus) return setVisible(false);
 
 	BigInt level = m_focus->getLevel();
 	uint layer = m_focus->getLayer();
@@ -212,7 +237,7 @@ void HexInfoTab::purchaseEXP() {
 	BigReal cost = m_purchaseEXPButtonDesiredEXP * m_focus->getEXPCost();
 
 	// Pay
-	Currencies::instance()->addGreenMatter(-cost);
+	Resources::getInstance()->addGreenMatter(-cost);
 
 	m_focus->addEXP(m_purchaseEXPButtonDesiredEXP);
 }

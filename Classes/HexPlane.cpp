@@ -1,14 +1,22 @@
 #include "HexPlane.h"
 #include "Console.h"
 #include "Maths.h"
-#include "Currencies.h"
+#include "Resources.h"
+#include "JSON.hpp"
 
 USING_NS_CC;
+using namespace nlohmann;
+
+HexPlane* HexPlane::m_instance = nullptr;
 
 HexPlane::HexPlane(const float hexHeight) : m_hexHeight(hexHeight)
 {}
 
+HexPlane::HexPlane(const json& data) : m_hexHeight(data.at("hexHeight")) {}
+
 bool HexPlane::init() {
+    if (m_instance != nullptr) err("Hex plane already exists");
+
     /// Declare listeners
 
     auto touchListener = EventListenerTouchOneByOne::create();
@@ -46,10 +54,50 @@ bool HexPlane::init() {
 
     setCameraMask((unsigned short)m_camera->getCameraFlag(), false);
 
-    // L0 hex
-    placeHexAtPos(Vec2(0, 0));
-
     this->addChild(m_camera);
+
+    m_instance = this;
+
+    // Prevents this plane from being autoreleased at any point
+    this->retain();
+
+    return true;
+}
+
+bool HexPlane::init(const json& data) {
+    if (!init()) return false;
+
+    /// Resurrect the hexii
+    
+    json hexii = data.at("hexii");
+    uint dbgc = 0;
+
+    for (json::iterator it = hexii.begin(); it != hexii.end(); it++) {
+        auto a = *it;
+        Hex* newHex = Hex::create(a);
+
+        placeHexAtPos(newHex, it->at("posAxial").get<cocos2d::Vec2>());
+        dbgc++;
+    }
+
+    /*
+
+    dbgc = 0;
+
+    for (json::iterator it = hexii.begin(); it != hexii.end(); it++) {
+        Hex* hex = getHexAtPos(it->at("posAxial").get<cocos2d::Vec2>());
+
+        // Add their yield targets
+    
+        json yieldTargets = it->at("yieldTargets");
+        for (json::iterator it = yieldTargets.begin(); it != yieldTargets.end(); it++) {
+            Vec2 targetPos = it->at("posAxial").get<cocos2d::Vec2>();
+
+            hex->addYieldTarget(getHexAtPos(targetPos), CC_RADIANS_TO_DEGREES(Vec2(localPositionOf(targetPos) - localPositionOf(hex->getAxialPosition())).getAngle()));
+        }
+        dbgc++;
+    }
+    */
 
     return true;
 }
@@ -118,44 +166,7 @@ void HexPlane::onHexYield(EventCustom* evnt) {
 void HexPlane::onHexPurchase(cocos2d::EventCustom* evnt) {
     Hex::EventHexPurchaseData* data = static_cast<Hex::EventHexPurchaseData*>(evnt->getUserData());
 
-    // Any neighboring positions that don't yet have an inactive hex need to have one so they can be purchased
-
-    auto neighbors = neighborsOf(data->posAxial, false);
-
-    for (auto& neighbor : neighbors) {
-        // For each of the neighbors, one of five things will happen \
-        Case 0: The neighbor is of the same layer. Nothing should happen in this case \
-        Case 1: The neighbor does not exist yet and is of a lower layer. Nothing should happen in this case \
-        Case 2: The neighbor does not exist yet and is of a higher layer, meaning an inactive hex should be set at that position \
-        Case 3: The neighbor does exist and is of a lower layer, meaning this hex being purchase should have that neighbor added as a yield target \
-        Case 4: The neighbor does exist and is of a higher layer, meaning that neighbor should add this hex being purchased as a yield target
-
-        uint neighborLayer = layerOf(neighbor.pos);
-        
-        // Case 0
-        if (neighborLayer == data->layer) continue;
-
-        // Cases 1 & 2
-        if (neighbor.hex == nullptr) {
-            // Case 1
-            if (neighborLayer < data->layer) continue;
-
-            // Case 2
-            else neighbor.hex = placeHexAtPos(neighbor.pos);
-        }
-        // Cases 3 & 4
-        else {
-            // TODO: Probably a smarter, faster way of calculating this angle using hexagon geometry?
-
-            // Case 3
-            if (neighborLayer < data->layer)
-                data->subject->addYieldTarget(neighbor.hex, CC_RADIANS_TO_DEGREES(Vec2(localPositionOf(neighbor.pos) - localPositionOf(data->posAxial)).getAngle()));
-
-            // Case 4
-            else
-                neighbor.hex->addYieldTarget(data->subject, CC_RADIANS_TO_DEGREES(Vec2(localPositionOf(data->posAxial) - localPositionOf(neighbor.pos)).getAngle()));
-        }
-    }
+    placeHexAtPos(data->subject, data->posAxial);
 }
 
 void HexPlane::onHexFocus(cocos2d::EventCustom* evnt) {
@@ -183,27 +194,81 @@ void HexPlane::onPinButtonPressed(cocos2d::EventCustom* evnt) {
 }
 
 Hex* HexPlane::placeHexAtPos(cocos2d::Vec2 posAxial) {
-    Hex* newHex = Hex::create(layerOf(posAxial), posAxial);
-    newHex->setPosition(localPositionOf(posAxial));
-    newHex->setCameraMask((unsigned short)m_camera->getCameraFlag(), false);
-
     // Use the nearest point to the given pos
     posAxial = round(posAxial);
 
-    // Verify a hex does not already exist at the given position
+    Hex* newHex = Hex::create(layerOf(posAxial), posAxial);
+
+    return placeHexAtPos(newHex, posAxial);
+}
+
+Hex* HexPlane::placeHexAtPos(Hex* hex, cocos2d::Vec2 posAxial) {
+    hex->setPosition(localPositionOf(posAxial));
+    hex->setCameraMask((unsigned short)m_camera->getCameraFlag(), false);
+
+    // Verify a different hex does not already exist at the given position
     auto it = m_hexMap.find(posAxial);
     if (it != m_hexMap.end()) {
-        warn("About to overwrite existing object at (" + std::to_string(posAxial.x) + "," + std::to_string(posAxial.y) + ")");
+        // Cleanup the existing hex at that pos, only if these aren't the same objects
+        if (it->second != hex) {
+            warn("About to overwrite existing object at (" + std::to_string(posAxial.x) + "," + std::to_string(posAxial.y) + ")");
 
-        // Cleanup the existing hex at that pos
-        this->removeChild(it->second);
-        m_hexMap.erase(it);
+            this->removeChild(it->second);
+            m_hexMap.erase(it);
+
+            m_hexMap.emplace(std::make_pair(posAxial, hex));
+            this->addChild(hex);
+        }
+    }
+    // Add the new hex the map, only if it really is a new hex
+    else {
+        m_hexMap.emplace(std::make_pair(posAxial, hex));
+        this->addChild(hex);
     }
 
-    m_hexMap.emplace(std::make_pair(posAxial, newHex));
-    this->addChild(newHex);
-    
-    return newHex;
+    // If `hex` is active, then any neighboring positions that don't yet have an inactive hex need to have one so they can be purchased
+
+    if (hex->getActive()) {
+        auto neighbors = neighborsOf(posAxial, false);
+        uint layer = layerOf(posAxial);
+
+        for (auto& neighbor : neighbors) {
+            // For each of the neighbors, one of five things will happen \
+            Case 0: The neighbor is of the same layer. Nothing should happen in this case \
+            Case 1: The neighbor does not exist yet and is of a lower layer. Nothing should happen in this case \
+            Case 2: The neighbor does not exist yet and is of a higher layer, meaning an inactive hex should be set at that position \
+            Case 3: The neighbor does exist and is of a lower layer, meaning this hex being purchase should have that neighbor added as a yield target \
+            Case 4: The neighbor does exist and is of a higher layer, meaning that neighbor should add this hex being purchased as a yield target
+
+            uint neighborLayer = layerOf(neighbor.pos);
+
+            // Case 0
+            if (neighborLayer == layer) continue;
+
+            // Cases 1 & 2
+            if (neighbor.hex == nullptr || !neighbor.hex->getActive()) {
+                // Case 1
+                if (neighborLayer < layer) continue;
+
+                // Case 2
+                else if (neighbor.hex == nullptr && neighborLayer < Resources::MAX_LAYERS) neighbor.hex = placeHexAtPos(neighbor.pos);
+            }
+            // Cases 3 & 4
+            else {
+                // TODO: Probably a smarter, faster way of calculating this angle using hexagon geometry?
+
+                // Case 3
+                if (neighborLayer < layer)
+                    hex->addYieldTarget(neighbor.hex, CC_RADIANS_TO_DEGREES(Vec2(localPositionOf(neighbor.pos) - localPositionOf(posAxial)).getAngle()));
+
+                // Case 4
+                else
+                    neighbor.hex->addYieldTarget(hex, CC_RADIANS_TO_DEGREES(Vec2(localPositionOf(posAxial) - localPositionOf(neighbor.pos)).getAngle()));
+            }
+        }
+    }    
+
+    return hex;
 }
 
 Hex* HexPlane::getHexAtPos(Vec2 posAxial) const {
@@ -215,7 +280,7 @@ Hex* HexPlane::getHexAtPos(Vec2 posAxial) const {
     return nullptr;
 }
 
-std::vector<HexPlane::HexPosPair> HexPlane::getHexiiInLayer(uint layer) {
+std::vector<HexPlane::HexPosPair> HexPlane::getHexiiInLayer(uint layer) const {
     std::vector<HexPosPair> hexii;
 
     for (auto it = m_hexMap.begin(); it != m_hexMap.end(); it++) {
@@ -298,4 +363,20 @@ cocos2d::Vec2 HexPlane::round(cocos2d::Vec2 pos) {
     else differences.z = -rounded.x - rounded.y;
 
     return Vec2(rounded.x, rounded.y);
+}
+
+void to_json(nlohmann::json& j, const HexPlane& plane) {
+    json hexii = json::array();
+
+    // Adds the hexii ordered by layer
+    for (uint i = 0; i < Resources::MAX_LAYERS; i++) {
+        for (auto hexPosPair : plane.getHexiiInLayer(i)) {
+            hexii.push_back(*hexPosPair.hex);
+        }
+    }    
+
+    j = json{
+        {"hexHeight", plane.getHexHeight() },
+        {"hexii", hexii}
+    };
 }

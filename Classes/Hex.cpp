@@ -1,20 +1,32 @@
 #include "Hex.h"
 #include "Maths.h"
-#include "Currencies.h"
+#include "Resources.h"
 #include "ColorSchemes.h"
+#include "JSON.hpp"
 
 USING_NS_CC;
+using namespace nlohmann;
 
 Hex::Hex(const uint layer, const Vec2 posAxial) : m_layer(layer), m_posAxial(posAxial),
 	m_baseYieldSpeed((BigReal)1.0 / (layer + 1)), m_role(layer == 0 ? Role::HOME_L0 : Role::HOME)
 {}
 
+Hex::Hex(const json& data) : m_layer(data.at("layer")), m_posAxial(data.at("posAxial")), m_baseYieldSpeed((BigReal)1.0 / (m_layer + 1)), m_role(m_layer == 0 ? Role::HOME_L0 : Role::HOME) {
+	addEXP(data.at("totalEXP"), true);
+
+	m_upgrades = BoolMap(data.at("upgrades"));
+}
+
 bool Hex::init() {
-	m_hex = Sprite::create("gameplay/HexInactive.png"); //Sprite::create(AutoPolygon::generatePolygon("HexagonInactive.png"));
+	m_hex = Sprite::create("gameplay/L" + std::to_string(m_layer) + "HexInactive.png"); //Sprite::create(AutoPolygon::generatePolygon("HexagonInactive.png"));
 	m_hex->setAnchorPoint(Vec2(0, 0));
 
 	setContentSize(m_hex->getContentSize());
 	auto& size = getContentSize();
+
+	m_expBar = ProgressBar::create(size.height * 0.5 * 1.1, 6);
+	m_expBar->setAnchorPoint(Vec2(0.5, 0.0));
+	m_expBar->setPosition(Vec2(size.width / 2, size.height * 0.09));
 
 	m_shader = SimpleShader::createWithFragmentShader("shaders/hexProgress.frag");
 	m_shader->setUniform<float>("progress", 0.0f);
@@ -39,7 +51,6 @@ bool Hex::init() {
 	if (m_role == Role::HOME_L0) {
 		ParticleSystemQuad* l0Particles = ParticleSystemQuad::createWithTotalParticles(18);
 		l0Particles->setPosition(Vec2(0, 0));
-		l0Particles->setCameraMask(2);
 
 		// Gravity
 		l0Particles->setEmitterMode(ParticleSystem::Mode::GRAVITY);
@@ -56,7 +67,7 @@ bool Hex::init() {
 
 		// Angle
 		l0Particles->setAngle(90);
-		l0Particles->setAngleVar(30);
+		l0Particles->setAngleVar(360);
 
 		l0Particles->setLife(0.6);
 
@@ -76,6 +87,17 @@ bool Hex::init() {
 		m_yieldParticles.push_back(l0Particles);
 	}
 
+	m_levelUpParticles = ParticleExplosion::createWithTotalParticles(80);
+	m_levelUpParticles->setPosition(Vec2(0, 0));
+	m_levelUpParticles->setTexture(Director::getInstance()->getTextureCache()->addImage("particles/LevelUpStar.png"));
+	m_levelUpParticles->setDuration(0);
+	m_levelUpParticles->setStartSize(100.0f);
+	m_levelUpParticles->setSpeed(240.0f);
+	m_levelUpParticles->setLife(0);
+	m_levelUpParticles->setLifeVar(0);
+	m_levelUpParticles->setTangentialAccel(-50);
+	m_levelUpParticles->setEmissionRate(80);
+
 	/// Shaded
 
 	m_shaded = RenderTexture::create(size.width, size.height);
@@ -91,9 +113,22 @@ bool Hex::init() {
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 
 	this->addChild(m_hex);
+	this->addChild(m_expBar);
 	this->addChild(m_shaded);
 	if (m_yieldParticles.size() > 0) this->addChild(m_yieldParticles[0]);
+	this->addChild(m_levelUpParticles);
 	
+	return true;
+}
+
+bool Hex::init(const json& data) {
+	if (!init()) {
+		return false;
+	}
+
+	setActive(data.at("active"));
+	updateProgressBar();
+
 	return true;
 }
 
@@ -106,6 +141,10 @@ void Hex::visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTransfor
 		m_hex->visit(renderer, Mat4::IDENTITY, parentFlags);
 		// Prevents the sprite from being drawn in addition to the shaded version later on
 		m_hex->setVisible(false);
+
+		m_expBar->setVisible(m_active);
+		m_expBar->visit(renderer, Mat4::IDENTITY, parentFlags);
+		m_expBar->setVisible(false);
 
 		m_shaded->end();
 	}
@@ -139,7 +178,7 @@ void Hex::updateActive(float dt) {
 void Hex::updateInactive(float dt) {
 	// While inactive, hovering over the hex will show the cost to buy it and clicking on it will progress the purchase
 
-	bool affordable = Currencies::getGreenMatter() >= getPurchaseCost();
+	bool affordable = Resources::getInstance()->getGreenMatter() >= getPurchaseCost();
 	BigReal cost = getPurchaseCostFromLayer(m_layer);
 
 	/// Cost label
@@ -180,13 +219,22 @@ void Hex::updateInactive(float dt) {
 	}
 }
 
-void Hex::addEXP(BigReal exp) {
+void Hex::updateProgressBar() {
+	if (m_expBar) m_expBar->setProgress(m_exp / (m_exp + m_expRequiredForNextLevel - m_totalEXP));
+}
+
+void Hex::addEXP(BigReal exp, bool suppressEvent) {
 	m_totalEXP += exp;
 	m_exp += exp;
 
 	// Nothing further to do if not leveling up
-	if (m_totalEXP < m_expRequiredForNextLevel) return;
+	if (m_totalEXP >= m_expRequiredForNextLevel) levelUp(suppressEvent);
 
+	// Update exp bar
+	updateProgressBar();
+}
+
+void Hex::levelUp(bool suppressEvent) {
 	// Before level up, record current level
 	BigInt levelBefore = m_level;
 	m_level = getLevelFromEXP(m_totalEXP, m_layer);
@@ -197,7 +245,14 @@ void Hex::addEXP(BigReal exp) {
 
 	m_expRequiredForNextLevel = getEXPRequiredToReachLevelFromLayer(m_level + 1, m_layer);
 
-	_eventDispatcher->dispatchCustomEvent("onHexLevelUp", new EventHexLevelUpData{ this, levelBefore, m_level, m_exp, m_totalEXP, m_expRequiredForNextLevel });
+	// Emit particles
+
+	if(m_levelUpParticles) m_levelUpParticles->start();
+
+	// Dispatch event
+
+	if (!suppressEvent)
+		_eventDispatcher->dispatchCustomEvent("onHexLevelUp", new EventHexLevelUpData{ this, levelBefore, m_level, m_exp, m_totalEXP, m_expRequiredForNextLevel });
 }
 
 void Hex::unlockUpgrade(UpgradePtr upgrade) {
@@ -257,13 +312,13 @@ BigReal Hex::getPurchaseCostFromLayer(uint layer) {
 	case 0:
 		break;
 	case 1:
-		cost = (BigReal)300 * (std::powl(3, Currencies::getHexiiCountInLayer(1)));
+		cost = (BigReal)300 * (std::powl(3, Resources::getInstance()->getHexiiCountInLayer(1)));
 		break;
 	case 2:
-		cost = (BigReal)120000 * std::powl(1.5, Currencies::getHexiiCountInLayer(2));
+		cost = (BigReal)120000 * std::powl(1.5, Resources::getInstance()->getHexiiCountInLayer(2));
 		break;
 	case 3:
-		cost = (BigReal)3e7 * std::powl(1.25, Currencies::getHexiiCountInLayer(3));
+		cost = (BigReal)3e7 * std::powl(1.25, Resources::getInstance()->getHexiiCountInLayer(3));
 		break;
 	default:
 		cost = 1e20;
@@ -381,9 +436,10 @@ void Hex::setActive(bool active) {
 	if (m_active == active) return;
 
 	m_active = active;
+
 	// Use the appropriate active texture
 	if (active) m_hex->setTexture(_director->getTextureCache()->addImage("gameplay/L" + std::to_string(m_layer) + "Hex.png"));
-	else m_hex->setTexture(_director->getTextureCache()->addImage("gameplay/HexInactive.png"));
+	else m_hex->setTexture(_director->getTextureCache()->addImage("gameplay/L" + std::to_string(m_layer) + "HexInactive.png"));
 
 	// Cost label is only visible when the hex is inactive
 	m_purchaseCostLabel->setVisible(!active);
@@ -396,6 +452,7 @@ void Hex::setActive(bool active) {
 void Hex::setCameraMask(unsigned short mask, bool applyChildren) {
 	Node::setCameraMask(mask, false);
 	for(uint i = 0; i < m_yieldParticles.size(); i++) m_yieldParticles[i]->setCameraMask(mask, true);
+	m_levelUpParticles->setCameraMask(mask, true);
 	m_shaded->setCameraMask(mask, true);
 }
 
@@ -429,7 +486,7 @@ void Hex::yield(uint times) {
 	BigReal yield = getYield() * times;
 
 	// Layer 0 produces green matter. Outer layers produce EXP for adjacent hexii of lower layers (stored in `m_yieldTargets`)
-	if (m_role == Hex::Role::HOME_L0) Currencies::instance()->addGreenMatter(yield);
+	if (m_role == Hex::Role::HOME_L0) Resources::getInstance()->addGreenMatter(yield);
 	else {
 		uint yieldTargetCount = m_yieldTargets.size();
 		// The yield is split evenly across its targets
@@ -445,7 +502,6 @@ void Hex::yield(uint times) {
 		if (m_yieldParticles[i]->getParticleCount() < m_yieldParticles[i]->getTotalParticles()) m_yieldParticles[i]->addParticles(1);
 		auto a = m_yieldParticles[i]->getCameraMask();
 		auto b = this->getCameraMask();
-		printf("%d\n", m_yieldParticles[i]->getParticleCount());
 	}
 	// Dispatch the event for any other nodes to pick up on and respond to (e.g to update UI label values)
 	_eventDispatcher->dispatchCustomEvent("onHexYield", new EventHexYieldData{ this, m_role, yield, m_posAxial, m_layer });
@@ -457,10 +513,25 @@ void Hex::purchase(BigReal cost) {
 	m_purchaseCostLabelOpacity = 0.0f;
 	setActive(true);
 
-	Currencies::instance()->addGreenMatter(-cost);
-	Currencies::instance()->addHexInLayer(m_layer);
+	Resources::getInstance()->addGreenMatter(-cost);
+	Resources::getInstance()->addHexInLayer(m_layer);
 
 	// Trigger the purchase event and also then focus to this hex
 	_eventDispatcher->dispatchCustomEvent("onHexPurchase", new EventHexPurchaseData{ this, m_active, m_posAxial, m_layer });
 	_eventDispatcher->dispatchCustomEvent("onHexFocus", new EventHexFocusData{ this, m_active, m_posAxial, m_layer });
+}
+
+void to_json(json& j, const Hex& hex) {
+	//auto& yieldTargets = hex.getYieldTargets();
+	//json yieldTargetsJSON = json::array();
+	//for (uint i = 0; i < yieldTargets.size(); i++) yieldTargetsJSON.push_back(json::object({ {"posAxial", yieldTargets[i]->getAxialPosition()} }));
+
+	j = json{ 
+		{"active", hex.getActive() }, 
+		{"totalEXP", hex.getTotalEXP()}, 
+		{"upgrades", hex.getUpgrades() }, 
+		{"layer", hex.getLayer() },
+		{"posAxial", hex.getAxialPosition() }//,
+		//{"yieldTargets", yieldTargetsJSON}
+	};
 }

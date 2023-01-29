@@ -8,12 +8,10 @@
 class HexiiScene :
     public cocos2d::Scene {
 private:
-    static constexpr int CAMERA_MOVE_TAG = 1;
-
     bool init();
 
 public:
-    static cocos2d::Scene* createScene();    
+    static cocos2d::Scene* createScene();
 
     CREATE_FUNC(HexiiScene);
 
@@ -24,13 +22,6 @@ private:
 
     Sidebar* m_sidebar;
     CurrencyHUD* m_currencyHUD;
-
-    cocos2d::DrawNode* m_debugNodes[10];
-    cocos2d::Label* m_debugLabel;
-    cocos2d::ParticleSun* m_particles1;
-    cocos2d::ParticleSystem* m_particles;
-
-    cocos2d::Vec2 m_mousePos;
 
     HexPlane* m_plane;
 };

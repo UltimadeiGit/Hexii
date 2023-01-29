@@ -55,7 +55,6 @@ bool ProgressBar::init() {
 void ProgressBar::setProgress(float progress) {
 	if (progress == m_progress) return;
 
-	printf("Progress: %.2f -> %.2f\n", m_progress, progress);
 	m_progress = progress;
 
 	m_shader->setUniform("progress", progress);

@@ -59,6 +59,28 @@ inline static __TYPE__* create() \
     CREATE_FUNC_BODY \
 }
 
+#define CREATE_FUNC_JSON(__TYPE__) \
+private: \
+__TYPE__(const nlohmann::json& data); \
+bool init(const nlohmann::json& data); \
+public: \
+inline static __TYPE__* create(const nlohmann::json& data) \
+{ \
+    __TYPE__* pRet = new(std::nothrow) __TYPE__(data); \
+    if (pRet && pRet->init(data)) \
+    { \
+        pRet->autorelease(); \
+        return pRet; \
+    } \
+    else \
+    { \
+        CCLOG("Unknown error occurred"); \
+        delete pRet; \
+        pRet = nullptr; \
+        return nullptr; \
+    } \
+}
+
 #define CREATE_FUNC_WITH_CTOR_1(__TYPE__, ARG1TYPE) \
 private: \
 __TYPE__(ARG1TYPE arg1); \

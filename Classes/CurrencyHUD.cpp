@@ -1,5 +1,5 @@
 #include "CurrencyHUD.h"
-#include "Currencies.h"
+#include "Resources.h"
 
 USING_NS_CC;
 
@@ -52,10 +52,10 @@ bool CurrencyHUD::init() {
 }
 
 void CurrencyHUD::update(float dt) {
-	m_greenMatterAmount->setString(formatBigReal(Currencies::getGreenMatter()));
+	m_greenMatterAmount->setString(formatBigReal(Resources::getInstance()->getGreenMatter()));
 
 	/*
-	m_greenMatterIncreaseAmount->setString("+ " + Currencies::getGreenMatter().to_string());
+	m_greenMatterIncreaseAmount->setString("+ " + Resources::getInstance()->getGreenMatter().to_string());
 	m_perSecLabel->setPosition(Vec2(5 + m_greenMatterIncreaseAmount->getContentSize().width, 0.0f));
 	*/
 }
