@@ -12,16 +12,21 @@
 	* Whenever another hex yields, it should pop out exp that travels in a straight line to its destination hex (DONE)
 	- STRETCH: Star particles for when a hex levels up
 
-- Green matter to EXP button (DONE)
-	* Holding down the button will attempt to grant 1/10th of the EXP cost to next level, per second (DONE)
-
 - Saving and loading system
+	* Autosave on close
+	* Autosave every few seconds (DONE)
+	* Save settings (DONE)
+	* Save hex plane (DONE)
+	* Save resources i.e green matter (DONE)
+
+- Settings system
+	* Settings tab functional
 
 ----
 
 29/01/2023 TODO List:
 
-- Settings system
+
 
 - Achievements system
 	* An achievement for each layer (e.g when you first buy L0, an L1 hex, L2 etc)

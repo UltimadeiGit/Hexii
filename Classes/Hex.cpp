@@ -266,6 +266,7 @@ void Hex::levelUp(bool suppressEvent) {
 
 void Hex::unlockUpgrade(UpgradePtr upgrade) {
 	m_upgrades[fmt::to_string(upgrade->name)] = true;
+	if (upgrade->name == "GlobalPower") Resources::getInstance()->addGlobalPowerUpgradeBonus();
 	_eventDispatcher->dispatchCustomEvent("onHexUpgradePurchase", new EventHexUpgradePurchaseData{ this, upgrade });
 }
 
@@ -402,7 +403,7 @@ BigReal Hex::getActiveBonusFromStrongArmUpgrade() const {
 }
 
 BigReal Hex::getAdjacencyBonusFromSupportUpgrade() const {
-	return (0.01 * std::powl(m_layer, 2) * m_upgrades("Support"));
+	return (0.01 * m_level * std::powl(m_layer + 1, 2) * m_upgrades("Support"));
 }
 
 BigReal Hex::getContributionFromUpgrade(const std::string& upgradeName, bool asConstant) const {
@@ -419,6 +420,7 @@ BigReal Hex::getContributionFromUpgrade(const std::string& upgradeName, bool asC
 		if (upgradeName == "YieldUp2") contribution = multiplierToPercentageContribution(getYieldFromYieldUp2Upgrade());
 		else if (upgradeName == "CriticalChance1") contribution = 100 * getChanceFromCriticalChance1Upgrade();
 		else if (upgradeName == "SpeedUp2") contribution = 100 * getYieldSpeedFactorFromSpeedUp2Upgrade();
+		else if (upgradeName == "Support") contribution = 100 * getAdjacencyBonusFromSupportUpgrade();
 		else return 0;
 	}
 	// Multipliers here, formated as constants
@@ -457,9 +459,9 @@ BigReal Hex::getMultiplicativeYield() const {
 }
 
 BigReal Hex::getYield(bool critical) const {
-	// if (m_role == Role::HOME_L0) return 1e100;
+	//if (m_role == Role::HOME_L0) return std::powl(getConstantYield() * getAdditiveYield() * getMultiplicativeYield() * (1 + critical * getCriticalBonus()) * (1 + HexPlane::getInstance()->getAdjacencyBonuses(this)), 2);
 
-	return getConstantYield() * getAdditiveYield() * getMultiplicativeYield() * (1 + critical * getCriticalBonus()) * (1 + HexPlane::getInstance()->getAdjacencyBonuses(this));
+	return getConstantYield() * getAdditiveYield() * getMultiplicativeYield() * (1 + critical * getCriticalBonus()) * (1 + HexPlane::getInstance()->getAdjacencyBonuses(this)) * (1 + Resources::getInstance()->getGlobalPowerUpgradeBonus());
 }
 
 BigReal Hex::getYieldSpeed() const {

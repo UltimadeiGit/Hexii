@@ -20,7 +20,7 @@ Upgrades::Upgrades() {
 	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "SpeedUp2" }, fmt::string_view{ "Increases yield speed by +2% per level" }, fmt::string_view{ "+{}%" }, 30000, 24));
 	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "YieldUp2" }, fmt::string_view{ "Multiplies yield by 1.03 each level" }, fmt::string_view{ "+{}% (+{})" }, 120000, 36));
 	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "Support" }, fmt::string_view{ "Gives adjacent hexii extra yield per level" }, fmt::string_view{ "+{}%" }, 210000, 48));
-	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "GlobalPower" }, fmt::string_view{ "Gives +100% yield to all hexii (additive)" }, fmt::string_view{ "--%" }, 1000000, 60));
+	m_upgrades.push_back(std::make_shared<Upgrade>(fmt::string_view{ "GlobalPower" }, fmt::string_view{ "Gives +100% yield to all hexii" }, fmt::string_view{ "--" }, 1000000, 60));
 
 	//if (m_upgrades.size() != Upgrades::UPGRADE_COUNT) err(std::format("Upgrades - Expected {} upgrades but got {} instead", UPGRADE_COUNT, m_upgrades.size()));
 }
