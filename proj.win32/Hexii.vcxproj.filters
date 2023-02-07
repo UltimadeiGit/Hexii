@@ -1,139 +1,212 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\main.cpp">
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Classes\AppDelegate.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Classes\HelloWorldScene.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\main.cpp">
       <Filter>Source Files\proj.win32</Filter>
     </ClCompile>
-    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\precheader.cpp">
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\precheader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.cpp">
-      <Filter>Source Files\Classes\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\HexiiScene.cpp">
-      <Filter>Source Files\Classes\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Util.cpp">
-      <Filter>Source Files\Classes\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Hex.cpp">
-      <Filter>Source Files\Classes\Hexii</Filter>
-    </ClCompile>
-    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.cpp">
-      <Filter>Source Files\Classes\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\HexPlane.cpp">
-      <Filter>Source Files\Classes\Hexii</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\InfoBox.cpp">
-      <Filter>Source Files\Classes\UI</Filter>
-    </ClCompile>
+    <ClCompile Include="..\Classes\Hex.cpp" />
+    <ClCompile Include="..\Classes\HexiiScene.cpp" />
+    <ClCompile Include="..\Classes\HexPlane.cpp" />
+    <ClCompile Include="..\Classes\InfoBox.cpp" />
+    <ClCompile Include="..\Classes\Maths.cpp" />
+    <ClCompile Include="..\Classes\ProgressBar.cpp" />
     <ClCompile Include="..\Classes\SimpleShader.cpp" />
-    <ClCompile Include="..\Classes\ProgressBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HexUpgrade.cpp" />
+    <ClCompile Include="..\Classes\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\main.h">
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Classes\AppDelegate.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Classes\HelloWorldScene.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\main.h">
       <Filter>Source Files\proj.win32</Filter>
     </ClInclude>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\resource.h">
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\resource.h">
       <Filter>Source Files\proj.win32</Filter>
     </ClInclude>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\CloseNormal.png">
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\Achievement Box Design.pdn">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\CloseSelected.png">
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\AchievementIconHumbleHex.pdn">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\HelloWorld.png">
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\AchievementIconHumbleHex.png">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\fonts\Marker Felt.ttf">
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\Background.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\CloseNormal.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\CloseSelected.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\ColorPalet.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\ComponentHexagon.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\CoolImageMadeFromOutlineEffect.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\Design [OLD INCLUDED].pdn">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\Design.pdn">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\ExampleButton.pdn">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\GreenMatter.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\GreenMatterB.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\GreenMatterDisplay.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\GreenMatterDisplayDesign.pdn">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\HelloWorld.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\HexProgressOverlay.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\HexProgressOverlayB.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\Hexagon - Copy.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\Hexagon.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\HexagonActive.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\HexagonInactive.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\IconBase.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\Info Bar Design.pdn">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\Info Box Design.pdn">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\InfoBox.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\SettingsIcon.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\Texture1.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\TransparencyMask.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\UpgradeIconYieldPlus1.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\UpgradeIconYieldPlus1Design.pdn">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\WIP_HexiiBackground.pdn">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\WIP_ProgressBar.pdn">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\fonts\8514oem.fon">
       <Filter>Resources\fonts</Filter>
     </ClInclude>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\fonts\arial.ttf">
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\fonts\Agency.ttf">
       <Filter>Resources\fonts</Filter>
     </ClInclude>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Resources\res\.gitkeep">
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\fonts\AgencyBold.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\fonts\Marker Felt.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\fonts\OCR.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\fonts\arial.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\res\.gitkeep">
       <Filter>Resources\res</Filter>
     </ClInclude>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\HelloWorldScene.h">
-      <Filter>Source Files\Classes\Scene</Filter>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\shaders\hexProgress.frag">
+      <Filter>Resources\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HexiiScene.h">
-      <Filter>Source Files\Classes\Scene</Filter>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\shaders\hexProgress.vert">
+      <Filter>Resources\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Console.h">
-      <Filter>Source Files\Classes\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Hex.h">
-      <Filter>Source Files\Classes\Hexii</Filter>
-    </ClInclude>
-    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\Classes\AppDelegate.h">
-      <Filter>Source Files\Classes\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\HexPlane.h">
-      <Filter>Source Files\Classes\Hexii</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Maths.h">
-      <Filter>Source Files\Classes\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Memory.h">
-      <Filter>Source Files\Classes\Util</Filter>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\Resources\shaders\progressBar.frag">
+      <Filter>Resources\shaders</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\BigInt.hpp" />
-    <ClInclude Include="..\Classes\InfoBox.h">
-      <Filter>Source Files\Classes\UI</Filter>
-    </ClInclude>
+    <ClInclude Include="..\Classes\Console.h" />
+    <ClInclude Include="..\Classes\Hex.h" />
+    <ClInclude Include="..\Classes\HexiiScene.h" />
+    <ClInclude Include="..\Classes\HexPlane.h" />
+    <ClInclude Include="..\Classes\InfoBox.h" />
+    <ClInclude Include="..\Classes\Maths.h" />
+    <ClInclude Include="..\Classes\Memory.h" />
+    <ClInclude Include="..\Classes\ProgressBar.h" />
     <ClInclude Include="..\Classes\SimpleShader.h" />
-    <ClInclude Include="..\Classes\ProgressBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HexUpgrade.h" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\CMakeLists.txt" />
+    <CustomBuild Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\game.rc">
+    <ResourceCompile Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\game.rc">
       <Filter>Source Files\proj.win32</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resources">
-      <UniqueIdentifier>{E94336AB-9C8E-3F35-B75A-0DD43361E151}</UniqueIdentifier>
+      <UniqueIdentifier>{E67662E7-FEDD-313E-B624-0F3E42684045}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\fonts">
-      <UniqueIdentifier>{59F66645-C01D-322E-8ED1-C48F999F5ACA}</UniqueIdentifier>
+      <UniqueIdentifier>{CB753492-0C43-334C-BC53-5F8A31176F9B}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\res">
-      <UniqueIdentifier>{985C76A8-FA52-3CB9-BBB0-8FB6CFB85400}</UniqueIdentifier>
+      <UniqueIdentifier>{D622D242-4616-3A25-B1FB-83D854638EE5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\shaders">
+      <UniqueIdentifier>{83AD4A1E-DD8D-3EDC-9DB9-637E2D0AA4DE}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{9CADDE28-4A9B-3258-95D3-4FB33CE1942A}</UniqueIdentifier>
+      <UniqueIdentifier>{26A7F34B-B09A-3FD2-A334-238C3CB1E823}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Classes">
-      <UniqueIdentifier>{565BB99C-0A70-391D-A559-2076B3A84E85}</UniqueIdentifier>
+      <UniqueIdentifier>{81C2FF89-453A-3728-A68D-8A731D5D42E3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\proj.win32">
-      <UniqueIdentifier>{37A90B6D-2014-3086-A90F-9D9ACF8FAEDD}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Classes\Scene">
-      <UniqueIdentifier>{c96fd932-d9a5-42c1-83d6-f7f0df9fa0d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Classes\Util">
-      <UniqueIdentifier>{f2f05239-831e-4539-a615-474d96cfc947}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Classes\Hexii">
-      <UniqueIdentifier>{112f9df0-b9ba-4f87-b0ff-31613831d582}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Classes\Base">
-      <UniqueIdentifier>{9fc1590a-bff5-4464-8512-cafcc270f925}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Classes\UI">
-      <UniqueIdentifier>{63122845-b9f5-4708-8d11-db7e2ec041a7}</UniqueIdentifier>
+      <UniqueIdentifier>{5067FCED-E74B-3051-97F3-7113CABBCF61}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

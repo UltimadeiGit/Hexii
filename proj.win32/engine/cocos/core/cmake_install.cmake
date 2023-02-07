@@ -1,4 +1,4 @@
-# Install script for directory: D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/cocos
+# Install script for directory: D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/cocos2d/cocos
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/external/cmake_install.cmake")
+  include("D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32/engine/external/cmake_install.cmake")
 
 endif()
 

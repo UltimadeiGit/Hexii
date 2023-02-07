@@ -22,7 +22,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A98B18AB-19B3-3773-AF97-A39AD069B42B}</ProjectGuid>
+    <ProjectGuid>{935DCFBC-F993-32B2-83AB-711CCD734A01}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
     <Platform>win32</Platform>
@@ -59,26 +59,26 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\lib\Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\lib\Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">ext_xxhash.dir\Debug\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">ext_xxhash</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\lib\Release\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\lib\Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|win32'">ext_xxhash.dir\Release\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|win32'">ext_xxhash</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\lib\MinSizeRel\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\lib\MinSizeRel\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">ext_xxhash.dir\MinSizeRel\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">ext_xxhash</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\lib\RelWithDebInfo\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\lib\RelWithDebInfo\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">ext_xxhash.dir\RelWithDebInfo\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">ext_xxhash</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -95,10 +95,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -111,7 +111,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ExceptionHandling>
       </ExceptionHandling>
@@ -128,10 +128,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -144,7 +144,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ExceptionHandling>
       </ExceptionHandling>
@@ -161,10 +161,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -177,7 +177,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>
@@ -193,10 +193,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -208,11 +208,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\CMakeLists.txt">
+    <CustomBuild Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\CMakeLists.txt">
       <UseUtf8Encoding>Always</UseUtf8Encoding>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/external/xxhash/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/cocos2d/external/xxhash/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/external/xxhash/CMakeFiles/generate.stamp
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii -BD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32/engine/external/xxhash/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -221,11 +221,11 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\xxhash\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\xxhash\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/external/xxhash/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/cocos2d/external/xxhash/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/external/xxhash/CMakeFiles/generate.stamp
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii -BD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32/engine/external/xxhash/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -234,11 +234,11 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\xxhash\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\xxhash\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/external/xxhash/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/cocos2d/external/xxhash/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/external/xxhash/CMakeFiles/generate.stamp
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii -BD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32/engine/external/xxhash/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -247,11 +247,11 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\xxhash\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\xxhash\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/external/xxhash/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/cocos2d/external/xxhash/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/external/xxhash/CMakeFiles/generate.stamp
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii -BD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32/engine/external/xxhash/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -260,16 +260,16 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\xxhash\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\xxhash\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\external\xxhash\xxhash.c" />
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\external\xxhash\xxhash.c" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\ZERO_CHECK.vcxproj">
-      <Project>{454CA76D-75FC-3F37-B9BA-0A2C1C033296}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\ZERO_CHECK.vcxproj">
+      <Project>{BA675967-AFF6-32A8-8C3B-EBD59F986F14}</Project>
       <Name>ZERO_CHECK</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

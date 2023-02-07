@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\src\format.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\src\os.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\args.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\chrono.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\compile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\format.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\format-inl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\os.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\ostream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\printf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\ranges.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\std.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\include\fmt\xchar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\README.rst" />
+    <None Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\fmt-9.1.0\ChangeLog.rst" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{8270D40F-704D-3A0E-B063-D752B4F94494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{26A7F34B-B09A-3FD2-A334-238C3CB1E823}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,4 +1,4 @@
-# Install script for directory: D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/external/png
+# Install script for directory: D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/cocos2d/external/png
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

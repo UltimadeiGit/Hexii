@@ -25,7 +25,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{019D1DC1-DAD7-3817-A40C-FB2AC948DC4B}</ProjectGuid>
+    <ProjectGuid>{C0B33ED3-11BC-3715-8067-FDBE9AD66E06}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
     <Platform>win32</Platform>
@@ -108,11 +108,11 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\CMakeLists.txt">
+    <CustomBuild Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\CMakeLists.txt">
       <UseUtf8Encoding>Always</UseUtf8Encoding>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/cocos/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/cocos2d/cocos/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii -BD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -120,12 +120,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\2d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\audio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\base\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\math\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\navmesh\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\network\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\physics\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\physics3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\platform\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\renderer\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\ui\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\2d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\audio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\base\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\math\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\navmesh\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\network\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\physics\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\physics3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\platform\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\renderer\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\ui\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/cocos/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/cocos2d/cocos/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii -BD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -133,12 +133,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\2d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\audio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\base\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\math\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\navmesh\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\network\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\physics\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\physics3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\platform\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\renderer\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\ui\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\2d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\audio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\base\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\math\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\navmesh\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\network\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\physics\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\physics3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\platform\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\renderer\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\ui\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/cocos/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/cocos2d/cocos/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii -BD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -146,12 +146,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\2d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\audio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\base\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\math\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\navmesh\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\network\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\physics\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\physics3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\platform\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\renderer\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\ui\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\2d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\audio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\base\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\math\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\navmesh\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\network\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\physics\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\physics3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\platform\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\renderer\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\ui\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii/Hexii/cocos2d/cocos/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">Building Custom Rule D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/cocos2d/cocos/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii/Hexii -BD:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii/Hexii/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii -BD:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32 --check-stamp-file D:/Documents/Programming/CocosTests/Hexii1stIteration/Hexii/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -159,66 +159,66 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\2d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\audio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\base\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\math\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\navmesh\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\network\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\physics\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\physics3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\platform\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\renderer\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\cocos\ui\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii\Hexii\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\2d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\audio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\base\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\math\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\navmesh\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\network\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\physics\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\physics3d\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\platform\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\renderer\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\cocos\ui\CMakeLists.txt;D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\ZERO_CHECK.vcxproj">
-      <Project>{454CA76D-75FC-3F37-B9BA-0A2C1C033296}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\ZERO_CHECK.vcxproj">
+      <Project>{BA675967-AFF6-32A8-8C3B-EBD59F986F14}</Project>
       <Name>ZERO_CHECK</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\cocos\core\cocos2d.vcxproj">
-      <Project>{595FAEE2-E95F-3D8E-BD74-375C4F59F4B2}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\cocos\core\cocos2d.vcxproj">
+      <Project>{841C1027-E4F5-3C0B-A490-5D6C4F8B3A89}</Project>
       <Name>cocos2d</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\clipper\ext_clipper.vcxproj">
-      <Project>{35CF7857-FC8A-31B7-8799-28D7A25E8BA2}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\clipper\ext_clipper.vcxproj">
+      <Project>{1B2E12FC-75D0-318D-A076-C367DF42BCA8}</Project>
       <Name>ext_clipper</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\ConvertUTF\ext_convertUTF.vcxproj">
-      <Project>{FA952C72-0F18-33F1-B5ED-A7C71F16D254}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\ConvertUTF\ext_convertUTF.vcxproj">
+      <Project>{C6284820-3A0D-3D15-AF5E-4B45485D7CF6}</Project>
       <Name>ext_convertUTF</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\edtaa3func\ext_edtaa3func.vcxproj">
-      <Project>{76BBE908-DA6C-3828-802B-F92E804C9EDA}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\edtaa3func\ext_edtaa3func.vcxproj">
+      <Project>{90F93224-4120-3873-B822-B459937B10F6}</Project>
       <Name>ext_edtaa3func</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\md5\ext_md5.vcxproj">
-      <Project>{656AE385-6D17-3B7D-B7DB-032FB95A5469}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\md5\ext_md5.vcxproj">
+      <Project>{CE245CA3-436A-3B74-92C7-5C7636C39E98}</Project>
       <Name>ext_md5</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\poly2tri\ext_poly2tri.vcxproj">
-      <Project>{1D954DE0-5823-3C92-8483-5292639B4AC7}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\poly2tri\ext_poly2tri.vcxproj">
+      <Project>{9471481C-0FFD-3542-9929-933A75899B6E}</Project>
       <Name>ext_poly2tri</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\recast\ext_recast.vcxproj">
-      <Project>{2B3FDB08-E269-3550-B964-C7F3C78F03A6}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\recast\ext_recast.vcxproj">
+      <Project>{811C6F07-F69C-32B9-BB4F-50A1BF1D6AD9}</Project>
       <Name>ext_recast</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\tinyxml2\ext_tinyxml2.vcxproj">
-      <Project>{7FFBCAD9-6EC1-3283-AE63-CC193241F42C}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\tinyxml2\ext_tinyxml2.vcxproj">
+      <Project>{7D9452DC-61F7-3C19-9BCE-0E41B4766C15}</Project>
       <Name>ext_tinyxml2</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\unzip\ext_unzip.vcxproj">
-      <Project>{B12248C4-C270-3F68-9005-85558CFB65CC}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\unzip\ext_unzip.vcxproj">
+      <Project>{577F012C-8E8A-3221-9B92-4B92B0DE3D6B}</Project>
       <Name>ext_unzip</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\xxhash\ext_xxhash.vcxproj">
-      <Project>{A98B18AB-19B3-3773-AF97-A39AD069B42B}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\xxhash\ext_xxhash.vcxproj">
+      <Project>{935DCFBC-F993-32B2-83AB-711CCD734A01}</Project>
       <Name>ext_xxhash</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\xxtea\ext_xxtea.vcxproj">
-      <Project>{BBA38255-6F48-3C69-A4DE-94A1244B3E14}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\xxtea\ext_xxtea.vcxproj">
+      <Project>{C6307534-1A66-3394-BA4F-0913E9F9A630}</Project>
       <Name>ext_xxtea</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii\Hexii\proj.win32\engine\external\external.vcxproj">
-      <Project>{115B5BA8-BF6F-3B0C-980D-A8F71F3BE5B9}</Project>
+    <ProjectReference Include="D:\Documents\Programming\CocosTests\Hexii1stIteration\Hexii\proj.win32\engine\external\external.vcxproj">
+      <Project>{5F1381BB-7D0B-35B1-A8AD-22B34C3212F0}</Project>
       <Name>external</Name>
     </ProjectReference>
   </ItemGroup>
