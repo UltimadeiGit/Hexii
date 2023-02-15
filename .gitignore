@@ -359,5 +359,36 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
+# Cocos files
+/cocos2d
+/proj.win32/CMakeFiles
+/proj.win32/engine/external
+/proj.win32/engine/cocos/core/CMakeFiles
+
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Resources/NEA
+/Resources/Designs
+/proj.win32/ZERO_CHECK.vcxproj.filters
+/proj.win32/ZERO_CHECK.vcxproj
+/proj.win32/SYNC_RESOURCE-Hexii.vcxproj.filters
+/proj.win32/SYNC_RESOURCE-Hexii.vcxproj
+/proj.win32/Hexii.vcxproj.filters
+/proj.win32/Hexii.vcxproj
+/proj.win32/Hexii.sln
+/proj.win32/cmake_install.cmake
+/proj.win32/CMakeCache.txt
+/proj.win32/ALL_BUILD.vcxproj.filters
+/proj.win32/ALL_BUILD.vcxproj
+/proj.win32/engine/cocos/core/cocos2d_libs.sln
+/proj.win32/engine/cocos/core/cocos2d.vcxproj.filters
+/proj.win32/engine/cocos/core/cocos2d.vcxproj
+/proj.win32/engine/cocos/core/cmake_install.cmake
+/proj.win32/engine/cocos/core/ALL_BUILD.vcxproj.filters
+/proj.win32/engine/cocos/core/ALL_BUILD.vcxproj
+/proj.win32/Hexii.vcxproj.filters
+/proj.android/.idea
+/proj.android/app
+/proj.android/gradle/wrapper
+/fmt-9.1.0/doc
+/proj.win32/fmt-9.1.0
