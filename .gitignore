@@ -360,7 +360,6 @@ MigrationBackup/
 .ionide/
 
 # Cocos files
-/cocos2d
 /proj.win32/CMakeFiles
 /proj.win32/engine/external
 /proj.win32/engine/cocos/core/CMakeFiles
