@@ -4,7 +4,7 @@
 USING_NS_CC;
 
 bool CurrencyHUD::init() {
-	m_background = Sprite::create("CurrencyHUDBackground.png");
+	m_background = Sprite::create("components/CurrencyHUDBackground.png");
 	m_background->setAnchorPoint(Vec2(0.5, 1.0));
 	m_background->setPosition(Vec2(0.0f, 0.0f));
 

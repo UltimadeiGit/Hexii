@@ -10,7 +10,7 @@ Hex::Hex(const unsigned int layer) : m_layer(layer), m_active(false),
 {}
 
 bool Hex::init() {
-	m_hex = Sprite::create(AutoPolygon::generatePolygon("HexagonInactive.png"));
+	m_hex = Sprite::create(AutoPolygon::generatePolygon("gameplay/HexagonInactive.png"));
 	m_hex->setAnchorPoint(Vec2(0, 0));
 	
 	setContentSize(m_hex->getContentSize());
@@ -20,12 +20,12 @@ bool Hex::init() {
 	m_shader->setUniform<float>("progress", 0.0f);
 	m_shader->setUniform<Vec2>("hexCenter", Vec2(size.height * HEXAGON_HEIGHT_TO_WIDTH * 0.5f, size.height * 0.5f));
 	m_shader->setUniform<Vec2>("screenCenter", Director::getInstance()->getVisibleSize() / 2);
-	m_shader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("HexProgressOverlay.png"));
+	m_shader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("gameplay/HexProgressOverlay.png"));
 
 	// The shader applies to the hex sprite
 	m_hex->setProgramState(m_shader->programState);
 
-	m_debugLabel = Label::createWithTTF("TMP", "fonts/OCR.ttf", 20, Size::ZERO, TextHAlignment::CENTER);
+	m_debugLabel = Label::createWithTTF("", "fonts/OCR.ttf", 20, Size::ZERO, TextHAlignment::CENTER);
 	m_debugLabel->setPosition(size / 2);
 	m_debugLabel->setTextColor(Color4B(160, 0, 120, 255));
 	m_debugLabel->enableShadow(Color4B::BLACK, Size(2, -2), 5);
@@ -127,7 +127,7 @@ void Hex::setActive(bool active) {
 	this->getProgramState();
 
 	m_active = active;
-	m_hex->setTexture(_director->getTextureCache()->addImage(active ? "HexagonActive.png" : "HexagonInactive.png"));
+	m_hex->setTexture(_director->getTextureCache()->addImage(active ? "gameplay/HexagonActive.png" : "gameplay/HexagonInactive.png"));
 	m_hex->setProgramState(m_shader->programState);
 }
 

@@ -13,7 +13,7 @@ bool HexInfoTab::init() {
 	m_hexEXPBar->setAnchorPoint(Vec2(0.0, 0.5));
 	m_hexEXPBar->setPosition(Vec2(30, 1102));
 
-	m_focusSprite = Sprite::create("HexagonInactive.png");
+	m_focusSprite = Sprite::create("gameplay/HexagonInactive.png");
 	m_focusSprite->setContentSize(Size(161 * HEXAGON_HEIGHT_TO_WIDTH, 161));
 	m_focusSprite->setAnchorPoint(Vec2(0.5, 0.5));
 	m_focusSprite->setPosition(Vec2(110, 1221));

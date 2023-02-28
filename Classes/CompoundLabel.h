@@ -36,8 +36,6 @@ private:
 	// Updates the content size of this node, to reflect changes to the parts' sizes
 	void updateSize();
 
-	
-
 	float m_spaceBetweenParts;
 
 	cocos2d::Label* m_constPart;

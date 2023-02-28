@@ -24,7 +24,7 @@ bool HexiiScene::init() {
 
 	this->scheduleUpdate();
 
-	m_debugLabel = Label::createWithTTF("TMP", "fonts/arial.ttf", 20.0f);
+	m_debugLabel = Label::createWithTTF("", "fonts/arial.ttf", 20.0f);
 	m_debugLabel->setTextColor(Color4B(128, 128, 128, 255));
 	// m_debugLabel->enableGlow(Color4B(255, 0, 0, 255));
 	m_debugLabel->setPosition(Vec2(visibleSize.width / 2 + origin.x, 100));
@@ -133,7 +133,7 @@ void HexiiScene::tryPurchaseHex(Hex* target) {
 	case 0:
 		break;
 	case 1:
-		cost = (BigReal)100 * (std::powl(6, (m_hexiiCountPerLayer[1] + 1)));
+		cost = (BigReal)1 * (std::powl(6, (m_hexiiCountPerLayer[1] + 1)));
 		break;
 	default:
 		cost = 100;

@@ -12,7 +12,7 @@ bool ProgressBar::init() {
 
 	float hexWidth = (2 * m_desiredWidth) / (m_numParts + 1);
 
-	PolygonInfo pinfo = AutoPolygon::generatePolygon("ComponentHexagon.png");
+	PolygonInfo pinfo = AutoPolygon::generatePolygon("widgets/ProgressBarHexagon.png");
 
 	// Create the first part outside of the for loop so that scale can be calculated for the RenderTexture
 	Sprite* firstPart = Sprite::create();

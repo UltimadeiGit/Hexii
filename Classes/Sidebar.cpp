@@ -5,7 +5,7 @@
 USING_NS_CC;
 
 bool Sidebar::init() {
-    m_background = Sprite::createWithTexture(Director::getInstance()->getTextureCache()->addImage("SidebarBackground.png"));
+    m_background = Sprite::createWithTexture(Director::getInstance()->getTextureCache()->addImage("components/SidebarBackground.png"));
     m_background->setAnchorPoint(Vec2(0.0, 0.0));
 
     this->addChild(m_background);
