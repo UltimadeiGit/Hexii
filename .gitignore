@@ -366,8 +366,15 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+
+
+
 /Resources/NEA
 /Resources/Designs
+
+/cocos2d/
+
 /proj.win32/ZERO_CHECK.vcxproj.filters
 /proj.win32/ZERO_CHECK.vcxproj
 /proj.win32/SYNC_RESOURCE-Hexii.vcxproj.filters
