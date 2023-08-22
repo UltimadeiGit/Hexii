@@ -20,17 +20,17 @@ bool HexiiScene::init() {
 	auto saveData = SaveData::getInstance();
 
 	// Try to load the plane and settings system (they are independent)
-	bool planeLoaded = saveData->tryLoad(SaveData::PLANE | SaveData::SETTINGS)& SaveData::PLANE;
+	bool planeLoaded = saveData->tryLoad(SaveData::PLANE);
 
 	if (planeLoaded) {
-		m_plane = HexPlane::getInstance();
+		m_plane = HexiiPlane::getInstance();
 
 		// Loaded plane succesfully, so try and load the other systems
 		saveData->tryLoad(SaveData::RESOURCES);
 	}
 	else {
 		// Failed to load the plane, so create a new one
-		m_plane = HexPlane::create(270 + 10);
+		m_plane = HexiiPlane::create(270 + 10);
 		// Make the L0 hex
 		m_plane->placeHexAtPos(Vec2(0, 0));
 	}
@@ -47,18 +47,59 @@ bool HexiiScene::init() {
 	//	this->addChild(m_debugNodes[i]);
 	//}
 
-	m_sidebar = Sidebar::create();
-	m_sidebar->setAnchorPoint(Vec2(0.0, 0.5));
-	m_sidebar->setPosition(Vec2(0, visibleSize.height / 2 + origin.y));
+	/// UI & HUD
+
+	// Camera
+
+	m_backgroundCamera = Camera::create();
+	m_backgroundCamera->setCameraFlag(CameraFlag::USER2);
+	m_backgroundCamera->setDepth(-2);
+
+	this->addChild(m_backgroundCamera);
+
+	// Background 
+
+	Size bgDesiredSize = Director::getInstance()->getTextureCache()->addImage("icons/TileableBackground.png")->getContentSize();
+
+	auto bgTex = Director::getInstance()->getTextureCache()->addImage("icons/TileableBackgroundPOT.png");
+	// Size of the power of two texture (its the same as the original texture but squashed to a power of two width and height)
+	const Size bgPOTTexSize = bgTex->getContentSize();
+
+	// Set the texture wrap mode to repeat
+	bgTex->setTexParameters(Texture2D::TexParams(cocos2d::backend::SamplerFilter::LINEAR,
+		cocos2d::backend::SamplerFilter::LINEAR,
+		cocos2d::backend::SamplerAddressMode::REPEAT,
+		cocos2d::backend::SamplerAddressMode::REPEAT));
+
+	float scaleX = bgDesiredSize.width / bgPOTTexSize.width;
+	float scaleY = bgDesiredSize.height / bgPOTTexSize.height;
+
+	auto background = Sprite::createWithTexture(bgTex);
+
+	background->setAnchorPoint(Vec2(0, 0));
+	background->setStretchEnabled(false);
+	background->setTextureRect(Rect(Vec2::ZERO, Size(visibleSize.width, visibleSize.height)));
+	background->setScale(scaleX, scaleY);
+
+	this->addChild(background, -10);
+	background->setCameraMask((unsigned short)m_backgroundCamera->getCameraFlag());
+
+	// Dock
+
+	m_dock = Dock::create();
+	m_dock->setAnchorPoint(Vec2(0.5, 0.0));
+	m_dock->setPosition(origin + Vec2(visibleSize.width / 2, 0));
+
+	// Currency HUD
 
 	m_currencyHUD = CurrencyHUD::create();
 	m_currencyHUD->setPosition(Vec2(origin.x + visibleSize.width / 2, visibleSize.height + origin.y));
 
 	scheduleUpdate();
 
-	this->addChild(HexPlane::getInstance());
-	this->addChild(m_sidebar);
-	this->addChild(m_currencyHUD);
+	this->addChild(HexiiPlane::getInstance(), 0);
+	this->addChild(m_dock, 1);
+	this->addChild(m_currencyHUD, 1);
 
 	return true;
 }
@@ -69,6 +110,6 @@ void HexiiScene::update(float dt) {
 	//m_debugLabel->setString("(" + std::to_string(a.x) + ", " + std::to_string(a.y) + ")");
 
 	m_plane->update(dt);
-	m_sidebar->update(dt);
+	m_dock->update(dt);
 	m_currencyHUD->update(dt);
 }

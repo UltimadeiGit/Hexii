@@ -11,11 +11,11 @@ public:
 	CREATE_FUNC(CurrencyHUD);
 private:
 	cocos2d::Sprite* m_background;
-	cocos2d::Sprite* m_greenMatterIcon;
+	cocos2d::Sprite* m_nectarIcon;
 
-	cocos2d::Label* m_greenMatterAmount;
+	cocos2d::Label* m_nectarAmount;
 	// Amount gm is increasing per second
-	cocos2d::Label* m_greenMatterIncreaseAmount;
+	cocos2d::Label* m_nectarIncreaseAmount;
 	// Label with the text "/ sec"
 	cocos2d::Label* m_perSecLabel;
 };

@@ -50,11 +50,11 @@ uint SaveData::tryLoad(uint targets) {
     }
 
     if (targets & LoadFlags::PLANE) {
-        std::string unparsedPlaneData = userDefault->getStringForKey("saveData.hexPlane", "--");
+        std::string unparsedPlaneData = userDefault->getStringForKey("saveData.HexiiPlane", "--");
         if (unparsedPlaneData != "--") {
             json planeData = json::parse(unparsedPlaneData);
 
-            if (HexPlane::create(planeData)) successFlag |= LoadFlags::PLANE;
+            if (HexiiPlane::create(planeData)) successFlag |= LoadFlags::PLANE;
         }
     }
 
@@ -66,7 +66,7 @@ void SaveData::save() {
 
     userDefault->setStringForKey("saveData.resources", json(*Resources::getInstance()).dump());
     userDefault->setStringForKey("saveData.settings", json(*Settings::getInstance()).dump());
-    userDefault->setStringForKey("saveData.hexPlane", json(*HexPlane::getInstance()).dump());
+    userDefault->setStringForKey("saveData.HexiiPlane", json(*HexiiPlane::getInstance()).dump());
 
     time(&m_timeOfLastSave);
 }

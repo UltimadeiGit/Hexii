@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cocos2d.h>
-#include "HexPlane.h"
+#include "HexiiPlane.h"
 #include "Sidebar.h"
 #include "CurrencyHUD.h"
 
@@ -20,9 +20,11 @@ public:
 private:
     /// UI & HUD
 
-    Sidebar* m_sidebar;
+    cocos2d::Camera* m_backgroundCamera;
+
+    Dock* m_dock;
     CurrencyHUD* m_currencyHUD;
 
-    HexPlane* m_plane;
+    HexiiPlane* m_plane;
 };
 

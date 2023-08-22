@@ -24,4 +24,5 @@ private:
 	std::map<const std::string, bool> m_values;
 };
 
+typedef std::shared_ptr<BoolMap> BoolMapPtr;
 extern void to_json(nlohmann::json& j, const BoolMap& boolMap);

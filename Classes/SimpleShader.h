@@ -31,6 +31,8 @@ public:
     void setUniform(std::string uniform, cocos2d::Texture2D* value);
 };
 
+typedef std::shared_ptr<SimpleShader> SimpleShaderPtr;
+
 template<typename T>
 void SimpleShader::setUniform(std::string uniform, T value)
 {

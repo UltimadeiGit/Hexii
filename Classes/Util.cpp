@@ -4,9 +4,11 @@
 #include "Console.h"
 #include "Maths.h"
 #include "JSON.hpp"
+#include "EventUtility.h"
 
 USING_NS_CC;
 using namespace nlohmann;
+using namespace EventUtility;
 
 // cpp file for all util headers
 
@@ -91,6 +93,11 @@ std::string formatBigInt(BigInt val, uint significantFigures) {
 	return formatBigReal(val, true, significantFigures, 0);
 }
 
+BigReal multiplierToPercentage(BigReal multiplier)
+{
+	return (multiplier - 1) * 100;
+}
+
 Vec2 roundVec2(const Vec2& target) {
 	return Vec2(roundf(target.x), roundf(target.y));
 }
@@ -105,6 +112,11 @@ Vec2 absVec2(const cocos2d::Vec2& target) {
 
 Vec3 absVec3(const Vec3& target) {
 	return Vec3(abs(target.x), abs(target.y), abs(target.z));
+}
+
+Timestamp timeSinceEpochMs() {
+	using namespace std::chrono;
+	return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 }
 
 namespace cocos2d {

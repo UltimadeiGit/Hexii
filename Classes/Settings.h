@@ -2,7 +2,7 @@
 
 #include "Maths.h"
 #include "JSON.hpp"
-#include "HexPlane.h"
+#include "HexiiPlane.h"
 #include <vector>
 
 class Settings {

@@ -16,37 +16,37 @@ Resources* Resources::getInstance() {
 }
 
 bool Resources::load(const nlohmann::json& data) {
-    data.at("greenMatter").get_to(m_greenMatter);
-    data.at("hexiiCountPerLayer").get_to(m_hexiiCountPerLayer);
+    data.at("nectar").get_to(m_nectar);
+    data.at("hexiiCountPerDistrict").get_to(m_hexiiCountPerDistrict);
     data.at("tabsEnabled").get_to(m_tabsEnabled);
-    if (data.contains("globalPowerUpgradeBonus")) data.at("globalPowerUpgradeBonus").get_to(m_globalPowerUpgradeBonus);
+    if (data.contains("Unity2UpgradeBonus")) data.at("Unity2UpgradeBonus").get_to(m_Unity2UpgradeBonus);
 
     return true;
 }
 
-void Resources::addGreenMatter(BigReal op) {
-    if (op > 0 || m_greenMatter >= std::abs(op)) m_greenMatter += op;
-    else err("Green matter cost was unaffordable");
+void Resources::addNectar(BigReal op) {
+    if (op > 0 || m_nectar >= std::abs(op)) m_nectar += op;
+    else err("nectar cost was unaffordable");
 }
 
-void Resources::addHexInLayer(uint layer) {
-    if (layer >= Resources::MAX_LAYERS) return;
+void Resources::addHexiiInDistrict(uint District) {
+    if (District >= Resources::MAX_DISTRICTS) return;
 
-    m_hexiiCountPerLayer[layer]++;
-    if (layer > 0 && m_hexiiCountPerLayer[layer] > 6 * layer) err("Hex count per layer exceeded maximum expected value");
+    m_hexiiCountPerDistrict[District]++;
+    if (District > 0 && m_hexiiCountPerDistrict[District] > 6 * District) err("Hexii count per District exceeded maximum expected value");
 }
 
 void to_json(nlohmann::json& j, const Resources& resources) {
-    json hexiiCountPerLayer = json::array();
-    for (uint i = 0; i < Resources::MAX_LAYERS; i++) hexiiCountPerLayer.push_back(resources.getHexiiCountInLayer(i));
+    json hexiiCountPerDistrict = json::array();
+    for (uint i = 0; i < Resources::MAX_DISTRICTS; i++) hexiiCountPerDistrict.push_back(resources.getHexiiCountInDistrict(i));
 
     json tabsEnabled = json::array();
     for (uint i = 0; i < 5; i++) tabsEnabled.push_back(resources.getTabEnabled(i));
 
     j = json{
-        {"greenMatter", resources.getGreenMatter()},
-        {"globalPowerUpgradeBonus", resources.getGlobalPowerUpgradeBonus()},
-        {"hexiiCountPerLayer", hexiiCountPerLayer},
+        {"nectar", resources.getNectar()},
+        {"Unity2UpgradeBonus", resources.getUnity2UpgradeBonus()},
+        {"hexiiCountPerDistrict", hexiiCountPerDistrict},
         {"tabsEnabled", tabsEnabled}
     };
 }
