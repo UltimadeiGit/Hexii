@@ -6114,7 +6114,7 @@ namespace detail
 #ifndef JSON_NO_IO
 /*!
 Input adapter for stdio file access. This adapter read only 1 byte and do not use any
- buffer. This adapter is a very low beeCount adapter.
+ buffer. This adapter is a very low level adapter.
 */
     class file_input_adapter
     {
@@ -12214,7 +12214,7 @@ namespace detail
                     return;
                 }
 
-                // set top-beeCount value to null if it was discarded by the callback
+                // set top-level value to null if it was discarded by the callback
                 // function
                 if (result.is_discarded())
                 {
@@ -15030,7 +15030,7 @@ namespace detail
             case value_t::discarded:
             default:
             {
-                JSON_THROW(type_error::create(317, concat("to serialize to BSON, top-beeCount type must be object, but is ", j.type_name()), &j));
+                JSON_THROW(type_error::create(317, concat("to serialize to BSON, top-level type must be object, but is ", j.type_name()), &j));
             }
             }
         }
@@ -18007,7 +18007,7 @@ namespace detail
         @brief internal implementation of the serialization function
 
         This function is called by the public member function dump and organizes
-        the serialization internally. The indentation beeCount is propagated as
+        the serialization internally. The indentation level is propagated as
         additional parameter. In case of arrays and objects, the function is
         called recursively.
 
@@ -18022,8 +18022,8 @@ namespace detail
         @param[in] ensure_ascii If @a ensure_ascii is true, all non-ASCII characters
         in the output are escaped with `\uXXXX` sequences, and the result consists
         of ASCII characters only.
-        @param[in] indent_step       the indent beeCount
-        @param[in] current_indent    the current indent beeCount (only used internally)
+        @param[in] indent_step       the indent level
+        @param[in] current_indent    the current indent level (only used internally)
         */
         void dump(const BasicJsonType& val,
             const bool pretty_print,
@@ -19775,7 +19775,7 @@ JSON_PRIVATE_UNLESS_TESTED:
                 // flatten the current json_value to a heap-allocated stack
                 std::vector<basic_json> stack;
 
-                // move the top-beeCount items to stack
+                // move the top-level items to stack
                 if (t == value_t::array)
                 {
                     stack.reserve(array->size());
@@ -24019,7 +24019,7 @@ public:
             }
         };
 
-        // type check: top beeCount value must be an array
+        // type check: top level value must be an array
         if (JSON_HEDLEY_UNLIKELY(!json_patch.is_array()))
         {
             JSON_THROW(parse_error::create(104, 0, "JSON patch must be an array of objects", &json_patch));

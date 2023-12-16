@@ -3,6 +3,7 @@
 #include "Resources.h"
 #include "Settings.h"
 #include "Console.h"
+#include "Progression.h"
 
 USING_NS_CC;
 using namespace nlohmann;
@@ -58,6 +59,21 @@ uint SaveData::tryLoad(uint targets) {
         }
     }
 
+    if (targets & LoadFlags::PROGRESSION) {
+        std::string unparsedProgressionData = userDefault->getStringForKey("saveData.Progression", "--");
+        if (unparsedProgressionData != "--") {
+            json progressionData = json::parse(unparsedProgressionData);
+
+            Progression::load(progressionData);
+
+            successFlag |= LoadFlags::PROGRESSION;
+        }
+        else {
+            // Load progression with the default values
+            Progression::getInstance();
+        }
+    }
+
     return successFlag;
 }
 
@@ -67,6 +83,7 @@ void SaveData::save() {
     userDefault->setStringForKey("saveData.resources", json(*Resources::getInstance()).dump());
     userDefault->setStringForKey("saveData.settings", json(*Settings::getInstance()).dump());
     userDefault->setStringForKey("saveData.HexiiPlane", json(*HexiiPlane::getInstance()).dump());
+    userDefault->setStringForKey("saveData.Progression", json(*Progression::getInstance()).dump());
 
     time(&m_timeOfLastSave);
 }

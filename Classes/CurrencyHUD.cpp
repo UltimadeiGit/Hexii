@@ -1,61 +1,61 @@
 #include "CurrencyHUD.h"
 #include "Resources.h"
+#include "ColourSchemes.h"
+#include "SimpleShader.h"
 
 USING_NS_CC;
 
+CurrencyHUD::CurrencyHUD(CurrencyType currencyType)
+	: m_currencyType(currencyType)
+{}
+
 bool CurrencyHUD::init() {
-	m_background = Sprite::create("components/CurrencyHUDBackground.png");
-	m_background->setAnchorPoint(Vec2(0.5, 1.0));
+	const std::string currencyName = getCurrencyName();
+
+	//m_background = Sprite::create("HUD/RedMatterResourcePane.png");
+	m_background = Sprite::create("HUD/" + currencyName + "ResourcePane.png");
+	const cocos2d::Size desiredSize { 438, 125 };
+
+	//m_background->setContentSize(Size(356, 145));
+	m_background->setContentSize(desiredSize);
+	m_background->setAnchorPoint(Vec2(0.0, 1.0));
 	m_background->setPosition(Vec2(0.0f, 0.0f));
 
-	m_nectarIcon = Sprite::create("icons/Nectar.png");
-	m_nectarIcon->setScale(1.0 / 3);
-	m_nectarIcon->setAnchorPoint(Vec2(0.5f, 0.5f));
-	m_nectarIcon->setPosition(Vec2(-100, -85));
+	//m_currencyIcon = Sprite::create("icons/RedMatter.png");
+	m_currencyIcon = Sprite::create("icons/" + currencyName + ".png");
+	//static SimpleShaderPtr s = SimpleShader::create(SimpleShader::createShaderProgramWithFragmentShader("shaders/dents.frag"));
+	//m_currencyIcon->setProgramState(s->getProgramState());
+	m_currencyIcon->setContentSize({ 112, 117 });
+	m_currencyIcon->setAnchorPoint(Vec2(0.5f, 0.5f));
+	m_currencyIcon->setPosition({ 95, -56 });
 
-	m_nectarAmount = Label::createWithTTF("0", "fonts/AgencyBold.ttf", 52, Size::ZERO, TextHAlignment::CENTER);
-	m_nectarAmount->setTextColor(Color4B(188, 255, 0, 255));
-	m_nectarAmount->enableOutline(Color4B::BLACK, 1);
-	m_nectarAmount->enableShadow(Color4B::BLACK, Size::ZERO, 2);
-	m_nectarAmount->setPosition(Vec2(100, -85));
-
-	// m_nectarAmount->setPosition(m_nectarBoxAnchor + Vec2(275, 55 - size.height));
-
-	// GM PER SECOND NOT CURRENTLY BEING USED
-
-	/*
-
-	m_nectarIncreaseAmount = Label::createWithTTF("+ 0", "fonts/AgencyBold.ttf", 36, Size::ZERO, TextHAlignment::CENTER);
-	m_nectarIncreaseAmount->setTextColor(Color4B(255, 255, 255, 255));
-	m_nectarIncreaseAmount->enableOutline(Color4B::BLACK, 1);
-	m_nectarIncreaseAmount->enableShadow(Color4B::BLACK, Size::ZERO, 1);
-	m_nectarIncreaseAmount->setPosition(Vec2(465, 85));
-
-	m_perSecLabel = Label::createWithTTF("/ sec", "fonts/AgencyBold.ttf", 30, Size::ZERO, TextHAlignment::LEFT);
-	m_perSecLabel->setPosition(Vec2(5 + m_nectarIncreaseAmount->getContentSize().width, 0.0f));
-	m_perSecLabel->enableOutline(Color4B::BLACK, 1);
-	m_perSecLabel->enableShadow(Color4B::BLACK, Size::ZERO, 1);
-	m_perSecLabel->setAnchorPoint(Vec2(0, 0));
-	m_nectarIncreaseAmount->addChild(m_perSecLabel);
-
-	this->addChild(m_nectarIncreaseAmount);
-
-	*/
+	m_currencyAmount = Label::createWithTTF("0", "fonts/BreeSerif.ttf", 60, Size::ZERO, TextHAlignment::RIGHT);
+	m_currencyAmount->setAnchorPoint(Vec2(0.0f, 0.4f));
+	m_currencyAmount->setTextColor(COMMON_GREEN);
+	m_currencyAmount->enableOutline(Color4B::BLACK, 5);
+	m_currencyAmount->enableShadow(Color4B::BLACK, Size(1, -1), 3);
+	m_currencyAmount->setPosition(Vec2( (desiredSize.width / 2) - 25, -(desiredSize.height / 2)));
 
 	setContentSize(m_background->getContentSize());
 
 	this->addChild(m_background);
-	this->addChild(m_nectarIcon);
-	this->addChild(m_nectarAmount);
+	this->addChild(m_currencyIcon);
+	this->addChild(m_currencyAmount);
 
     return true;
 }
 
 void CurrencyHUD::update(float dt) {
-	m_nectarAmount->setString(formatBigReal(Resources::getInstance()->getNectar()));
+	switch (m_currencyType) {
+	case CurrencyType::GREEN_MATTER:
+		m_currencyAmount->setString(formatBigReal(Resources::getInstance()->getGreenMatter()));
+		break;
+	}
+}
 
-	/*
-	m_nectarIncreaseAmount->setString("+ " + Resources::getInstance()->getNectar().to_string());
-	m_perSecLabel->setPosition(Vec2(5 + m_nectarIncreaseAmount->getContentSize().width, 0.0f));
-	*/
+std::string CurrencyHUD::getCurrencyName() const {
+	switch (m_currencyType) {
+		case CurrencyType::GREEN_MATTER:
+			return "GreenMatter";
+	}
 }

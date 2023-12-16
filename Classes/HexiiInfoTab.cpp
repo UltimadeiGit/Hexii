@@ -1,10 +1,16 @@
 #include "HexiiInfoTab.h"
 #include "Resources.h"
 #include "ColourSchemes.h"
+#include "Progression.h"
 
 constexpr float LABEL_SPACING = 15.0f;
-constexpr float LABEL_WIDTH = 315.0f;
-constexpr uint LABEL_FONT_SIZE = 36;
+constexpr float LABEL_HEIGHT = 55.0f;
+//constexpr float LABEL_WIDTH = 315.0f;
+constexpr float INFO_PLATE_WIDTH = 427.0f;
+constexpr float INFO_PLATE_START = 380.0f;
+constexpr cocos2d::Vec2 TAB_POS = { 758 + 58, 10 };
+constexpr cocos2d::Vec2 TAB_BUTTON_POS = { 790 + 58, 455 };
+constexpr uint LABEL_FONT_SIZE = 42;
 
 USING_NS_CC;
 
@@ -13,7 +19,7 @@ HexiiInfoTab::HexiiInfoTab() {}
 bool HexiiInfoTab::init() {
 	/// Background overlay
 
-	m_backgroundOverlay = Sprite::create("components/HexiiInfoTabBackgroundOverlay.png");
+	m_backgroundOverlay = Sprite::create("UI/HexiiInfoTab/BackgroundOverlay.png");
 	m_backgroundOverlay->setAnchorPoint(Vec2(0, 0));
 	//m_backgroundOverlay->setPosition(Vec2(1, 591));
 	this->addChild(m_backgroundOverlay, -1);
@@ -25,7 +31,7 @@ bool HexiiInfoTab::init() {
 	m_focusSprite = Sprite::create("gameplay/HexInactive.png");
 	m_focusSprite->setContentSize(Size(283 * HEXAGON_HEIGHT_TO_WIDTH, 283));
 	m_focusSprite->setAnchorPoint(Vec2(0.5, 0.5));
-	m_focusSprite->setPosition(Vec2(189, 172));
+	m_focusSprite->setPosition(Vec2(198, 170));
 	m_focusSprite->setFlippedY(true);
 	this->addChild(m_focusSprite, 1);
 
@@ -37,14 +43,14 @@ bool HexiiInfoTab::init() {
 	m_hexiiNameLabel->setPosition(Vec2(190, 360));
 	this->addChild(m_hexiiNameLabel, 1);
 
-	m_hexiiDistrictLabel = Label::createWithTTF("", "fonts/BreeSerif.ttf", 24, Size::ZERO, TextHAlignment::CENTER);
-	m_hexiiDistrictLabel->setTextColor(Color4B::WHITE);
-	m_hexiiDistrictLabel->enableOutline(Color4B::BLACK, 1);
-	m_hexiiDistrictLabel->enableShadow(Color4B::BLACK, Size::ZERO, 2);
-	m_hexiiDistrictLabel->enableItalics();
-	m_hexiiDistrictLabel->setAnchorPoint(Vec2(0.5, 0.5));
-	m_hexiiDistrictLabel->setPosition(Vec2(190, 410));
-	this->addChild(m_hexiiDistrictLabel, 1);
+	m_hexiilayerLabel = Label::createWithTTF("", "fonts/BreeSerif.ttf", 24, Size::ZERO, TextHAlignment::CENTER);
+	m_hexiilayerLabel->setTextColor(Color4B::WHITE);
+	m_hexiilayerLabel->enableOutline(Color4B::BLACK, 1);
+	m_hexiilayerLabel->enableShadow(Color4B::BLACK, Size::ZERO, 2);
+	m_hexiilayerLabel->enableItalics();
+	m_hexiilayerLabel->setAnchorPoint(Vec2(0.5, 0.5));
+	m_hexiilayerLabel->setPosition(Vec2(190, 410));
+	this->addChild(m_hexiilayerLabel, 1);
 
 	/*
 	/// Pin button
@@ -58,13 +64,31 @@ bool HexiiInfoTab::init() {
 
 	/// Labels
 
+	constexpr float LABEL_PADDING = 20.0f;
+	constexpr float LABEL_LEFT_X = INFO_PLATE_START + LABEL_PADDING;
+	constexpr float LABEL_RIGHT_X = INFO_PLATE_START + INFO_PLATE_WIDTH - LABEL_PADDING + 5;
+	constexpr float LABEL_TOP_Y = 350.0f;
+	constexpr float WIDTH_CONSTRAINT = INFO_PLATE_WIDTH - LABEL_PADDING;
+	int labelIndex = 0;
+
+	m_levelLabel = CompoundLabel::create("Level", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
+	m_levelLabel->setStyle(true, true, LABEL_FONT_SIZE * 1.3, Color4B::WHITE, Color4B::BLACK, 4, Color4B::BLACK, Size(4, -4), 4);
+	m_levelLabel->setStyle(false, true, LABEL_FONT_SIZE * 1.3, GENERAL_IMPORTANT_VALUE);
+	//m_levelLabel->setIconTexture("icons/EXPSmall.png");
+	m_levelLabel->setConstraintMode(CompoundLabel::ConstraintMode::SPACING);
+	m_levelLabel->setSpacingConstraint(LABEL_SPACING);
+	//m_levelLabel->setWidthConstrant(LABEL_WIDTH, LABEL_SPACING, CompoundLabel::VariablePartFloat::);
+	m_levelLabel->setAnchorPoint(Vec2(0.5, 0.5));
+	m_levelLabel->setPosition({ INFO_PLATE_START + LABEL_PADDING + (INFO_PLATE_WIDTH / 2), LABEL_TOP_Y + 10 - (LABEL_HEIGHT * labelIndex++)});
+	this->addChild(m_levelLabel, 1);
+
 	m_yieldLabel = CompoundLabel::create("Yield:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
 	m_yieldLabel->setStyle(true, true, LABEL_FONT_SIZE, Color4B::WHITE, Color4B::BLACK, 0, Color4B::BLACK, Size(4, -4), 4);
 	m_yieldLabel->setStyle(false, true, LABEL_FONT_SIZE, INACTIVE_BLUE);
-	m_yieldLabel->setIconTexture("icons/XBSmall.png");
-	m_yieldLabel->setWidthConstrant(LABEL_WIDTH, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
+	m_yieldLabel->setIconTexture("icons/EXPSmall.png");
+	m_yieldLabel->setWidthConstrant(WIDTH_CONSTRAINT, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
 	m_yieldLabel->setAnchorPoint(Vec2(0.0, 0.5));
-	m_yieldLabel->setPosition(Vec2(400, 350));
+	m_yieldLabel->setPosition({ LABEL_LEFT_X, LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex++) });
 	this->addChild(m_yieldLabel, 1);
 
 	// The label to the left of the yield time value (says "Every ")
@@ -72,7 +96,7 @@ bool HexiiInfoTab::init() {
 	yieldTimeLeft->setTextColor(Color4B::WHITE);
 	yieldTimeLeft->enableShadow(Color4B::BLACK, Size(4, -4), 4);
 	yieldTimeLeft->setAnchorPoint(Vec2(0.0, 0.5));
-	yieldTimeLeft->setPosition(Vec2(400, 295));
+	yieldTimeLeft->setPosition({ LABEL_LEFT_X, LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex) });
 	this->addChild(yieldTimeLeft, 1);
 
 	// The label to the right of the yield time value (says " seconds")
@@ -80,90 +104,67 @@ bool HexiiInfoTab::init() {
 	yieldTimeRight->setTextColor(Color4B::WHITE);
 	yieldTimeRight->enableShadow(Color4B::BLACK, Size(4, -4), 4);
 	yieldTimeRight->setAnchorPoint(Vec2(1.0, 0.5));
-	yieldTimeRight->setPosition(Vec2(400 + LABEL_WIDTH, 295));
+	yieldTimeRight->setPosition({ LABEL_RIGHT_X, LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex) });
 	this->addChild(yieldTimeRight, 1);
 
 	m_yieldSpeedLabel = Label::createWithTTF("", "fonts/BreeSerif.ttf", LABEL_FONT_SIZE, Size::ZERO, TextHAlignment::RIGHT);
 	m_yieldSpeedLabel->setTextColor(INACTIVE_BLUE);
 	m_yieldSpeedLabel->enableShadow(Color4B::BLACK, Size(4, -4), 4);
 	m_yieldSpeedLabel->setAnchorPoint(Vec2(1.0, 0.5));
-	m_yieldSpeedLabel->setPosition(Vec2(400 + LABEL_WIDTH - yieldTimeRight->getContentSize().width, 295));
+	m_yieldSpeedLabel->setPosition({ 
+		LABEL_RIGHT_X - yieldTimeRight->getContentSize().width,
+		LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex++) 
+	});
 	this->addChild(m_yieldSpeedLabel, 1);
 
-	m_expLabel = CompoundLabel::create("XB:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
+	m_expLabel = CompoundLabel::create("EXP:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
 	m_expLabel->setStyle(true, true, LABEL_FONT_SIZE, Color4B::WHITE, Color4B::BLACK, 0, Color4B::BLACK, Size(4, -4), 4);
 	m_expLabel->setStyle(false, true, LABEL_FONT_SIZE, GENERAL_IMPORTANT_VALUE);
-	m_expLabel->setIconTexture("icons/XBSmall.png");
-	m_expLabel->setWidthConstrant(LABEL_WIDTH, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
+	m_expLabel->setIconTexture("icons/EXPSmall.png");
+	m_expLabel->setWidthConstrant(WIDTH_CONSTRAINT, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
 	m_expLabel->setAnchorPoint(Vec2(0.0, 0.5));
-	m_expLabel->setPosition(Vec2(400, 240));
+	m_expLabel->setPosition({ LABEL_LEFT_X, LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex++) });
 	this->addChild(m_expLabel, 1);
 
-	m_nextBeeLabel = CompoundLabel::create("Next Bee:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
-	m_nextBeeLabel->setStyle(true, true, LABEL_FONT_SIZE, Color4B::WHITE, Color4B::BLACK, 0, Color4B::BLACK, Size(4, -4), 4);
-	m_nextBeeLabel->setStyle(false, true, LABEL_FONT_SIZE, GENERAL_IMPORTANT_VALUE);
-	m_nextBeeLabel->setIconTexture("icons/XBSmall.png");
-	m_nextBeeLabel->setWidthConstrant(LABEL_WIDTH, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
-	m_nextBeeLabel->setAnchorPoint(Vec2(0.0, 0.5));
-	m_nextBeeLabel->setPosition(Vec2(400, 160));
-	this->addChild(m_nextBeeLabel, 1);
+	m_nextLevelLabel = CompoundLabel::create("Next Level:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
+	m_nextLevelLabel->setStyle(true, true, LABEL_FONT_SIZE, Color4B::WHITE, Color4B::BLACK, 0, Color4B::BLACK, Size(4, -4), 4);
+	m_nextLevelLabel->setStyle(false, true, LABEL_FONT_SIZE, GENERAL_IMPORTANT_VALUE);
+	m_nextLevelLabel->setIconTexture("icons/EXPSmall.png");
+	m_nextLevelLabel->setWidthConstrant(WIDTH_CONSTRAINT, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
+	m_nextLevelLabel->setAnchorPoint(Vec2(0.0, 0.5));
+	m_nextLevelLabel->setPosition({ LABEL_LEFT_X, LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex++) });
+	this->addChild(m_nextLevelLabel, 1);
 
-	m_beeNameLabel = Label::createWithTTF("", "fonts/BreeSerif.ttf", LABEL_FONT_SIZE, Size::ZERO, TextHAlignment::RIGHT);
-	m_beeNameLabel->enableShadow(Color4B::BLACK, Size(4, -4), 4);
-	m_beeNameLabel->setAnchorPoint(Vec2(0.0, 0.5));
-	m_beeNameLabel->setPosition(Vec2(400, 105));
-	this->addChild(m_beeNameLabel, 1);
+	/*
+	m_specNameLabel = CompoundLabel::create("Spec:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
+	m_specNameLabel->setStyle(true, true, LABEL_FONT_SIZE, Color4B::WHITE, Color4B::BLACK, 0, Color4B::BLACK, Size(4, -4), 4);
+	m_specNameLabel->setWidthConstrant(LABEL_WIDTH, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
+	m_specNameLabel->setAnchorPoint(Vec2(0.0, 0.5));
+	m_specNameLabel->setPosition(Vec2(400, 160));
+	this->addChild(m_specNameLabel, 1);
+	*/
+	
+	/*
+	
+	*/
 
-	m_beeCountLabel = Label::createWithTTF("", "fonts/BreeSerif.ttf", LABEL_FONT_SIZE, Size::ZERO, TextHAlignment::RIGHT);
-	m_beeCountLabel->enableShadow(Color4B::BLACK, Size(4, -4), 4);
-	m_beeCountLabel->setAnchorPoint(Vec2(1.0, 0.5));
-	m_beeCountLabel->setPosition(Vec2(400 + LABEL_WIDTH, 105));
-	this->addChild(m_beeCountLabel, 1);
+	/// EXPInfoTab
 
-	/// Purchase EXP button
+	m_expInfoTab = EXPInfoTab::create();
+	initTab(0, m_expInfoTab, TAB_POS, { 0, 1 }, TAB_BUTTON_POS, { 110, 0 }, "UI/HexiiInfoTab/EXPTab", "UI/HexiiInfoTab/DisabledTab");
 
-	m_purchaseEXPButton = ui::Button::create("widgets/buttons/PurchaseEXPButtonNeutral.png", "widgets/buttons/PurchaseEXPButtonSelected.png", "widgets/buttons/PurchaseEXPButtonDisabled.png");
-	m_purchaseEXPButton->setAnchorPoint(Vec2(0.5, 0.5));
-	m_purchaseEXPButton->setPosition(Vec2(213, 940));
-	m_purchaseEXPButton->addTouchEventListener(CC_CALLBACK_2(HexiiInfoTab::onPurchaseEXPButtonPressed, this));
+	m_standardL0UpgradesTab = HexiiUpgradesTab::create(UpgradePath::getStandardL0Path());
+	m_standardL0UpgradesTab->retain();
+	m_standardUpgradesTab = HexiiUpgradesTab::create(UpgradePath::getStandardPath());
+	m_standardUpgradesTab->retain();
 
-	m_purchaseEXPNectarCostLabel = CompoundLabel::create("", "fonts/SpeakPro-Heavy.ttf", "fonts/SpeakPro-Heavy.ttf");
-	m_purchaseEXPNectarCostLabel->setStyle(true, true, LABEL_FONT_SIZE, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(4, -4), 4);
-	//m_purchaseEXPNectarCostLabel->setIconTexture("icons/Nectar.png");
-	m_purchaseEXPNectarCostLabel->setSpacingConstraint(5.0f);
-	m_purchaseEXPNectarCostLabel->setAnchorPoint(Vec2(1.0, 0.5));
-	m_purchaseEXPNectarCostLabel->setPosition(Vec2(155, 45));
-
-	m_purchaseEXPDesiredEXPLabel = CompoundLabel::create("", "fonts/SpeakPro-Heavy.ttf", "fonts/SpeakPro-Heavy.ttf");
-	m_purchaseEXPDesiredEXPLabel->setStyle(true, true, LABEL_FONT_SIZE, Color4B::WHITE, Color4B::BLACK, 1, Color4B::BLACK, Size(4, -4), 4);
-	//m_purchaseEXPDesiredEXPLabel->setIconTexture("icons/EXP.png");
-	m_purchaseEXPDesiredEXPLabel->setSpacingConstraint(5.0f);
-	m_purchaseEXPDesiredEXPLabel->setAnchorPoint(Vec2(0.0, 0.5));
-	m_purchaseEXPDesiredEXPLabel->setPosition(Vec2(225, 45));
-
-	m_purchaseEXPButton->addChild(m_purchaseEXPNectarCostLabel, 1);
-	m_purchaseEXPButton->addChild(m_purchaseEXPDesiredEXPLabel, 1);
-	this->addChild(m_purchaseEXPButton, 1);
-
-	/// Upgrades
-
-	m_upgradeScrollView = ui::ScrollView::create();
-	m_upgradeScrollView->setAnchorPoint(Vec2(0.0, 0.0));
-	m_upgradeScrollView->setDirection(ui::ScrollView::Direction::HORIZONTAL);
-	m_upgradeScrollView->setContentSize(Size(415, 451)); // 415, 3625
-	m_upgradeScrollView->setInnerContainerSize(Size(415, 451));
-	m_upgradeScrollView->setBounceEnabled(true);
-	m_upgradeScrollView->setPosition(Vec2(572, 0));
-	//m_upgradeScrollView->setFlippedY(true);
-	// Invisible scrollbar
-	m_upgradeScrollView->setScrollBarOpacity(0);
-	this->addChild(m_upgradeScrollView, 2);
+	switchTab(0);
 
 	/// Events
 	
-	EventUtility::addGlobalEventListener("onHexiiFocus", this, &HexiiInfoTab::onHexiiFocus);
+	EventUtility::addGlobalEventListener(Hexii::EVENT_FOCUS, this, &HexiiInfoTab::onHexiiFocus);
 
-	setVisible(false);
+	setFocusHexii(nullptr);
 
 	return true;
 }
@@ -176,13 +177,8 @@ void HexiiInfoTab::update(float dt) {
 	// TODO: Add a setting to change the speed of UI updates
 	updateHexiiLabels(false, true, true);	
 
-	// Every 1/60th of a second, try and purchase EXP if held down
-	//if (m_purchaseEXPButton->isEnabled() && m_purchaseEXPButton->isHighlighted() &&
-	//	Director::getInstance()->getTotalFrames() % (int)std::ceil(Director::getInstance()->getFrameRate() / 60) == 0
-	//	) purchaseEXP();
-
-	/// Update upgrades
-	for (auto& i : m_upgradeScrollView->getChildren()) i->update(dt);
+	/// Update sub tab
+	getCurrentTab()->update(dt);
 }
 
 void HexiiInfoTab::onHexiiFocus(cocos2d::EventCustom* evnt) {
@@ -191,15 +187,10 @@ void HexiiInfoTab::onHexiiFocus(cocos2d::EventCustom* evnt) {
 	if (data->active) setFocusHexii(data->subject);
 }
 
-void HexiiInfoTab::onBeeGroupFocus(Ref*, cocos2d::ui::Widget::TouchEventType evntType, uint tabNumber) {
-	setFocusBeeGroup(&m_focusHexii->getBeeGroups()[tabNumber]);
-}
-
-void HexiiInfoTab::onPurchaseEXPButtonPressed(Ref*, cocos2d::ui::Widget::TouchEventType evntType) {
-	// Only care about the release
-	if (evntType != ui::Widget::TouchEventType::ENDED) return;
-
-	if (m_purchaseEXPButton->isEnabled()) purchaseEXP();
+void HexiiInfoTab::switchTab(unsigned short tab) {
+	TabbedWidget::switchTab(tab);
+	HexiiTab* currentTab = getCurrentTab();
+	currentTab->setFocus(m_focusHexii);
 }
 
 /*
@@ -208,18 +199,18 @@ void HexiiInfoTab::onUpgradePurchased(cocos2d::EventCustom* evnt) {
 	m_yieldLabel->setVariablePartString(formatBigReal(m_focus->getYield()));
 }
 
-void HexiiInfoTab::onBeeGained(cocos2d::EventCustom* evnt) {
-	Hexii::EventBeeGainedData* data = static_cast<Hexii::EventBeeGainedData*>(evnt->getUserData());
+void HexiiInfoTab::onLevelGained(cocos2d::EventCustom* evnt) {
+	Hexii::EventLevelGainedData* data = static_cast<Hexii::EventLevelGainedData*>(evnt->getUserData());
 
 	// Only update this box if the hex that leveled up was this tab's focus
 	if (data->subject != m_focus) return;
 
 	/// Update labels for hex stats
 
-	m_beeCountLabel->setVariablePartString(std::to_string(data->beeCount));
+	m_levelLabel->setVariablePartString(std::to_string(data->level));
 	m_yieldLabel->setVariablePartString(formatBigReal(m_focus->getYield()));
 
-	updateUpgradesList(data->beeCountBefore, data->beeCount);
+	updateUpgradesList(data->levelBefore, data->level);
 }
 
 void HexiiInfoTab::onPinButtonPressed(Ref*, cocos2d::ui::Widget::TouchEventType evntType) {
@@ -237,11 +228,25 @@ void HexiiInfoTab::onPinButtonPressed(Ref*, cocos2d::ui::Widget::TouchEventType 
 }
 */
 
-void HexiiInfoTab::onBeeGained(cocos2d::EventCustom* evnt) {
-	auto data = EventUtility::getEventData<BeeGroup::EventBeeGainedData>(evnt);
+void HexiiInfoTab::onLevelGained(cocos2d::EventCustom* evnt) {
+	// auto data = EventUtility::getEventData<Hexii::EventHexiiLevelGainedData>(evnt);
 
-	updateBeeGroupLabels(false, true);
-	if (data->changedStates.size() > 0) updateScrollView();
+	// updateSpecializationLabels(false, true);
+	if (isCurrentTabAnUpgradesTab()) {
+		HexiiUpgradesTab* upgradesTab = dynamic_cast<HexiiUpgradesTab*>(getCurrentTab());
+		upgradesTab->updateStates();
+	}
+}
+
+void HexiiInfoTab::initUpgradesTab(unsigned short tabNumber, HexiiUpgradesTab* tab, const std::string& pathName) {
+	initTab(tabNumber, tab, TAB_POS, { 0, 1 }, TAB_BUTTON_POS, { 110, 0 }, "UI/HexiiInfoTab/" + pathName + "UpgradesTab", "UI/HexiiInfoTab/DisabledTab", false);
+	
+	m_tabButtons[tabNumber]->setVisible(false);
+
+	Progression::whenAchieved(Progression::hexiiUpgradesAvailable(), [this, tabNumber]() {
+		enableTab(tabNumber, false);
+		m_tabButtons[tabNumber]->setVisible(true);
+	});
 }
 
 void HexiiInfoTab::setFocusHexii(Hexii* focus) {
@@ -249,15 +254,21 @@ void HexiiInfoTab::setFocusHexii(Hexii* focus) {
 
 	/// Cleanup
 
-	// Remove bee group tabs
-	for (auto i : m_beeGroupTabButtons) i->removeFromParent();
-	m_beeGroupTabButtons.clear();
+	// Remove old tabs (first tab is always the EXP tab)
+	for (uint i = 1; i < HEXII_INFO_TAB_COUNT; i++) removeTab(i);
+
+	// Remove listeners
+	if (m_levelGainedListener) {
+		_eventDispatcher->removeEventListener(m_levelGainedListener);
+	}
 
 	m_focusHexii = focus;
+	// Propagate focus to subtabs
+	if(m_tabs[m_currentTab] != nullptr) getCurrentTab()->setFocus(focus);
 
 	// Quick return if no focus
 	if (!m_focusHexii) {
-		setFocusBeeGroup(nullptr);
+		//setFocusSpecialization(nullptr);
 		setVisible(false);
 
 		return;
@@ -265,66 +276,81 @@ void HexiiInfoTab::setFocusHexii(Hexii* focus) {
 
 	/// Setup
 
-	auto& beeGroups = m_focusHexii->getBeeGroups();
-	// Setup the bee groups
-	if (beeGroups.size() == 0) setFocusBeeGroup(nullptr);
-	else for (auto& beeGroup : beeGroups) {
-		// TODO: Make the bee group tabs
-
-		// TODO: Remove
-		setFocusBeeGroup(&beeGroup);
+	// Setup the new tabs
+	if (m_focusHexii->getHexiiType() == Hexii::HexiiType::HOME_L0) {
+		initUpgradesTab(1, m_standardL0UpgradesTab, "StandardPath");
+	}
+	else {
+		initUpgradesTab(1, m_standardUpgradesTab, "StandardPath");
 	}
 
+	// Setup the new listener
+	m_levelGainedListener = EventUtility::addTargetedEventListener(Hexii::EVENT_LEVEL_GAINED, this, m_focusHexii->eventID, &HexiiInfoTab::onLevelGained);
+
+	/*auto& specGroups = m_focusHexii->getSpecializations();
+	// Setup the specs
+	if (specGroups.size() == 0) setFocusSpecialization(nullptr);
+	else for (auto& specGroup : specGroups) {
+	}
+	*/
+
 	// Update properties that change with focus but not per frame
-	m_yieldLabel->setIconTexture(m_focusHexii->getHexiiType() == Hexii::HexiiType::QueensChamber ? "icons/NectarSmall.png" : "icons/XBSmall.png");
+	m_yieldLabel->setIconTexture(m_focusHexii->getHexiiType() == Hexii::HexiiType::HOME_L0 ? "icons/GreenMatterSmall.png" : "icons/EXPSmall.png");
 	m_focusSprite->setTexture(m_focusHexii->getShadedRenderTexture());
 	updateHexiiLabels(true, true, true);
+
+	// Finally switch back to the last active tab
+	switchTab(m_currentTab);
 }
 
-void HexiiInfoTab::setFocusBeeGroup(BeeGroup* focus) {
-	if (m_focusBeeGroup == focus) return;
+/*
+void HexiiInfoTab::setFocusSpecialization(Specialization* focus) {
+	if (m_focusSpecialization == focus) return;
 
 	/// Cleanup
 
 	// Remove listeners
-	if (m_beeGainedListener) {
-		_eventDispatcher->removeEventListener(m_beeGainedListener);
+	if (m_levelGainedListener) {
+		_eventDispatcher->removeEventListener(m_levelGainedListener);
 	}
 
 	// Clear the old upgrades
-	m_upgradeScrollView->removeAllChildrenWithCleanup(true);
-	m_upgradeBoxes.clear();
+	//m_upgradeScrollView->removeAllChildrenWithCleanup(true);
+	//m_upgradeBoxes.clear();
 
-	m_focusBeeGroup = focus;
+	m_focusSpecialization = focus;
 	// Quick return if no focus
-	if (!m_focusBeeGroup) return;
+	if (!m_focusSpecialization) return;
 
-	/// Setup the new bee group
+	/// Setup the new spec
 
 	// Add listeners
-	m_beeGainedListener = EventUtility::addTargetedEventListener(BeeGroup::EVENT_BEE_GAINED, this, m_focusBeeGroup->eventID, &HexiiInfoTab::onBeeGained);
+	m_levelGainedListener = EventUtility::addTargetedEventListener(Specialization::EVENT_LEVEL_GAINED, this, m_focusSpecialization->eventID, &HexiiInfoTab::onLevelGained);
 
 	// Update labels
-	updateBeeGroupLabels(true, true);
+	updateSpecializationLabels(true, true);
 
+	/*
 	// Update upgrades list
 	auto& upgrades = focus->upgradePath->getUpgrades();
 	for (uint i = 0; i < upgrades.size(); i++) {
-		BeeGroupUpgradeBox* box = BeeGroupUpgradeBox::create();
+		UpgradeBox* box = UpgradeBox::create();
 
-		box->setUpgrade(upgrades[i], m_focusBeeGroup);
+		box->setUpgrade(upgrades[i], m_focusSpecialization);
 		box->setAnchorPoint(Vec2(0, 0));
 		box->setPosition(Vec2(i * (box->getContentSize().width + 40), 0)); // Width of a box + 40 points spacing
-		m_upgradeBoxes.push_back(box);
+		//m_upgradeBoxes.push_back(box);
 		m_upgradeScrollView->addChild(box);
 	}
 	updateScrollView();
+	
 }
+*/
 
 void HexiiInfoTab::updateHexiiLabels(bool nameLabel, bool yieldLabel, bool expLabels) {
 	if (nameLabel) {
 		m_hexiiNameLabel->setString(m_focusHexii->getName());
-		m_hexiiDistrictLabel->setString("District " + std::to_string(m_focusHexii->getDistrict()));
+		m_hexiilayerLabel->setString("Layer " + std::to_string(m_focusHexii->getLayer()));
 	}
 	if (yieldLabel) {
 		m_yieldLabel->setVariablePartString(formatBigReal(m_focusHexii->getYield()));
@@ -341,166 +367,16 @@ void HexiiInfoTab::updateHexiiLabels(bool nameLabel, bool yieldLabel, bool expLa
 	}
 	if (expLabels) {
 		BigReal exp = m_focusHexii->getEXP();
-		BigReal expForNextBee = m_focusBeeGroup->getEXPForNextBee() - exp;
+		BigReal expForNextLevel = m_focusHexii->getEXPForNextLevel() - exp;
 
-		m_expLabel->setVariablePartString(formatBigReal(exp) /* + " / " + formatBigReal(exp + expForNextBee)*/);
-		m_nextBeeLabel->setVariablePartString(formatBigReal(exp + expForNextBee));
+		m_expLabel->setVariablePartString(formatBigReal(exp));
+		m_nextLevelLabel->setVariablePartString(formatBigReal(expForNextLevel));
+		m_levelLabel->setVariablePartString(std::to_string(m_focusHexii->getLevel()));
 
-		/// Update button labels
-
-		// Since exp costs increase after a gaining a bee, only buy at most the exp required to reach the next beeCount
-		BigReal desiredEXP = std::min(std::floorl(std::max(expForNextBee * 0.05, (BigReal)1.0)), expForNextBee);
-		BigReal costToPurchaseDesiredEXP = desiredEXP * m_focusHexii->getEXPCost();
-
-		if (desiredEXP != m_purchaseEXPButtonDesiredEXP || costToPurchaseDesiredEXP != m_costToPurchaseDesiredEXP) {
-			m_purchaseEXPButtonDesiredEXP = desiredEXP;
-			m_costToPurchaseDesiredEXP = costToPurchaseDesiredEXP;
-
-			// Update the relevant labels
-			m_purchaseEXPDesiredEXPLabel->setVariablePartString(formatBigReal(desiredEXP));
-			m_purchaseEXPNectarCostLabel->setVariablePartString(formatBigReal(costToPurchaseDesiredEXP));			
-		}
-
-		/// Update button state
-
-		// If the exp provided by the button is unaffordable, grey out the button. Otherwise, enabled it again
-		if (Resources::getInstance()->getNectar() < costToPurchaseDesiredEXP) {
-			if (m_purchaseEXPButton->isEnabled()) {
-				m_purchaseEXPButton->setBright(false);
-				m_purchaseEXPButton->setEnabled(false);
-			}
-		}
-		else if (!m_purchaseEXPButton->isEnabled()) {
-			m_purchaseEXPButton->setBright(true);
-			m_purchaseEXPButton->setEnabled(true);
-		}
+		if (m_expInfoTab->isVisible()) m_expInfoTab->updateLabels(exp, expForNextLevel);
 	}
+
+	// TODO: Only show this after specs have been unlocked
+	//if (nameLabel) m_specNameLabel->setVariablePartString(m_focusSpecialization->getSpecNameFriendly());
+	//if (countLabel) 
 }
-
-void HexiiInfoTab::updateBeeGroupLabels(bool nameLabel, bool countLabel) {
-	if(nameLabel) m_beeNameLabel->setString(m_focusBeeGroup->getBeeNameFriendly() + "s:");
-	if(countLabel) m_beeCountLabel->setString(std::to_string(m_focusBeeGroup->getBeeCount()));
-}
-
-void HexiiInfoTab::updateScrollView() {
-	auto& upgradeStates = m_focusBeeGroup->getUpgradeStates();
-	bool updated = false;
-
-	// Iterate over the upgrade states until a locked one
-	for (uint i = 0; i < upgradeStates.size(); i++) {
-		if (upgradeStates[i] == BeeGroupUpgradeBox::State::LOCKED) {
-			// Assume all following upgrades are also locked, therefore use this to set the size of the scroll view
-			m_upgradeScrollView->setContentSize(Size(
-				i * (m_upgradeBoxes[i]->getContentSize().width + 40), 
-				m_upgradeScrollView->getContentSize().height
-			));
-			updated = true;
-			break;
-		}
-	}
-
-	// If no locked upgrades were found, then the scroll view should be the full width
-	if (!updated) m_upgradeScrollView->setContentSize(Size(
-		upgradeStates.size() * (m_upgradeBoxes[0]->getContentSize().width + 40),
-		m_upgradeScrollView->getContentSize().height
-	));
-}
-
-void HexiiInfoTab::purchaseEXP() {
-	BigReal cost = m_purchaseEXPButtonDesiredEXP * m_focusHexii->getEXPCost();
-
-	// Pay
-	Resources::getInstance()->addNectar(-cost);
-
-	m_focusHexii->addEXP(m_purchaseEXPButtonDesiredEXP);
-}
-
-/*
-BeeGroupUpgradeBox* HexiiInfoTab::addUpgradeToList(UpgradePtr upgrade) {
-	// TODO: This function should add all upgrades in one go and then just change the visibility later
-
-	BeeGroupUpgradeBox* upgradeBox = BeeGroupUpgradeBox::create();
-	BeeGroupUpgradeBox::State state;
-
-	// Set the state of the upgrade box (whether it's locked, revealed or fully purchased)
-
-	if (upgrade->beeRequirement > m_focus->getLevel()) state = BeeGroupUpgradeBox::State::LOCKED;
-	else if (m_focus->getUpgrade(fmt::format(upgrade->name))) state = BeeGroupUpgradeBox::State::PURCHASED;
-	else state = BeeGroupUpgradeBox::State::REVEALED;
-
-	upgradeBox->setUpgrade(upgrade, m_focus, state);
-	upgradeBox->setAnchorPoint(Vec2(0, 1));
-	upgradeBox->setPosition(Vec2(0, 160 * m_upgradeScrollView->getChildrenCount()));
-
-	m_upgradeScrollView->addChild(upgradeBox);
-
-	return upgradeBox;
-}
-
-
-void HexiiInfoTab::updateUpgradesList(BigInt beeCountBefore, BigInt beeCount) {
-	// Number of preview upgrade boxes that should be displayed
-	constexpr int PREVIEW_COUNT = 2;
-
-	// Update the locked boxes
-
-	// The list of preview boxes after this function has updated the list
-	std::vector<BeeGroupUpgradeBox*> updatedPreviewUpgradeBoxes;
-	for (uint i = 0; i < m_previewUpgradeBoxes.size(); i++) {
-		// If a preview box has reached the reveal beeCount, reveal it. Otherwise, it remains a preview so it stays in the updated preview \
-		boxes list
-
-		if (beeCount >= m_previewUpgradeBoxes[i]->getUpgrade()->beeRequirement) m_previewUpgradeBoxes[i]->setState(BeeGroupUpgradeBox::State::REVEALED);
-		else updatedPreviewUpgradeBoxes.push_back(m_previewUpgradeBoxes[i]);
-	}
-
-	// If there are no more locked boxes and all upgrades are available, this function is done
-	if (updatedPreviewUpgradeBoxes.size() == 0 && m_upgradeScrollView->getChildrenCount() == Upgrades::UPGRADE_COUNT) {
-		m_previewUpgradeBoxes = updatedPreviewUpgradeBoxes;
-		return;
-	}
-
-	/// Grabs all upgrades that are currently available for purchase, plus the next two
-
-	Upgrades::UpgradeList list = Upgrades::getUpgradesBetweenLevels(beeCountBefore + 1, beeCount);
-
-	// The latest upgrade referenced so far
-	UpgradePtr lastUpgrade = nullptr;
-	if (updatedPreviewUpgradeBoxes.size() > 0) lastUpgrade = updatedPreviewUpgradeBoxes.back()->getUpgrade();
-	else if (list.size() > 0) lastUpgrade = list.back();
-
-	// The total number of locked boxes should be PREVIEW_COUNT, so this bonus list increases up to that
-	Upgrades::UpgradeList previewUpgradeList = Upgrades::getUpgradesFollowing(lastUpgrade, PREVIEW_COUNT - updatedPreviewUpgradeBoxes.size());
-
-	// When a beeCount up happens, a locked upgrade may become available. If this happens, the upgrade is present in locked boxes\
-	and it is also returned in `list`. This upgrade shouldn't be added again, so i needs to start offsetted based on how many of \
-	these newly unlocked ones there are. Everything else afterwards is to be appended
-	for (unsigned int i = m_previewUpgradeBoxes.size() - updatedPreviewUpgradeBoxes.size(); i < list.size(); i++) {
-		addUpgradeToList(list[i]);
-	}
-
-	for (unsigned int i = 0; i < previewUpgradeList.size(); i++) {
-		updatedPreviewUpgradeBoxes.push_back(addUpgradeToList(previewUpgradeList[i]));
-	}
-
-	/// Update container size
-
-	// Used to preserve the scroll position. 100% means top, not bottom (because the y is inverted). NaN is the initial scroll value \
-	before user input
-	float percentScrolled = m_upgradeScrollView->getScrolledPercentVertical();
-	if (!(percentScrolled >= 0.0f)) { // Meaning NaN
-		percentScrolled = 100.0f;
-	}
-	// TODO: Optimize
-	// Updated size after new boxes have been added
-	Size newScrollViewSize = m_upgradeScrollView->getInnerContainerSize();
-
-	// Height is not allowed to go below the content height
-	newScrollViewSize.height = std::max((long)m_upgradeScrollView->getContentSize().height, (long)(160 * m_upgradeScrollView->getChildrenCount()));
-	
-	m_upgradeScrollView->setInnerContainerSize(newScrollViewSize);
-	if(percentScrolled >= 0) m_upgradeScrollView->jumpToPercentVertical(percentScrolled);
-
-	m_previewUpgradeBoxes = updatedPreviewUpgradeBoxes;
-}
-*/

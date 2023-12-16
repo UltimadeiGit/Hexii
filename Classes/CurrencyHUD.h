@@ -5,17 +5,21 @@
 class CurrencyHUD :
 	public cocos2d::Node {
 public:
+	enum class CurrencyType {
+		GREEN_MATTER
+	};
+
 	bool init();
 	virtual void update(float dt) override;
 
-	CREATE_FUNC(CurrencyHUD);
-private:
-	cocos2d::Sprite* m_background;
-	cocos2d::Sprite* m_nectarIcon;
+	std::string getCurrencyName() const;
 
-	cocos2d::Label* m_nectarAmount;
-	// Amount gm is increasing per second
-	cocos2d::Label* m_nectarIncreaseAmount;
-	// Label with the text "/ sec"
-	cocos2d::Label* m_perSecLabel;
+	CREATE_FUNC_WITH_CTOR_1(CurrencyHUD, CurrencyType);
+private:
+	const CurrencyType m_currencyType;
+
+	cocos2d::Sprite* m_background;
+	cocos2d::Sprite* m_currencyIcon;
+
+	cocos2d::Label* m_currencyAmount;
 };

@@ -7,17 +7,10 @@
 #include <fmt/format.h>
 #include "Maths.h"
 
+// Upgrade is an immutable representation of a single upgrade's properties
 struct Upgrade {
 public:
-	Upgrade(
-		const fmt::string_view name, 
-		const fmt::string_view description, 
-		const fmt::string_view contributionDescription, 
-		BigReal nectarCost,
-		BigInt beeRequirement,
-		long long actsOnFlags
-	);
-
+	// Flags for what this upgrade acts on
 	enum ACTS_ON_FLAGS {
 		ACTS_ON_YIELD = 1 << 0,
 		ACTS_ON_SPEED = 1 << 1,
@@ -25,14 +18,32 @@ public:
 		ACTS_ON_OTHER_HEXII = 1 << 3 // Whether or not this upgrade has any effect on other hexii
 	};
 
+	// Each hexii should store the State of each upgrade
+	enum class State {
+		LOCKED,
+		AVAILABLE,
+		OWNED
+	};
+
+	Upgrade(
+		const fmt::string_view name,
+		const fmt::string_view friendlyName, 
+		const fmt::string_view description, 
+		const fmt::string_view contributionDescription, 
+		BigReal greenMatterCost,
+		BigInt levelRequirement,
+		long long actsOnFlags
+	);
+
 	fmt::string_view name;
+	fmt::string_view friendlyName;
 	fmt::string_view description;
 	fmt::string_view contributionDescription;
 
-	BigReal nectarCost;
-	BigInt beeRequirement;
+	const BigReal greenMatterCost;
+	const BigInt levelRequirement;
 
-	long long actsOnFlags = 0;
+	const long long actsOnFlags = 0;
 
 	cocos2d::Texture2D* icon;
 };
@@ -42,7 +53,7 @@ typedef std::shared_ptr<Upgrade> UpgradePtr;
 /*
 class Upgrades {
 public:
-	typedef std::vector<UpgradePtr> UpgradeList;
+	typedef std::vector<UpgradePtr> UpgradeVec;
 
 	static constexpr uint UPGRADE_COUNT = 5;
 
@@ -53,16 +64,16 @@ private:
 
 public:
 	static Upgrades* getInstance();
-	static const UpgradeList& getUpgrades();
+	static const UpgradeVec& getUpgrades();
 	// Lists upgrades that are unlocked between the given levels
-	static const UpgradeList getUpgradesBetweenLevels(BigInt lower, BigInt higher);
+	static const UpgradeVec getUpgradesBetweenLevels(BigInt lower, BigInt higher);
 	// Fetches up to the next `count` upgrades after `pivot`. If nullptr, this will just return the first `count` upgrades in order
-	static const UpgradeList getUpgradesFollowing(UpgradePtr pivot, BigInt count);
+	static const UpgradeVec getUpgradesFollowing(UpgradePtr pivot, BigInt count);
 	
 	
 private:
 	static Upgrades* m_instance;
 
-	UpgradeList m_upgrades;
+	UpgradeVec m_upgrades;
 };
 */

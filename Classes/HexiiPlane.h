@@ -4,9 +4,9 @@
 
 #include "Hexii.h"
 #include "JSON_FWD.hpp"
+#include "CocosUtility.h"
 
 // 2D Plane with a Hexagon based coordinate system (axial coordinates)
-// _Ty must inherit from cocos2d::Node
 class HexiiPlane : 
 	public cocos2d::Node {
 public:
@@ -46,8 +46,8 @@ public:
 
 	inline const float getHexHeight() const { return m_hexHeight; }
 	Hexii* getHexAtPos(cocos2d::Vec2 posAxial) const;
-	// Returns all the hexii contained in `District`
-	std::vector<HexiiPosPair> getHexiiInDistrict(uint District) const;
+	// Returns all the hexii contained in `layer`
+	std::vector<HexiiPosPair> getHexiiInlayer(uint layer) const;
 	// Returns the hexii adjacent to the one at `posAxial`. Will always return 6 pairs unless `activeOnly` is true.
 	// nullptr indicates a hex does not exist at that coord
 	std::vector<HexiiPosPair> neighborsOf(cocos2d::Vec2 posAxial, bool activeOnly) const;	
@@ -60,9 +60,11 @@ public:
 private:
 	/// Events
 	
-	void onHexYield(cocos2d::EventCustom* evnt);
-	void onHexPurchase(cocos2d::EventCustom* evnt);
-	void onHexFocus(cocos2d::EventCustom* evnt);
+	void onHexiiYield(cocos2d::EventCustom* evnt);
+	void onHexiiPurchase(cocos2d::EventCustom* evnt);
+	void onHexiiFocus(cocos2d::EventCustom* evnt);
+
+	void onHexiiUpgradePurchased(cocos2d::EventCustom* evnt);
 
 	void onPinButtonPressed(cocos2d::EventCustom* evnt);
 
@@ -74,21 +76,18 @@ private:
 	void onMouseMoved(cocos2d::EventMouse* mouse);
 
 	// Returns the position of the mouse relative to the camera
-	cocos2d::Vec2 getCameraMousePos(cocos2d::Vec2 mousePos) const { return mousePos + m_camera->getPosition(); }
-
+	
 	cocos2d::Vec2 m_lastMousePos;
 	Hexii* m_mouseOverHex = nullptr;
 #endif // CC_PLATFORM_PC
 
 	bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* evnt);
 	void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt);
-	cocos2d::Vec2 getTouchPos(cocos2d::Touch* touch) const { return touch->getLocation() + m_camera->getPosition(); }
+	cocos2d::Vec2 getTouchPos(cocos2d::Camera* camera, cocos2d::Touch* touch) const { return CocosUtility::getCameraMousePos(camera, touch->getLocation()); }
 
 	// The vertical height of each hex. This must remain constant for the plane to have any sensible use
 	const float m_hexHeight;
 
-	// The camera for the hexii
-	cocos2d::Camera* m_camera = nullptr;
 	// If pinned, the camera won't be panned when a hex is touched
 	bool m_pinned = false;
 

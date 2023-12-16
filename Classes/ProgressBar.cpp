@@ -42,10 +42,10 @@ bool ProgressBar::init() {
 
 	setContentSize(m_whole->getSprite()->getContentSize());
 
-	m_shader = SimpleShader::createWithFragmentShader("shaders/progressBar.frag");
+	m_shader = new SimpleShader(SimpleShader::createShaderProgramWithFragmentShader("shaders/progressBar.frag"));
 	m_shader->setUniform<Vec2>("dims", getContentSize());
 
-	m_whole->getSprite()->setProgramState(m_shader->programState);
+	m_whole->getSprite()->setProgramState(m_shader->getProgramState());
 
 	this->addChild(m_whole);
 

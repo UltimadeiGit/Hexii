@@ -4,59 +4,65 @@
 #include "ColourSchemes.h"
 #include "HexiiPlane.h"
 #include "JSON.hpp"
+#include "Console.h"
 
 USING_NS_CC;
 using namespace nlohmann;
 
-Hexii::Hexii(const uint district, const Vec2 posAxial) : 
+Hexii::Hexii(const uint layer, const Vec2 posAxial) : 
 	Hexagon(posAxial), 
-	m_district(district),
-	m_type(district == 0 ? HexiiType::QueensChamber : HexiiType::WorkersCell)
+	m_layer(layer),
+	m_type(layer == 0 ? HexiiType::HOME_L0 : HexiiType::HOME)
 {}
 
 Hexii::Hexii(const json& data) : 
 	Hexagon(data.at("posAxial")),
-	m_district(data.at("district")), 
-	m_type(m_district == 0 ? HexiiType::QueensChamber : HexiiType::WorkersCell) 
+	m_layer(data.at("layer")), 
+	m_type(m_layer == 0 ? HexiiType::HOME_L0 : HexiiType::HOME) 
 {	
+	/*
 	try {
-		auto beeGroups = data.at("beeGroups");
+		auto specGroups = data.at("specGroups");
 
-		if (!beeGroups.is_null()) {
-			for (json::iterator it = beeGroups.begin(); it != beeGroups.end(); it++) {
+		if (!specGroups.is_null()) {
+			for (json::iterator it = specGroups.begin(); it != specGroups.end(); it++) {
 				auto& groupData = *it;
 
-				BeeGroup group(groupData, &m_upgrades, m_district);
+				Specialization group(groupData, &m_upgrades, m_layer);
 
-				m_beeGroups.push_back(group);
+				m_specGroups.push_back(group);
 			}
 		}
 	}
-	catch (json::out_of_range) { /* No bee groups stored */	}
+	catch (json::out_of_range) { /* No specs stored */	//}
+
+	try { m_standardPathTracker = std::make_shared<UpgradeTracker>(data.at("standardUpgrades")); }
+	catch (json::out_of_range) { /* No standard path stored */ }
 	
 	try { addEXP(data.at("exp"), true); }
 	catch (json::out_of_range) {}
-
-	m_upgrades = BoolMap(data.at("upgrades"));
 }
 
 bool Hexii::init() {
 	Vec2 axialPos = getAxialPosition();
 
 	switch (m_type) {
-	case HexiiType::QueensChamber:
-		setName("Queen's Chamber");
+	case HexiiType::HOME_L0:
+		setName("Centre Hexii");
+		if (m_standardPathTracker == nullptr) m_standardPathTracker = std::make_shared<UpgradeTracker>(UpgradePath::getStandardL0Path());
 		break;
-	case HexiiType::WorkersCell:
-		setName("Worker's Cell");
+	case HexiiType::HOME:
+		setName("Standard Hexii");
+		if (m_standardPathTracker == nullptr) m_standardPathTracker = std::make_shared<UpgradeTracker>(UpgradePath::getStandardPath());
+		break;
+	default:
+		err("Unhandled hexii type");
 		break;
 	}
-
-	if (m_beeGroups.size() == 0) addBeeGroup(UpgradePath::getWorkerPath(), BeeGroup::BeeType::WORKER);
-
+	
 	/// Hex sprite init
 
-	m_hex = Sprite::create("gameplay/L" + std::to_string(m_district) + "HexiiInactive.png");
+	m_hex = Sprite::create("gameplay/L" + std::to_string(m_layer) + "HexiiInactive.png");
 	// TODO: Investigate the use of anchor points with the hexii
 	m_hex->setAnchorPoint(Vec2(0, 0));
 
@@ -65,7 +71,7 @@ bool Hexii::init() {
 
 	/// Shader init
 
-	m_progressShader = SimpleShaderPtr((SimpleShader::createWithFragmentShader("shaders/hexProgress.frag")));
+	m_progressShader = std::make_shared<SimpleShader>(SimpleShaderManager::getProgressShaderProgram());
 	m_progressShader->setUniform<float>("progress", 0.0f);
 	m_progressShader->setUniform<Vec2>("hexCenter", Vec2(size.height * HEXAGON_HEIGHT_TO_WIDTH * 0.5f, size.height * 0.5f));
 	// TODO: Investigate the impact of resizing given that this uniform is only set here...
@@ -84,7 +90,7 @@ bool Hexii::init() {
 
 	m_purchaseCostLabel = CompoundLabel::create("", "fonts/OCR.ttf", "fonts/OCR.ttf");
 	m_purchaseCostLabel->setStyle(false, true, 45, Color4B::WHITE, Color4B::WHITE, 0, Color4B::WHITE, Size(1, -1), 4);
-	m_purchaseCostLabel->setIconTexture("icons/Nectar.png");
+	m_purchaseCostLabel->setIconTexture("icons/GreenMatter.png");
 	m_purchaseCostLabel->setSpacingConstraint(12.5f);
 	m_purchaseCostLabel->setCascadeOpacityEnabled(true);
 	m_purchaseCostLabel->setAnchorPoint(Vec2(0.5, 0.5));
@@ -94,7 +100,7 @@ bool Hexii::init() {
 	
 	/// Particles
 
-	if (m_type == HexiiType::QueensChamber) {
+	if (m_type == HexiiType::HOME_L0) {
 		ParticleSystemQuad* d0Particles = ParticleSystemQuad::createWithTotalParticles(18);
 		d0Particles->setPosition(Vec2(0, 0));
 
@@ -128,7 +134,7 @@ bool Hexii::init() {
 		d0Particles->setEndColor(Color4F(0.0f, 1.0f, 0.0f, 0.0));
 		d0Particles->setEndColorVar(Color4F(0.0f, 0.0f, 0.0f, 0.0f));
 
-		d0Particles->setTexture(Director::getInstance()->getTextureCache()->addImage("icons/Nectar.png"));
+		d0Particles->setTexture(Director::getInstance()->getTextureCache()->addImage("icons/GreenMatter.png"));
 
 		m_yieldParticles.push_back(d0Particles);
 		this->addChild(m_yieldParticles[0], 2);
@@ -142,7 +148,7 @@ bool Hexii::init() {
 	touchListener->onTouchEnded = CC_CALLBACK_2(Hexii::onTouchEnded, this);
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
-	EventUtility::addGlobalEventListener(BeeGroup::EVENT_NONLOCAL_UPGRADE_PURCHASED, this, &Hexii::onUpgradePurchased);
+	//EventUtility::addGlobalEventListener(Specialization::EVENT_NONLOCAL_UPGRADE_PURCHASED, this, &Hexii::onUpgradePurchased);
 
 	return true;
 }
@@ -166,6 +172,15 @@ void Hexii::update(float dt) {
 	m_progressShader->setUniform<float>("progress", m_progress);
 }
 
+UpgradeTrackerPtr Hexii::getUpgradeTrackerFromPath(UpgradePathPtr path) const {
+	if (m_standardPathTracker->getPath() == path) {
+		return m_standardPathTracker;
+	}
+	
+	warn("Attempted to get upgrade tracker for invalid path");
+	return nullptr;
+}
+
 void Hexii::updateActive(float dt) {
 	/// Increase progress
 
@@ -184,9 +199,9 @@ void Hexii::updateActive(float dt) {
 void Hexii::updateInactive(float dt) {
 	// While inactive, hovering over the hex will show the cost to buy it and clicking on it will progress the purchase
 
-	bool affordable = Resources::getInstance()->getNectar() >= getPurchaseCost();
+	bool affordable = Resources::getInstance()->getGreenMatter() >= getPurchaseCost();
 	// TODO: Why is this recalculated every frame?!
-	BigReal cost = getPurchaseCostFromDistrict(m_district);
+	BigReal cost = getPurchaseCostFromlayer(m_layer);
 
 	/// Cost label
 
@@ -237,34 +252,95 @@ void Hexii::updateInactive(float dt) {
 	}
 }
 
+
+BigReal Hexii::getEXPRequiredForLevel(BigInt level, uint layer) {
+	// = A(b^level - 1) where \
+	    b = (1.2 + layer/50) \
+	    A = 6b / (b - 1)
+
+		// First is hardcoded
+	if (level == 0) return 0;
+	level -= 1;
+
+	// Derived from EXP required at `level` to gain a level, which is simply 6 * b^level
+
+	const BigReal base = 1.2 + (layer * 0.02);
+	return std::ceill(6 + ((6 * base) / (base - 1)) * (std::powl(base, level) - 1));
+}
+
+BigInt Hexii::getLevelFromEXP(BigReal exp, uint layer) {
+	// = log_b(exp/A + 1) 
+	// Inverse function of expRequiredForBeesFunc
+
+	// First is hardcoded
+	if (exp < 6) return 0;
+	exp -= 6;
+
+	const BigReal base = 1.2 + (layer * 0.02);
+	const BigReal operand = 1 + exp / ((6 * base) / (base - 1));
+	return std::floorl(1 + std::logl(operand) / std::logl(base));
+}
+
+BigReal Hexii::getUpgradePurchaseCostMultiplier(uint layer) {
+	// Multiplier = 30 ^ layer
+	if (layer == 0) return 1;
+	return std::powl(30, layer);
+}
+
 void Hexii::addEXP(BigReal exp, bool suppressEvent) {
 	m_exp += exp;
 
-	for (auto& group : m_beeGroups) {
-		group.updateBeeCount(m_exp, suppressEvent);
-	}
+	updateLevel(m_exp, suppressEvent);
 
 	// Nothing further to do if not leveling up
 	//if (m_totalEXP >= m_expRequiredForNextLevel) levelUp(suppressEvent);
 }
 
+BigInt Hexii::updateLevel(BigReal exp, bool suppressEvent) {
+	if (exp < m_expForNextLevel) return 0;
+
+	BigInt level = getLevelFromEXP(exp, m_layer);
+	BigInt change = level - m_level;
+
+	if (change == 0) throw std::runtime_error("Level change is unexpectedly 0");
+
+	/// Update state
+
+	m_level = level;
+	m_expForNextLevel = getEXPRequiredForLevel(m_level + 1, m_layer);
+
+	/// Check upgrade states
+
+	m_standardPathTracker->updateStatesDueToLevel(level);
+
+	/// Dispatch events
+
+	if (!suppressEvent)
+		EventUtility::dispatchEvent(EVENT_LEVEL_GAINED, eventID, EventHexiiLevelGainedData{ this, change });
+
+	// Many upgrades are affected by level, so everything needs to be recalculated
+	m_isYieldDirty = m_isYieldSpeedDirty = m_isCritDirty = true;
+
+	return change;
+}
+
 /*
 void Hexii::levelUp(bool suppressEvent) {
-	// Before beeCount up, record current beeCount
-	BigInt beeCountBefore = m_district;
-	m_district = getLevelFromEXP(m_totalEXP, m_district);
+	// Before level up, record current level
+	BigInt levelBefore = m_layer;
+	m_layer = getLevelFromEXP(m_totalEXP, m_layer);
 
-	// Before updating the exp requirement for the next beeCount, update how much exp into the current beeCount this hex is now
-	if (m_district - beeCountBefore == 1) m_exp = m_totalEXP - m_expRequiredForNextLevel;
-	else m_exp = m_totalEXP - getEXPRequiredToReachLevelFromdistrict(m_district, m_district);
+	// Before updating the exp requirement for the next level, update how much exp into the current level this hex is now
+	if (m_layer - levelBefore == 1) m_exp = m_totalEXP - m_expRequiredForNextLevel;
+	else m_exp = m_totalEXP - getEXPRequiredToReachLevelFromlayer(m_layer, m_layer);
 
-	m_expRequiredForNextLevel = getEXPRequiredToReachLevelFromdistrict(m_district + 1, m_district);
+	m_expRequiredForNextLevel = getEXPRequiredToReachLevelFromlayer(m_layer + 1, m_layer);
 
 	// Dispatch event
 
-	// This event will be moved down into BeeGroup
+	// This event will be moved down into Specialization
 	//if (!suppressEvent)
-		//_eventDispatcher->dispatchCustomEvent("onBeeGained", new EventBeeGainedData{ this, beeCountBefore, m_district, m_exp, m_totalEXP, m_expRequiredForNextLevel });
+		//_eventDispatcher->dispatchCustomEvent("onLevelGained", new EventLevelGainedData{ this, levelBefore, m_layer, m_exp, m_totalEXP, m_expRequiredForNextLevel });
 }
 */
 
@@ -313,20 +389,20 @@ void Hexii::addYieldTarget(Hexii* hex, float angleBetween) {
 	this->addChild(yieldTargetParticles);
 }
 
-BigReal Hexii::getPurchaseCostFromDistrict(uint district) {
+BigReal Hexii::getPurchaseCostFromlayer(uint layer) {
 	BigReal cost = 6;
 
-	switch (district) {
+	switch (layer) {
 	case 0:
 		break;
 	case 1:
-		cost = (BigReal)900 * (std::powl(3, Resources::getInstance()->getHexiiCountInDistrict(1)));
+		cost = (BigReal)900 * (std::powl(3, Resources::getInstance()->getHexiiCountInlayer(1)));
 		break;
 	case 2:
-		cost = (BigReal)120000 * std::powl(1.5, Resources::getInstance()->getHexiiCountInDistrict(2));
+		cost = (BigReal)120000 * std::powl(1.5, Resources::getInstance()->getHexiiCountInlayer(2));
 		break;
 	case 3:
-		cost = (BigReal)3e7 * std::powl(1.25, Resources::getInstance()->getHexiiCountInDistrict(3));
+		cost = (BigReal)3e7 * std::powl(1.25, Resources::getInstance()->getHexiiCountInlayer(3));
 		break;
 	default:
 		cost = 1e20;
@@ -340,27 +416,21 @@ BigReal Hexii::getPurchaseCostFromDistrict(uint district) {
 BigReal Hexii::getEXPCost() const {
 	// TODO: Adjust the formula
 
-	// Cost =  10 * 6^(district) * (beeCount + 1)
-	BigReal royalAffluenceMultiplier = m_upgrades("RoyalAffluence") ? (BigReal)1 / (10 * (m_district + 1)) : 1;
-	return 10 * std::powl(6, m_district) * (m_beeGroups[0].getBeeCount() + 1) * royalAffluenceMultiplier;
+	// Cost =  10 * 6^(layer) * (level + 1)
+	BigReal discountMultiplier = m_standardPathTracker->isOwned("Discount") ? (BigReal)1 / (10 * (m_layer + 1)) : 1;
+	return 10 * std::powl(6, m_layer) * (m_level + 1) * discountMultiplier;
 }
 
 BigReal Hexii::getYield() const {
 	if (m_isYieldDirty) {
-		BigReal constant = 1;
-		BigReal additive = 1;
-		BigReal multiplicative = 1;
-
-		for (auto& beeGroup : m_beeGroups) {
-			constant += beeGroup.getConstantYield();
-			additive += (beeGroup.getAdditiveYieldMultiplier() - 1);
-			multiplicative *= (beeGroup.getMultiplicativeYieldMultiplier());
-		}
+		BigReal constant = 1 + getConstantYield();
+		BigReal additive = getAdditiveYieldMultiplier();
+		BigReal multiplicative = getMultiplicativeYieldMultiplier();
 
 		m_yield = constant
 			* additive * multiplicative
 			* (1 + HexiiPlane::getInstance()->getAdjacencyBonuses(this))
-			* (1 + Resources::getInstance()->getUnity2UpgradeBonus())
+			* (1 + Resources::getInstance()->getGlobalPowerUpgradeBonus())
 			;
 
 		m_isYieldDirty = false;
@@ -371,22 +441,14 @@ BigReal Hexii::getYield() const {
 
 BigReal Hexii::getYieldSpeed(bool includeActiveBonus) const {
 	if (m_isYieldSpeedDirty) {
-		const BigReal base = 1.0 / std::powl(2, m_district);
-		BigReal constant = 1;
-		BigReal additive = 1;
-		BigReal multiplicative = 1;
+		const BigReal base = 1.0 / std::powl(2, m_layer);
+		BigReal constant = getConstantYieldSpeed();
+		BigReal additive = getAdditiveYieldSpeedMultiplier();
+		BigReal multiplicative = getMultiplicativeYieldSpeedMultiplier();
 
-		m_activeYieldSpeedMultiplier = 2;
+		m_activeYieldSpeedMultiplier = 2 * getActiveYieldSpeedMultiplier();
 
-		for (auto& beeGroup : m_beeGroups) {
-			constant += beeGroup.getConstantYieldSpeed();
-			additive += (beeGroup.getAdditiveYieldSpeedMultiplier() - 1);
-			multiplicative *= beeGroup.getMultiplicativeYieldSpeedMultiplier();
-
-			m_activeYieldSpeedMultiplier *= beeGroup.getActiveYieldSpeedMultiplier();
-		}
-
-		m_yieldSpeed = base * constant * additive * multiplicative;
+		m_yieldSpeed = (base + constant) * additive * multiplicative;
 		
 		m_isYieldSpeedDirty = false;
 	}
@@ -396,13 +458,8 @@ BigReal Hexii::getYieldSpeed(bool includeActiveBonus) const {
 
 BigReal Hexii::getCritical(uint times) const {
 	if (m_isCritDirty) {
-		m_criticalChance = 0;
-		m_criticalYieldMultiplier = 1;
-
-		for (auto& beeGroup : m_beeGroups) {
-			m_criticalChance += beeGroup.getCriticalChance();
-			m_criticalYieldMultiplier *= beeGroup.getCriticalYieldMultiplier();
-		}
+		m_criticalChance = getCriticalChance();
+		m_criticalYieldMultiplier = getCriticalYieldMultiplier();
 
 		m_isCritDirty = false;
 	}
@@ -417,11 +474,8 @@ BigReal Hexii::getCritical(uint times) const {
 
 BigReal Hexii::getAdjacencyYieldMultiplier() const {
 	if (m_isAdjacencyDirty) {
-		m_adjacencyYieldMultiplier = 1;
-
-		for (auto& beeGroup : m_beeGroups) {
-			m_adjacencyYieldMultiplier *= beeGroup.getAdjacencyYieldMultiplier();
-		}
+		m_adjacencyYieldMultiplier = 1 +
+			getAdjacencyYieldMultiplierFromSupport1Upgrade();
 
 		m_isAdjacencyDirty = false;
 	}
@@ -435,41 +489,25 @@ void Hexii::setActive(bool active) {
 	m_active = active;
 
 	// Use the appropriate active texture
-	if (active) m_hex->setTexture(_director->getTextureCache()->addImage("gameplay/L" + std::to_string(m_district) + "Hexii.png"));
-	else m_hex->setTexture(_director->getTextureCache()->addImage("gameplay/L" + std::to_string(m_district) + "HexInactive.png"));
+	if (active) m_hex->setTexture(_director->getTextureCache()->addImage("gameplay/L" + std::to_string(m_layer) + "Hexii.png"));
+	else m_hex->setTexture(_director->getTextureCache()->addImage("gameplay/L" + std::to_string(m_layer) + "HexInactive.png"));
 
 	// Cost label is only visible when the hex is inactive
 	m_purchaseCostLabel->setVisible(!active);
 
-	// TODO: Investigate this
-	// m_hex->setProgramState(nullptr)
-	m_hex->setProgramState(m_progressShader->programState);
+	m_hex->setProgramState(m_progressShader->getProgramState());
 }
 
-void Hexii::addBeeGroup(UpgradePath* upgradePath, BeeGroup::BeeType beeType) {
-	// Create a new bee group
-	m_beeGroups.push_back(BeeGroup(upgradePath, &m_upgrades, beeType, m_district));
-	BeeGroup& beeGroup = m_beeGroups.back();
+void Hexii::purchaseUpgrade(UpgradeTrackerPtr tracker, UpgradePtr upgrade) {
+	tracker->purchaseUpgrade(upgrade);
 
-	// Setup listeners
-	EventUtility::addTargetedEventListener(beeGroup.EVENT_UPGRADE_PURCHASED, this, beeGroup.eventID, &Hexii::onUpgradePurchased);
-	EventUtility::addTargetedEventListener(beeGroup.EVENT_BEE_GAINED, this, beeGroup.eventID, &Hexii::onBeeGained);
-}
+	if (upgrade->actsOnFlags & Upgrade::ACTS_ON_YIELD) m_isYieldDirty = true;
+	if (upgrade->actsOnFlags & Upgrade::ACTS_ON_SPEED) m_isYieldSpeedDirty = true;
+	if (upgrade->actsOnFlags & Upgrade::ACTS_ON_CRITS) m_isCritDirty = true;
+	if (upgrade->actsOnFlags & Upgrade::ACTS_ON_OTHER_HEXII) m_isAdjacencyDirty = true;
 
-void Hexii::onBeeGained(cocos2d::EventCustom* evnt) {
-	auto data = EventUtility::getEventData<BeeGroup::EventBeeGainedData>(evnt);
-	
-	// Many upgrades are affected by the number of bees in the bee group, so everything needs to be recalculated
-	m_isYieldDirty = m_isYieldSpeedDirty = m_isCritDirty = true;
-}
-
-void Hexii::onUpgradePurchased(cocos2d::EventCustom* evnt) {
-	auto data = EventUtility::getEventData<BeeGroup::EventUpgradePurchasedData>(evnt);
-
-	if(data->upgrade->actsOnFlags & Upgrade::ACTS_ON_YIELD) m_isYieldDirty = true;
-	if(data->upgrade->actsOnFlags & Upgrade::ACTS_ON_SPEED) m_isYieldSpeedDirty = true;
-	if(data->upgrade->actsOnFlags & Upgrade::ACTS_ON_CRITS) m_isCritDirty = true;
-	if(data->upgrade->actsOnFlags & Upgrade::ACTS_ON_OTHER_HEXII) m_isAdjacencyDirty = true;
+	// Dispatch event
+	EventUtility::dispatchEvent<EventHexiiUpgradePurchasedData>(Hexii::EVENT_UPGRADE_PURCHASED, eventID, { this, tracker, upgrade });
 }
 
 void Hexii::onTouchBegan() {
@@ -477,8 +515,6 @@ void Hexii::onTouchBegan() {
 		
 	m_progressShader->setUniform("overlayTex", Director::getInstance()->getTextureCache()->addImage("gameplay/HexProgressOverlayPressed.png"));
 	m_isPressed = true;
-
-	if(m_active) _eventDispatcher->dispatchCustomEvent("onHexiiFocus", new EventHexiiFocusData{ this, m_active, getAxialPosition(), m_district});
 }
 
 void Hexii::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt) {
@@ -490,6 +526,16 @@ void Hexii::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt) {
 	m_isPressed = false;
 }
 
+void Hexii::onShaderEffectChanged(SimpleShaderPtr shader) {
+	// For hexii, changing the shader effect means applying it to the `m_shaded` sprite
+	m_shaded->setProgramState(shader ? shader->getProgramState() : nullptr);
+}
+
+void Hexii::focus() {
+	if (m_active) EventUtility::dispatchEvent(Hexii::EVENT_FOCUS, eventID, EventHexiiFocusData{ this, m_active, getAxialPosition(), m_layer });
+	//if (m_active) _eventDispatcher->dispatchCustomEvent("onHexiiFocus", new EventHexiiFocusData{ this, m_active, getAxialPosition(), m_layer });
+}
+
 void Hexii::yield(uint times) {
 	BigReal baseYield = getYield();
 	BigReal yield = 0;
@@ -498,8 +544,8 @@ void Hexii::yield(uint times) {
 	if (times < 5) for (uint i = 0; i < times; i++) yield += baseYield * getCritical(1);
 	else yield = baseYield * getCritical(times);
 
-	// District 0 produces nectar. Outer districts produce EXP for adjacent hexii of lower districts (stored in `m_yieldTargets`)
-	if (m_type == HexiiType::QueensChamber) Resources::getInstance()->addNectar(yield);
+	// layer 0 produces greenMatter. Outer layers produce EXP for adjacent hexii of lower layers (stored in `m_yieldTargets`)
+	if (m_type == HexiiType::HOME_L0) Resources::getInstance()->addGreenMatter(yield);
 	else {
 		uint yieldTargetCount = m_yieldTargets.size();
 		// The yield is split evenly across its targets
@@ -522,7 +568,7 @@ void Hexii::yield(uint times) {
 
 	// TODO: Optimize this by instead having an 'opt in' event system
 	// Dispatch the event for any other nodes to pick up on and respond to (e.g to update UI label values)
-	//_eventDispatcher->dispatchCustomEvent("onHexYield", new EventHexiiYieldData{ this, m_type, yield, getAxialPosition(), m_district});
+	//_eventDispatcher->dispatchCustomEvent("onHexiiYield", new EventHexiiYieldData{ this, m_type, yield, getAxialPosition(), m_layer});
 }
 
 void Hexii::purchase(BigReal cost) {
@@ -531,13 +577,15 @@ void Hexii::purchase(BigReal cost) {
 	m_purchaseCostLabelOpacity = 0.0f;
 	setActive(true);
 
-	Resources::getInstance()->addNectar(-cost);
-	Resources::getInstance()->addHexiiInDistrict(m_district);
+	Resources::getInstance()->addGreenMatter(-cost);
+	Resources::getInstance()->addHexiiInlayer(m_layer);
 
 	// TODO: Replace with the improved EventUtility
 	// Trigger the purchase event and also then focus to this hex
-	_eventDispatcher->dispatchCustomEvent("onHexPurchase", new EventHexiiPurchaseData{ this, m_active, getAxialPosition(), m_district});
-	_eventDispatcher->dispatchCustomEvent("onHexiiFocus", new EventHexiiFocusData{ this, m_active, getAxialPosition(), m_district });
+	EventUtility::dispatchEvent(Hexii::EVENT_PURCHASE, eventID, EventHexiiPurchaseData{ this, m_active, getAxialPosition(), m_layer });
+	//_eventDispatcher->dispatchCustomEvent("onHexiiPurchase", );
+	//_eventDispatcher->dispatchCustomEvent("onHexiiFocus", new EventHexiiFocusData{ this, m_active, getAxialPosition(), m_layer });
+	focus();
 }
 
 void to_json(json& j, const Hexii& hex) {
@@ -548,10 +596,9 @@ void to_json(json& j, const Hexii& hex) {
 	j = json{ 
 		{"active", hex.getActive() }, 
 		{"exp", hex.getEXP()}, 
-		{"upgrades", hex.getUpgrades() }, 
-		{"district", hex.getDistrict() },
-		{"posAxial", hex.getAxialPosition() },
-		{"beeGroups", hex.getBeeGroups() }
+		{"standardUpgrades", *hex.getStandardUpgradeTracker()},
+		{"layer", hex.getLayer() },
+		{"posAxial", hex.getAxialPosition() }
 		//{"yieldTargets", yieldTargetsJSON}
 	};
 }

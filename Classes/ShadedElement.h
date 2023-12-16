@@ -29,6 +29,8 @@ public:
 		}
 	}
 
+	void setProgramState(cocos2d::backend::ProgramState* programState) override;
+
 	inline cocos2d::Texture2D* getShadedRenderTexture() const { return m_shaded->getSprite()->getTexture(); }
 	void visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags) override;
 
@@ -37,6 +39,9 @@ public:
 	inline void setContentSize(const cocos2d::Size& contentSize) override { m_shaded->setContentSize(contentSize); cocos2d::Node::setContentSize(contentSize); }
 
 private:
+
+	// The sprite that is used to display the RenderTexture
+	//	cocos2d::Sprite* m_sprite = nullptr;
 
 	// Result after the shader has applied
 	cocos2d::RenderTexture* m_shaded = nullptr;

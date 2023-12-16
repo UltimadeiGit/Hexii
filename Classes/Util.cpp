@@ -5,10 +5,12 @@
 #include "Maths.h"
 #include "JSON.hpp"
 #include "EventUtility.h"
+#include "CocosUtility.h"
 
 USING_NS_CC;
 using namespace nlohmann;
 using namespace EventUtility;
+using namespace CocosUtility;
 
 // cpp file for all util headers
 
@@ -130,4 +132,13 @@ namespace cocos2d {
 		j.at("y").get_to(vec.y);
 	}
 
+}
+
+cocos2d::Vec2 CocosUtility::getCameraMousePos(cocos2d::Camera* const& camera, const cocos2d::Vec2& mousePos)
+{
+	Vec2 p = mousePos + camera->getPosition() - (cocos2d::Director::getInstance()->getVisibleSize() / 2);
+	p.x *= camera->getScaleX();
+	p.y *= camera->getScaleY();
+
+	return p;
 }

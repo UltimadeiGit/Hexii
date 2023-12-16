@@ -398,3 +398,4 @@ FodyWeavers.xsd
 /proj.android/gradle/wrapper
 /fmt-9.1.0/doc
 /proj.win32/fmt-9.1.0
+/cocos2d/cocos/2d/CCSprite.cpp

@@ -11,7 +11,8 @@ public:
 		NONE = 0,
 		RESOURCES = 1,
 		SETTINGS = 1 << 1,
-		PLANE = 1 << 2
+		PLANE = 1 << 2,
+		PROGRESSION = 1 << 3
 	};
 private:
 	// Singleton pattern

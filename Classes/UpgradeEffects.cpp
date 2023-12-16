@@ -1,64 +1,64 @@
-#include "BeeGroup.h"
+#include "Hexii.h"
 
-// +1 per beeCount [Constant]
-BigReal BeeGroup::getYieldFromImprovedHandling1Upgrade() const {
-	return m_district * (m_district + 1) * (*m_upgradesDst)("ImprovedHandling1");
+// +1 per level [Constant]
+BigReal Hexii::getYieldFromYieldUp1Upgrade() const {
+	return m_level * (m_layer + 1) * m_standardPathTracker->isOwned(m_type == HexiiType::HOME_L0 ? "GreenMatterYieldUp1" : "EXPYieldUp1");
 }
 
-// x1.03 per beeCount [Multiplicative]
-BigReal BeeGroup::getYieldFromImprovedHandling2Upgrade() const {
-	return (*m_upgradesDst)("ImprovedHandling2") ? std::powl(1.03, m_district) : 1.0;
+// x1.03 per level [Multiplicative]
+BigReal Hexii::getYieldFromYieldUp2Upgrade() const {
+	return m_standardPathTracker->isOwned(m_type == HexiiType::HOME_L0 ? "GreenMatterYieldUp2" : "EXPYieldUp2") ? std::powl(1.03, m_level) : 1.0;
 }
 
 // +50% [Additive]
-BigReal BeeGroup::getYieldSpeedMultiplierFromImprovedFlight1Upgrade() const {
-	return 0.5 * (*m_upgradesDst)("ImprovedFlight1");
+BigReal Hexii::getYieldSpeedMultiplierFromSpeedUp1Upgrade() const {
+	return 0.5 * m_standardPathTracker->isOwned("SpeedUp1");
 }
 
-// +2% per beeCount [Additive]
-BigReal BeeGroup::getYieldSpeedMultiplierFromImprovedFlight2Upgrade() const {
-	return (0.02 * m_district * (*m_upgradesDst)("ImprovedFlight2"));
+// +2% per level [Additive]
+BigReal Hexii::getYieldSpeedMultiplierFromSpeedUp2Upgrade() const {
+	return (0.02 * m_level * m_standardPathTracker->isOwned("SpeedUp2"));
 }
 
-// 0.02 plus 0.01*log_1.5(beeCount) [Constant]
-BigReal BeeGroup::getCriticalChanceFromBlossomBoost1Upgrade() const {
-	return (*m_upgradesDst)("BlossomBoost1") ? 0.02 + 0.01 * (std::logl(m_beeCount) / 0.17609) : 0;
+// 0.02 plus 0.01*log_1.5(level) [Constant]
+BigReal Hexii::getCriticalChanceFromCriticalChance1Upgrade() const {
+	return m_standardPathTracker->isOwned("CriticalChance1") ? 0.02 + 0.01 * (std::logl(m_level) / 0.17609) : 0;
 }
 
 // x2 [Multiplicative]
-BigReal BeeGroup::getCriticalYieldMultiplierFromBlossomBoost2Upgrade() const {
-	return 1 + (*m_upgradesDst)("BlossomBoost2");
+BigReal Hexii::getCriticalYieldMultiplierFromCriticalBonus1Upgrade() const {
+	return 1 + m_standardPathTracker->isOwned("CriticalBonus1");
 }
 
 // x1.5 [Multiplicative]
-BigReal BeeGroup::getActiveYieldSpeedMultiplierFromQueensPresenceUpgrade() const {
-	return 1 + 0.5 * (*m_upgradesDst)("QueensPresence");
+BigReal Hexii::getActiveYieldSpeedMultiplierFromStrongArmUpgrade() const {
+	return 1 + 0.5 * m_standardPathTracker->isOwned("StrongArm");
 }
 
-BigReal BeeGroup::getAdjacencyYieldMultiplierFromUnity1Upgrade() const {
-	return (0.01 * m_district * std::powl(m_district + 1, 2) * (*m_upgradesDst)("Unity1"));
+BigReal Hexii::getAdjacencyYieldMultiplierFromSupport1Upgrade() const {
+	return (0.01 * m_level * std::powl(m_layer + 1, 2) * m_standardPathTracker->isOwned("Support1"));
 }
 
-BigReal BeeGroup::getContributionFromUpgrade(const std::string& upgradeName, bool evaluated) const {
+BigReal Hexii::getContributionFromUpgrade(const std::string& upgradeName, bool evaluated) const {
 	// Constant yield upgrades will always return constants (of course)
 
 	BigReal contribution = 0;
 
 	// Constant only here:
 
-	if (upgradeName == "ImprovedHandling1") contribution = getYieldFromImprovedHandling1Upgrade();
+	if (upgradeName == "GreenMatterYieldUp1" || upgradeName == "EXPYieldUp1") contribution = getYieldFromYieldUp1Upgrade();
 
 	// Multipliers, formatted as percentages
 	else if (!evaluated) {
-		if (upgradeName == "ImprovedHandling2") contribution = multiplierToPercentage(getYieldFromImprovedHandling2Upgrade());
-		else if (upgradeName == "BlossomBoost1") contribution = 100 * getCriticalChanceFromBlossomBoost1Upgrade();
-		else if (upgradeName == "ImprovedFlight2") contribution = 100 * getYieldSpeedMultiplierFromImprovedFlight2Upgrade();
-		else if (upgradeName == "Unity1") contribution = 100 * getAdjacencyYieldMultiplierFromUnity1Upgrade();
+		if (upgradeName == "GreenMatterYieldUp2" || upgradeName == "EXPYieldUp2") contribution = multiplierToPercentage(getYieldFromYieldUp2Upgrade());
+		else if (upgradeName == "CriticalChance1") contribution = 100 * getCriticalChanceFromCriticalChance1Upgrade();
+		else if (upgradeName == "SpeedUp2") contribution = 100 * getYieldSpeedMultiplierFromSpeedUp2Upgrade();
+		else if (upgradeName == "Support1") contribution = 100 * getAdjacencyYieldMultiplierFromSupport1Upgrade();
 		else return 0;
 	}
 	// Multipliers, formatted as constants
 	else {
-		if (upgradeName == "ImprovedHandling2") contribution = (getYieldFromImprovedHandling2Upgrade() - 1) * getConstantYield();
+		if (upgradeName == "GreenMatterYieldUp2" || upgradeName == "EXPYieldUp2") contribution = (getYieldFromYieldUp2Upgrade() - 1) * getConstantYield();
 	}
 
 	return contribution;
@@ -68,51 +68,46 @@ BigReal BeeGroup::getContributionFromUpgrade(const std::string& upgradeName, boo
 
 /// Yield
 
-BigReal BeeGroup::getConstantYield() const {
-	return getYieldFromImprovedHandling1Upgrade();
+BigReal Hexii::getConstantYield() const {
+	return getYieldFromYieldUp1Upgrade();
 }
 
-BigReal BeeGroup::getAdditiveYieldMultiplier() const {
+BigReal Hexii::getAdditiveYieldMultiplier() const {
 	return 1;
 }
 
-BigReal BeeGroup::getMultiplicativeYieldMultiplier() const {
-	return getYieldFromImprovedHandling2Upgrade();
+BigReal Hexii::getMultiplicativeYieldMultiplier() const {
+	return getYieldFromYieldUp2Upgrade();
 }
 
 /// Yield speed
 
-BigReal BeeGroup::getConstantYieldSpeed() const {
+BigReal Hexii::getConstantYieldSpeed() const {
 	return 0;
 }
 
-BigReal BeeGroup::getAdditiveYieldSpeedMultiplier() const {
+BigReal Hexii::getAdditiveYieldSpeedMultiplier() const {
 	return 1 +
-		getYieldSpeedMultiplierFromImprovedFlight1Upgrade() +
-		getYieldSpeedMultiplierFromImprovedFlight2Upgrade()
+		getYieldSpeedMultiplierFromSpeedUp1Upgrade() +
+		getYieldSpeedMultiplierFromSpeedUp2Upgrade()
 		;
 }
 
-BigReal BeeGroup::getMultiplicativeYieldSpeedMultiplier() const {
+BigReal Hexii::getMultiplicativeYieldSpeedMultiplier() const {
 	return 1;
 }
 
 // [Constant]
-BigReal BeeGroup::getCriticalChance() const {
-	return getCriticalChanceFromBlossomBoost1Upgrade();
+BigReal Hexii::getCriticalChance() const {
+	return getCriticalChanceFromCriticalChance1Upgrade();
 }
 
 // [Multiplicative]
-BigReal BeeGroup::getCriticalYieldMultiplier() const {
-	return getCriticalYieldMultiplierFromBlossomBoost2Upgrade();
+BigReal Hexii::getCriticalYieldMultiplier() const {
+	return getCriticalYieldMultiplierFromCriticalBonus1Upgrade();
 }
 
 // [Multiplicative]
-BigReal BeeGroup::getActiveYieldSpeedMultiplier() const {
-	return getActiveYieldSpeedMultiplierFromQueensPresenceUpgrade();
-}
-
-BigReal BeeGroup::getAdjacencyYieldMultiplier() const {
-	return 1 +
-		getAdjacencyYieldMultiplierFromUnity1Upgrade();
+BigReal Hexii::getActiveYieldSpeedMultiplier() const {
+	return getActiveYieldSpeedMultiplierFromStrongArmUpgrade();
 }

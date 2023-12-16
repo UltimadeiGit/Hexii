@@ -3,47 +3,67 @@
 #include "Upgrade.h"
 #include "cocos2d.h"
 #include "Maths.h"
-#include "BeeGroupUpgradeBox.h"
+
+#include <memory>
 #include <vector>
 
-// Defines a path of upgrades
+class UpgradePath;
+typedef std::shared_ptr<UpgradePath> UpgradePathPtr;
+
+// An UpgradePath is an immutable representation of a path (or sequence) of upgrades
 class UpgradePath
 {
 public:
+	typedef std::map<uint, UpgradePtr> UpgradeMap;
 	typedef std::vector<UpgradePtr> UpgradeVec;
+	typedef uint PathID;
 
-private:
-	UpgradePath(const UpgradeVec upgrades, const std::string& name);
+private:	
 	UpgradePath(const UpgradePath&) = delete;
 	UpgradePath(UpgradePath&&) = delete;
 
 public:
-	static UpgradePath* getPathFromName(const std::string& name);
-	static UpgradePath* getWorkerPath();
+	UpgradePath(const UpgradeVec upgrades, const std::string& name, PathID id);
+
+	static UpgradePathPtr getPathFromID(PathID id);
+	static UpgradePathPtr getStandardL0Path();
+	static UpgradePathPtr getStandardPath();
 
 	inline const UpgradeVec& getUpgrades() const { return m_upgrades; }
 	inline int getUpgradeCount() const { return m_upgradeCount; }
 	inline std::string getName() const { return m_name; }
+	inline PathID getID() const { return m_id; }
 
-	// Returns the number of bees that can be obtained with the given amount of exp along this path in the given district
-	inline BigInt getBeeCountFromEXP(BigReal exp, uint district) const { return m_beeCountFromEXPFunc(exp, district); }
-	// Returns the amount of exp required to amass the given number of bees along this path in the given district
-	inline BigReal getEXPRequiredForBees(BigInt beeCount, uint district) const { return m_expRequiredForBeesFunc(beeCount, district); }
+	// Returns the level that can be obtained with the given amount of exp along this path in the given layer
+	//inline BigInt getLevelFromEXP(BigReal exp, uint layer) const { return m_levelFromEXPFunc(exp, layer); }
+	// Returns the amount of exp required to amass the given level along this path in the given layer
+	//inline BigReal getEXPRequiredForLevel(BigInt level, uint layer) const { return m_expRequiredForLevelFunc(level, layer); }
 
 private:
-	static UpgradePath* m_workerPath;
-
 	const UpgradeVec m_upgrades;
 	const int m_upgradeCount;
 	const std::string m_name;
+	const PathID m_id;
 
-	// arg: desired bee count, district
-	std::function<BigReal(BigInt, uint)> m_expRequiredForBeesFunc;
-	// arg: exp, district
-	std::function<BigInt(BigReal, uint)> m_beeCountFromEXPFunc;
+	/*
+	// arg: desired level count, layer
+	const std::function<BigReal(BigInt, uint)> m_expRequiredForLevelFunc;
+	// arg: exp, layer
+	const std::function<BigInt(BigReal, uint)> m_levelFromEXPFunc;	
+	*/
+
+private: /// Static block
+	// Every upgrade defined in the game
+	static UpgradeMap* s_allUpgrades;
+	// All upgrades in the standard L0 path
+	static UpgradePathPtr s_standardL0Path;
+	// All upgrades in the standard path
+	static UpgradePathPtr s_standardPath;
+
+	static void initAllUpgrades();
 
 	/// EXP Functions
 
-	static BigReal expRequiredForBeesWorker(BigInt beeCount, uint district);
-	static BigInt beeCountFromEXPWorker(BigReal exp, uint district);
+	//static BigReal expRequiredForLevelStandardPath(BigInt level, uint layer);
+	//static BigInt levelFromEXPStandardPath(BigReal exp, uint layer);
 };

@@ -1,8 +1,9 @@
 #include "SimpleShader.h"
+#include "Console.h"
 
 #include <ccRandom.h>
 
-std::string SimpleShader::defaultVert = R"(
+std::string SimpleShader::s_defaultVert = R"(
     attribute vec4 a_position;
     attribute vec2 a_texCoord;
     attribute vec4 a_color;
@@ -25,7 +26,7 @@ std::string SimpleShader::defaultVert = R"(
     }
     )";
 
-std::string SimpleShader::fragHead = R"(
+std::string SimpleShader::s_fragHead = R"(
     #ifdef GL_ES
     precision lowp float;
     #endif
@@ -37,89 +38,101 @@ std::string SimpleShader::fragHead = R"(
     uniform float cc_Time;
     )";
 
+SimpleShader::SimpleShader(ShaderProgramPtr program) {
+    m_program = program;
+    m_programState = new cocos2d::backend::ProgramState(program.get());
+
+    m_currentTextureSlot = 1;
+
+    // Add instance to shader manager so that common uniforms such as time can be updated
+    SimpleShaderManager::getInstance()->shaders.push_back(this);
+}
+
 SimpleShader::SimpleShader(const std::string& vertSource, const std::string& fragSource)
 {
-    //create the shader
-    program = cocos2d::backend::Device::getInstance()->newProgram(vertSource, fragSource);
-    programState = new cocos2d::backend::ProgramState(program);
-
-    currentTextureSlot = 1;
-
-    //add instance to shader manager
-    SimpleShaderManager::getInstance()->shaders.push_back(this);
+    warn("Shader being constructed the old fashioned way!");
+    SimpleShader(ShaderProgramPtr(cocos2d::backend::Device::getInstance()->newProgram(vertSource, fragSource)));
 }
 
 SimpleShader::~SimpleShader()
 {
-    //cleanup
-    delete programState;
-    delete program;
+    // Cleanup
+    delete m_programState;
 
     auto& vec = SimpleShaderManager::getInstance()->shaders;
     vec.erase(std::remove(vec.begin(), vec.end(), this), vec.end());
 }
 
-SimpleShader* SimpleShader::createWithFragmentShader(const std::string& fragShaderPath)
-{
-    //custom fragment shader 
+ShaderProgramPtr SimpleShader::createShaderProgramWithFragmentShader(const std::string& fragShaderPath) {
+    // Custom fragment shader 
     auto fragSourceRaw = cocos2d::FileUtils::getInstance()->getStringFromFile(fragShaderPath);
 
-    //build full fragment shader
-    auto fragSource = fragHead + fragSourceRaw;
+    // Build full fragment shader
+    auto fragSource = s_fragHead + fragSourceRaw;
 
-    return new SimpleShader(defaultVert, fragSource);
+    return ShaderProgramPtr(cocos2d::backend::Device::getInstance()->newProgram(s_defaultVert, fragSource));
 }
 
-SimpleShader* SimpleShader::createWithVertexAndFragmentShader(const std::string& vertShaderPath, const std::string& fragShaderPath)
+ShaderProgramPtr SimpleShader::createShaderProgramWithVertexAndFragmentShader(const std::string& vertShaderPath, const std::string& fragShaderPath)
 {
-    //custom vertex shader 
+    // Custom vertex shader 
     auto vertSource = cocos2d::FileUtils::getInstance()->getStringFromFile(vertShaderPath);
 
-    //custom fragment shader 
+    // Custom fragment shader 
     auto fragSourceRaw = cocos2d::FileUtils::getInstance()->getStringFromFile(fragShaderPath);
 
-    //build full fragment shader
-    auto fragSource = fragHead + fragSourceRaw;
+    // Build full fragment shader
+    auto fragSource = s_fragHead + fragSourceRaw;
 
-    return new SimpleShader(vertSource, fragSource);
+    return ShaderProgramPtr(cocos2d::backend::Device::getInstance()->newProgram(vertSource, fragSource));
 }
 
 void SimpleShader::setUniform(std::string uniform, cocos2d::Texture2D* value)
 {
-    //determine texture slot
-    int slot = currentTextureSlot;
-    if (textureToSlot.count(uniform) > 0)
+    // Determine texture slot
+    int slot = m_currentTextureSlot;
+    if (m_textureToSlot.count(uniform) > 0)
     {
-        //texture already has a slot
-        slot = textureToSlot[uniform];
+        // Texture already has a slot
+        slot = m_textureToSlot[uniform];
     }
     else
     {
-        //new texture
-        textureToSlot[uniform] = slot;
-        currentTextureSlot++;
+        // New texture
+        m_textureToSlot[uniform] = slot;
+        m_currentTextureSlot++;
     }
 
-    auto uniformLocation = programState->getUniformLocation(uniform);
-    programState->setTexture(uniformLocation, slot, value->getBackendTexture());
+    auto uniformLocation = m_programState->getUniformLocation(uniform);
+    m_programState->setTexture(uniformLocation, slot, value->getBackendTexture());
 }
 
 
-//Simple Shader Manager
-SimpleShaderManager::SimpleShaderManager()
-{
+///////////////// Simple Shader Manager /////////////////
+
+SimpleShaderManager::SimpleShaderManager() {
     baseTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-SimpleShaderManager* SimpleShaderManager::getInstance()
-{
+SimpleShaderManager* SimpleShaderManager::getInstance() {
     static auto instance = new SimpleShaderManager();
 
     return instance;
 }
 
-void SimpleShaderManager::updateShaderTime()
-{
+ShaderProgramPtr SimpleShaderManager::getProgressShaderProgram() {
+    static ShaderProgramPtr program = SimpleShader::createShaderProgramWithFragmentShader("shaders/hexProgress.frag");
+
+    return program;
+}
+
+ShaderProgramPtr SimpleShaderManager::getEncouragementGlowProgram() {
+    static ShaderProgramPtr program = SimpleShader::createShaderProgramWithFragmentShader("shaders/EncouragementGlow.frag");
+
+    return program;
+}
+
+void SimpleShaderManager::updateShaderTime() {
     auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     float seconds = (milliseconds - baseTime) / 1000.0f;
 

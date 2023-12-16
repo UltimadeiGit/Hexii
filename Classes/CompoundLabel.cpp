@@ -77,7 +77,7 @@ void CompoundLabel::setWidthConstrant(float width, float minSpacing, VariablePar
 
 	const Size& constPartSize = m_constPart->getContentSize();
 	const Size& variablePartSize = m_variablePart->getContentSize();
-	Size iconSize = m_iconPart->getContentSize() * m_iconPart->getScale();
+	Size iconSize = m_iconPart == nullptr ? Size::ZERO : m_iconPart->getContentSize() * m_iconPart->getScale();
 	
 	float contentWidth = constPartSize.width + variablePartSize.width + iconSize.width;
 
@@ -136,6 +136,7 @@ void CompoundLabel::setIconTexture(const std::string& texturePath) {
 	Texture2D* newTexture = Director::getInstance()->getTextureCache()->addImage(texturePath);
 	if (m_iconPart->getTexture() == newTexture) return;
 
+	m_iconPart->setContentSize(newTexture->getContentSize());
 	m_iconPart->setTexture(newTexture);
 
 	updateSize();
@@ -171,7 +172,7 @@ void CompoundLabel::updateSize() {
 void CompoundLabel::updatePositions() {
 	const Size& constPartSize = m_constPart->getContentSize();
 	const Size& variablePartSize = m_variablePart->getContentSize();
-	Size iconSize = m_iconPart ? m_iconPart->getContentSize() * m_iconPart->getScale() : Size::ZERO;
+	Size iconSize = m_iconPart == nullptr ? Size::ZERO : m_iconPart->getContentSize() * m_iconPart->getScale();
 
 	if (m_constraintMode == ConstraintMode::WIDTH) {
 
@@ -186,7 +187,7 @@ void CompoundLabel::updatePositions() {
 			m_variablePart->setPosition(Vec2(m_widthConstraint / 2, 0.0));
 			break;
 		}
-		m_iconPart->setPosition(Vec2(m_widthConstraint - iconSize.width, 0.0));
+		if(m_iconPart) m_iconPart->setPosition(Vec2(m_widthConstraint - iconSize.width, 0.0));
 	}
 	else { // Spacing constraint
 		m_variablePart->setPosition(Vec2(constPartSize.width + m_spacingConstraintFirst, 0));

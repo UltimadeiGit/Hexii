@@ -3,11 +3,14 @@
 #include "Maths.h"
 #include "Resources.h"
 #include "JSON.hpp"
+#include "HexiiScene.h"
 
 USING_NS_CC;
 using namespace nlohmann;
 
 HexiiPlane* HexiiPlane::m_instance = nullptr;
+
+//constexpr cocos2d::Vec2 PLANE_CENTRE_OFFSET = {0, -200};
 
 HexiiPlane::HexiiPlane(const float hexHeight) : m_hexHeight(hexHeight)
 {}
@@ -16,6 +19,7 @@ HexiiPlane::HexiiPlane(const json& data) : m_hexHeight(data.at("hexHeight")) {}
 
 bool HexiiPlane::init() {
     if (m_instance != nullptr) err("Hexii plane already exists");
+    m_instance = this;
 
     /// Declare listeners
 
@@ -39,25 +43,16 @@ bool HexiiPlane::init() {
 
     /// Add event listeners
 
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexYield", CC_CALLBACK_1(HexiiPlane::onHexYield, this)), this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexPurchase", CC_CALLBACK_1(HexiiPlane::onHexPurchase, this)), this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexiiFocus", CC_CALLBACK_1(HexiiPlane::onHexFocus, this)), this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onPinButtonPressed", CC_CALLBACK_1(HexiiPlane::onPinButtonPressed, this)), this);
-   
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexiiYield", CC_CALLBACK_1(HexiiPlane::onHexiiYield, this)), this);
     
-    /// Init the camera
+    EventUtility::addGlobalEventListener("onHexiiPurchase", this, &HexiiPlane::onHexiiPurchase);
+    EventUtility::addGlobalEventListener("onHexiiFocus", this, &HexiiPlane::onHexiiFocus);
+    EventUtility::addGlobalEventListener(Hexii::EVENT_UPGRADE_PURCHASED, this, &HexiiPlane::onHexiiUpgradePurchased);
+    //_eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexiiPurchase", CC_CALLBACK_1(HexiiPlane::onHexiiPurchase, this)), this);
+    //_eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexiiFocus", CC_CALLBACK_1(HexiiPlane::onHexiiFocus, this)), this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onPinButtonPressed", CC_CALLBACK_1(HexiiPlane::onPinButtonPressed, this)), this);
 
-    m_camera = Camera::create();
-    m_camera->setPosition(getPosition());
-    m_camera->setDepth(-1);
-    m_camera->setCameraFlag(CameraFlag::USER1);
-    //m_camera->runAction(RepeatForever::create(MoveBy::create(0.1, Vec2(-5.0, 0))));
-
-    setCameraMask((unsigned short)m_camera->getCameraFlag(), false);
-
-    this->addChild(m_camera);
-
-    m_instance = this;
+    setCameraMask((unsigned short)cocos2d::CameraFlag::USER1, false);
 
     // Prevents this plane from being autoreleased at any point
     this->retain();
@@ -88,7 +83,7 @@ void HexiiPlane::update(float dt) {
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
     // If the camera is panning, simulate mouse movement
-    if (m_camera->getActionByTag(ACTION_TAG_PAN_CAMERA)) onMouseMoved(nullptr);
+    if (HexiiScene::getHexiiCamera()->getActionByTag(ACTION_TAG_PAN_CAMERA)) onMouseMoved(nullptr);
 #endif
 }
 
@@ -101,13 +96,15 @@ void HexiiPlane::panCameraTo(Hexii* hex) {
     // Vec2 hexLocalPos = Hexagon::axialToPixel(posAxial, m_hexHeight);
 
     Vec2 hexLocalPos = hex->getPosition();
+    cocos2d::Camera* camera = HexiiScene::getHexiiCamera();
 
-    auto* panAction = EaseQuadraticActionInOut::create(MoveTo::create(0.4, Vec3(hexLocalPos.x, hexLocalPos.y, m_camera->getPositionZ())));
+    auto* panAction = EaseQuadraticActionInOut::create(
+        MoveTo::create(0.4, Vec3(hexLocalPos.x, hexLocalPos.y, camera->getPositionZ())));
     panAction->setTag(ACTION_TAG_PAN_CAMERA);
 
     // Stop any previous pan actions
-    m_camera->stopActionByTag(ACTION_TAG_PAN_CAMERA);
-    m_camera->runAction(panAction);
+    camera->stopActionByTag(ACTION_TAG_PAN_CAMERA);
+    camera->runAction(panAction);
 }
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
@@ -121,6 +118,7 @@ void HexiiPlane::onMousePressed(cocos2d::EventMouse* mouse) {
 
     // Pan the camera to the hex if it was right clicked
     if (m_mouseOverHex && rightClick) {
+        m_mouseOverHex->focus();
         panCameraTo(m_mouseOverHex);
     }
 }
@@ -133,7 +131,9 @@ void HexiiPlane::onMouseMoved(cocos2d::EventMouse* mouse) {
     //cocos2d::Director::getInstance()->get
 
     Vec2 mousePos = mouse ? mouse->getLocationInView() : m_lastMousePos;
-    Vec2 cameraMousePos = getCameraMousePos(mousePos);
+    Vec2 cameraMousePos = CocosUtility::getCameraMousePos(HexiiScene::getHexiiCamera(), mousePos);
+
+    printf("%d %d (%d %d)\n", (int)mousePos.x, (int)mousePos.y, (int)cameraMousePos.x, (int)cameraMousePos.y);
 
     Hexii* previousMouseOverHex = m_mouseOverHex;
 
@@ -155,11 +155,16 @@ void HexiiPlane::onMouseMoved(cocos2d::EventMouse* mouse) {
 
 bool HexiiPlane::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* evnt) {
     static Timestamp lastClickTime = 0;
-    static Vec2 lastTouchPos = getTouchPos(touch);
+    static Vec2 lastTouchPos = getTouchPos(HexiiScene::getHexiiCamera(), touch);
 
     Timestamp currentTime = timeSinceEpochMs();
-    Vec2 touchPos = getTouchPos(touch);
+    Vec2 touchPos = getTouchPos(HexiiScene::getHexiiCamera(), touch);
 
+    // Log touch pos
+ 
+    printf("%d %d (%d %d)\n", (int)touch->getLocation().x, (int)touch->getLocation().y, (int)touchPos.x, (int)touchPos.y);
+    
+   
     // Double taps (two taps within 0.3 seconds and at most 20 units apart)
     bool doubleTap = (currentTime < lastClickTime + 300 && (lastTouchPos - touchPos).getLengthSq() < (20 * 20));
 
@@ -170,7 +175,10 @@ bool HexiiPlane::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* evnt) {
         hexTouched->onTouchBegan();
 
         // Pan the camera to the hex if it was double tapped 
-        if (doubleTap) panCameraTo(hexTouched);
+        if (doubleTap) {
+            hexTouched->focus();
+            panCameraTo(hexTouched);
+        }
     }
 
     // Update statics
@@ -183,22 +191,38 @@ bool HexiiPlane::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* evnt) {
 void HexiiPlane::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt) {}
 
 
-void HexiiPlane::onHexYield(EventCustom* evnt) {
+void HexiiPlane::onHexiiYield(EventCustom* evnt) {
     Hexii::EventHexiiYieldData* data = static_cast<Hexii::EventHexiiYieldData*>(evnt->getUserData());
 
     // TODO: Remove
     //auto neighbors = neighborsOf(data->posAxial, true);
-    //for (auto& neighbor : neighbors) if (neighbor.hex->getDistrict() < data->District) neighbor.hex->addEXP(data->yield);
+    //for (auto& neighbor : neighbors) if (neighbor.hex->getLayer() < data->layer) neighbor.hex->addEXP(data->yield);
 }
 
-void HexiiPlane::onHexPurchase(cocos2d::EventCustom* evnt) {
+void HexiiPlane::onHexiiPurchase(cocos2d::EventCustom* evnt) {
     Hexii::EventHexiiPurchaseData* data = static_cast<Hexii::EventHexiiPurchaseData*>(evnt->getUserData());
 
     placeHexAtPos(data->subject, data->posAxial);
 }
 
-void HexiiPlane::onHexFocus(cocos2d::EventCustom* evnt) {
+void HexiiPlane::onHexiiFocus(cocos2d::EventCustom* evnt) {
     // Hexii::EventHexiiFocusData* data = static_cast<Hexii::EventHexiiFocusData*>(evnt->getUserData());
+}
+
+void HexiiPlane::onHexiiUpgradePurchased(cocos2d::EventCustom* evnt) {
+    auto dat = EventUtility::getEventData<Hexii::EventHexiiUpgradePurchasedData>(evnt);
+
+    // Support upgrade requires setting adjacent hexii yields dirty
+    if (dat->upgrade->name == "Support1") {
+        auto neighbors = neighborsOf(dat->subject->getAxialPosition(), true);
+        for (auto& neighbor : neighbors) neighbor.hex->markYieldDirty();
+    }
+
+    // Global power upgrade requires setting all hexii yields dirty, and updating the global power count
+    if (dat->upgrade->name == "GlobalPower") {
+        Resources::getInstance()->addGlobalPowerUpgradeBonus();
+		for (auto& posHexPair : m_hexMap) posHexPair.second->markYieldDirty();
+	}
 }
 
 void HexiiPlane::onPinButtonPressed(cocos2d::EventCustom* evnt) {
@@ -219,7 +243,7 @@ Hexii* HexiiPlane::placeHexAtPos(cocos2d::Vec2 posAxial) {
 
 Hexii* HexiiPlane::placeHexAtPos(Hexii* hex, cocos2d::Vec2 posAxial) {
     hex->setPosition(Hexagon::axialToPixel(posAxial, m_hexHeight));
-    hex->setCameraMask((unsigned short)m_camera->getCameraFlag(), true);
+    hex->setCameraMask((unsigned short)cocos2d::CameraFlag::USER1, true);
 
     // Verify a different hex does not already exist at the given position
     auto it = m_hexMap.find(posAxial);
@@ -245,35 +269,35 @@ Hexii* HexiiPlane::placeHexAtPos(Hexii* hex, cocos2d::Vec2 posAxial) {
 
     if (hex->getActive()) {
         auto neighbors = neighborsOf(posAxial, false);
-        uint District = Hexagon::layerOf(posAxial);
+        uint layer = Hexagon::layerOf(posAxial);
 
         for (auto& neighbor : neighbors) {
             // For each of the neighbors, one of five things will happen \
-            Case 0: The neighbor is of the same District. Nothing should happen in this case \
-            Case 1: The neighbor does not exist yet and is of a lower District. Nothing should happen in this case \
-            Case 2: The neighbor does not exist yet and is of a higher District, meaning an inactive hex should be set at that position \
-            Case 3: The neighbor does exist and is of a lower District, meaning this hex being purchase should have that neighbor added as a yield target \
-            Case 4: The neighbor does exist and is of a higher District, meaning that neighbor should add this hex being purchased as a yield target
+            Case 0: The neighbor is of the same layer. Nothing should happen in this case \
+            Case 1: The neighbor does not exist yet and is of a lower layer. Nothing should happen in this case \
+            Case 2: The neighbor does not exist yet and is of a higher layer, meaning an inactive hex should be set at that position \
+            Case 3: The neighbor does exist and is of a lower layer, meaning this hex being purchase should have that neighbor added as a yield target \
+            Case 4: The neighbor does exist and is of a higher layer, meaning that neighbor should add this hex being purchased as a yield target
 
-            uint neighborDistrict = Hexagon::layerOf(neighbor.pos);
+            uint neighborlayer = Hexagon::layerOf(neighbor.pos);
 
             // Case 0
-            if (neighborDistrict == District) continue;
+            if (neighborlayer == layer) continue;
 
             // Cases 1 & 2
             if (neighbor.hex == nullptr || !neighbor.hex->getActive()) {
                 // Case 1
-                if (neighborDistrict < District) continue;
+                if (neighborlayer < layer) continue;
 
                 // Case 2
-                else if (neighbor.hex == nullptr && neighborDistrict < Resources::MAX_DISTRICTS) neighbor.hex = placeHexAtPos(neighbor.pos);
+                else if (neighbor.hex == nullptr && neighborlayer < Resources::MAX_layerS) neighbor.hex = placeHexAtPos(neighbor.pos);
             }
             // Cases 3 & 4
             else {
                 // TODO: Probably a smarter, faster way of calculating this angle using hexagon geometry?
 
                 // Case 3
-                if (neighborDistrict < District)
+                if (neighborlayer < layer)
                     hex->addYieldTarget(neighbor.hex, CC_RADIANS_TO_DEGREES(Vec2(Hexagon::axialToPixel(neighbor.pos, m_hexHeight) - Hexagon::axialToPixel(posAxial, m_hexHeight)).getAngle()));
 
                 // Case 4
@@ -295,12 +319,12 @@ Hexii* HexiiPlane::getHexAtPos(Vec2 posAxial) const {
     return nullptr;
 }
 
-std::vector<HexiiPlane::HexiiPosPair> HexiiPlane::getHexiiInDistrict(uint District) const {
+std::vector<HexiiPlane::HexiiPosPair> HexiiPlane::getHexiiInlayer(uint layer) const {
     std::vector<HexiiPosPair> hexii;
 
     // TODO: Optimize
     for (auto it = m_hexMap.begin(); it != m_hexMap.end(); it++) {
-        if (it->second->getDistrict() != District) continue;
+        if (it->second->getLayer() != layer) continue;
 
         HexiiPosPair hex;
         hex.pos = it->first;
@@ -351,9 +375,9 @@ BigReal HexiiPlane::getAdjacencyBonuses(const Hexii* target) const {
 void to_json(nlohmann::json& j, const HexiiPlane& plane) {
     json hexii = json::array();
 
-    // Adds the hexii ordered by District
-    for (uint i = 0; i < Resources::MAX_DISTRICTS; i++) {
-        for (auto hexPosPair : plane.getHexiiInDistrict(i)) {
+    // Adds the hexii ordered by layer
+    for (uint i = 0; i < Resources::MAX_layerS; i++) {
+        for (auto hexPosPair : plane.getHexiiInlayer(i)) {
             hexii.push_back(*hexPosPair.hex);
         }
     }    

@@ -29,9 +29,9 @@ cocos2d::Vec2 Hexagon::pixelToAxial(const cocos2d::Vec2& posPixel, const float h
 }
 
 float Hexagon::layerOf(const cocos2d::Vec2& posAxial) {
-    // In a cube coord system, District is simply max(|x|, |y|, |z|)
+    // In a cube coord system, layer is simply max(|x|, |y|, |z|)
     // Additionally, x + y + z = 0 so z = -x - y
-    // We use an axial system so z can be derived and District from that
+    // We use an axial system so z can be derived and layer from that
 
     return std::max(std::max(std::abs(posAxial.x), std::abs(posAxial.y)), std::abs(-posAxial.x - posAxial.y));
 }
