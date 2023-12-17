@@ -1,7 +1,6 @@
 #include "UpgradeBox.h"
 #include "ColourSchemes.h"
 #include "Resources.h"
-#include "Specialization.h"
 
 #include <fmt/format.h>
 
@@ -33,7 +32,7 @@ bool UpgradeBox::init() {
     m_upgradePlate->addChild(m_nameLabel);
 
     m_contributionLabel = CompoundLabel::create("", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
-    m_contributionLabel->setStyle(true, true, 28, Color4B(182, 255, 0, 255), Color4B::BLACK, 2, Color4B::BLACK, Size(2, -2), 2);
+    m_contributionLabel->setStyle(true, true, 38, Color4B(182, 255, 0, 255), Color4B::BLACK, 2, Color4B::BLACK, Size(2, -2), 2);
     m_contributionLabel->setSpacingConstraint(5.0f);
     m_contributionLabel->setAnchorPoint({ 0.5, 0.5 });
     m_contributionLabel->setPosition({ 104, 19 });
@@ -49,7 +48,7 @@ bool UpgradeBox::init() {
     m_upgradePlate->addChild(m_purchaseUpgradeButton);
 
     m_purchaseUpgradeCostLabel = CompoundLabel::create("", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
-    m_purchaseUpgradeCostLabel->setStyle(true, true, 34, UNAFFORDABLE_RED, Color4B::BLACK, 2, Color4B::BLACK, Size(2, -2), 2);
+    m_purchaseUpgradeCostLabel->setStyle(true, true, 38, UNAFFORDABLE_RED, Color4B::BLACK, 2, Color4B::BLACK, Size(2, -2), 2);
     m_purchaseUpgradeCostLabel->setSpacingConstraint(0.0f, 10.0f);
     m_purchaseUpgradeCostLabel->setIconTexture("icons/GreenMatterSmall.png");
     m_purchaseUpgradeCostLabel->setAnchorPoint({ 0.5, 0.5 });

@@ -46,6 +46,8 @@ endif()
 # record sources, headers, resources...
 set(GAME_SOURCE)
 set(GAME_HEADER)
+set_property(GLOBAL PROPERTY GAME_SOURCE_PROPERTY "")
+set_property(GLOBAL PROPERTY GAME_HEADER_PROPERTY "")
 
 set(GAME_RES_FOLDER
     "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
@@ -54,9 +56,43 @@ if(APPLE OR WINDOWS)
     cocos_mark_multi_resources(common_res_files RES_TO "Resources" FOLDERS ${GAME_RES_FOLDER})
 endif()
 
-include(Classes/CMakeSrc.txt)
+# Replaced with function below
+# include(Classes/CMakeSrc.txt)
 
-# add cross-platforms source files and header files 
+function(add_sources_and_headers_recursively relative_dir add_include_directories add_code_files game_source game_header)
+	set(full_dir "${CMAKE_CURRENT_SOURCE_DIR}/${relative_dir}")
+    if(IS_DIRECTORY ${full_dir})
+        # Add the current directory to the include directories
+        if(add_include_directories)
+            target_include_directories(${APP_NAME} PRIVATE ${relative_dir})
+        endif()
+
+        # Get all children items in the directory
+        file(GLOB children RELATIVE ${full_dir} ${full_dir}/*)
+
+        foreach(child ${children})
+            # Construct the full path
+            set(full_child_path "${full_dir}/${child}")
+			set(relative_child_path "${relative_dir}/${child}")
+
+            # Check if it's a directory and recurse
+            if(IS_DIRECTORY ${full_child_path})
+                add_sources_and_headers_recursively(${relative_child_path} ${add_include_directories} ${add_code_files} ${game_source} ${game_header})
+            elseif(add_code_files)
+                # Check the file extension and add to the appropriate list
+                get_filename_component(ext ${child} EXT)
+                if(${ext} STREQUAL ".cpp")
+                    get_property(current_source GLOBAL PROPERTY GAME_SOURCE_PROPERTY)
+                    set_property(GLOBAL PROPERTY GAME_SOURCE_PROPERTY "${current_source};${relative_child_path}")
+                elseif(${ext} STREQUAL ".h")
+                    get_property(current_source GLOBAL PROPERTY GAME_HEADER_PROPERTY)
+                    set_property(GLOBAL PROPERTY GAME_HEADER_PROPERTY "${current_source};${relative_child_path}")
+                endif()
+            endif()
+        endforeach()
+    endif()
+endfunction()
+
 #list(APPEND GAME_SOURCE
 #     Classes/AppDelegate.cpp
 #     Classes/HelloWorldScene.cpp
@@ -118,10 +154,18 @@ elseif(APPLE)
     list(APPEND GAME_SOURCE ${common_res_files})
 endif()
 
+# add cross-platforms source files and header files 
+add_sources_and_headers_recursively("Classes" FALSE TRUE "GAME_SOURCE" "GAME_HEADER")
+
+get_property (GAME_SOURCE_EXTRA GLOBAL PROPERTY GAME_SOURCE_PROPERTY)
+get_property (GAME_HEADER_EXTRA GLOBAL PROPERTY GAME_HEADER_PROPERTY)
+
 # mark app complie info and libs info
 set(all_code_files
     ${GAME_HEADER}
+    ${GAME_HEADER_EXTRA}
     ${GAME_SOURCE}
+    ${GAME_SOURCE_EXTRA}
     )
 if(NOT ANDROID)
     add_executable(${APP_NAME} ${all_code_files})
@@ -134,6 +178,8 @@ endif()
 add_subdirectory(${COCOS2DX_ROOT_PATH}/../fmt-9.1.0)
 target_link_libraries(${APP_NAME} fmt-header-only)
 target_link_libraries(${APP_NAME} cocos2d)
+
+add_sources_and_headers_recursively("Classes" TRUE FALSE GAME_SOURCE GAME_HEADER)
 target_include_directories(${APP_NAME}
         PRIVATE Classes
         PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/

@@ -189,9 +189,9 @@ vec3 blendScreen(vec3 base, vec3 blend, float opacity) {
 // Main function
 void main() {
     // Uniform variables
-    float scale = 25; // range from 0 to 100
-    float refraction = 10; // range from 0 to 100
-	float time = cc_Time * 3;
+    float scale = 25.0; // range from 0 to 100
+    float refraction = 10.0; // range from 0 to 100
+	float time = cc_Time * 3.0;
 
     // Get the texture coordinates
     vec2 uv = cc_FragTexCoord1;

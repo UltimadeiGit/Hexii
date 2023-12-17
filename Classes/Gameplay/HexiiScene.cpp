@@ -115,6 +115,10 @@ bool HexiiScene::init() {
 	m_dock->setAnchorPoint(Vec2(0.5, 0.0));
 	m_dock->setPosition(origin + Vec2(visibleSize.width / 2, 0));
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	m_dock->setScale(1.2f);
+#endif
+
 	// Currency HUD
 
 	m_currencyHUD = CurrencyHUD::create(CurrencyHUD::CurrencyType::GREEN_MATTER);

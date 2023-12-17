@@ -86,7 +86,7 @@ EffectChainPtr HexiiFirstUpgradePurchasedProgressionEvent::createUpgradeTabEncou
 	
 	return 
 		// Encourage the hexii info tab
-		CommonEffects::createEncouragementForTab(dock, 0)
+		CommonEffects::createEncouragementForTab<3>(dock, 0)
 		// Encourage the upgrade tab
-		->setNext(CommonEffects::createEncouragementForTab(hexInfoTab, 1));
+		->setNext(CommonEffects::createEncouragementForTab<2>(hexInfoTab, 1));
 }

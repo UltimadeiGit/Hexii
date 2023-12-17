@@ -9,7 +9,6 @@
 #include "JSON_FWD.hpp"
 #include "ProgressBar.h"
 #include "UpgradePath.h"
-#include "Specialization.h"
 #include "EventUtility.h"
 #include "UpgradeTracker.h"
 
@@ -120,7 +119,7 @@ public:
 
 	static BigReal getEXPRequiredForLevel(BigInt level, uint layer);
 	static BigInt getLevelFromEXP(BigReal exp, uint layer);
-	static BigReal Hexii::getUpgradePurchaseCostMultiplier(uint layer);
+	static BigReal getUpgradePurchaseCostMultiplier(uint layer);
 
 	// If suppressEvent is true, the onLevelGained will not be triggered. Used for internals
 	void addEXP(BigReal exp, bool suppressEvent = false);

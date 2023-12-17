@@ -23,7 +23,7 @@
  ****************************************************************************/
 
 #include "AppDelegate.h"
-#include "..\Classes\HexiiScene.h"
+#include "HexiiScene.h"
 
 // #define USE_AUDIO_ENGINE 1
 
