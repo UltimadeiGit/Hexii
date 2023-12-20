@@ -1,0 +1,1298 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "D:/Documents/Programming/Hexii/Hexii/proj.android/app/build/intermediates/cxx/RelWithDebInfo/2f4e61l4/obj/armeabi-v7a/libMyGame.so"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"target_link_libraries",
+			"target_include_directories",
+			"add_sources_and_headers_recursively"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 173,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 175,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 180,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 179,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 182,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 67,
+				"parent" : 5
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 80,
+				"parent" : 5
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 67,
+				"parent" : 7
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 80,
+				"parent" : 5
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 67,
+				"parent" : 9
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 80,
+				"parent" : 5
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 67,
+				"parent" : 11
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 80,
+				"parent" : 11
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 67,
+				"parent" : 13
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 80,
+				"parent" : 5
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 67,
+				"parent" : 15
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 80,
+				"parent" : 5
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 67,
+				"parent" : 17
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 80,
+				"parent" : 5
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 67,
+				"parent" : 19
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 80,
+				"parent" : 5
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 67,
+				"parent" : 21
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 183,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -O2 -g -DNDEBUG -fPIC"
+				},
+				{
+					"fragment" : "-std=c++11"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 3,
+					"define" : "ANDROID"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "FMT_HEADER_ONLY=1"
+				},
+				{
+					"backtrace" : 3,
+					"define" : "LWS_WITH_LIBUV"
+				},
+				{
+					"define" : "MyGame_EXPORTS"
+				},
+				{
+					"backtrace" : 3,
+					"define" : "USE_FILE32API"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 6,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/Classes"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/Classes/Base"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/Classes/Effects"
+				},
+				{
+					"backtrace" : 12,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/Classes/Gameplay"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/Classes/Gameplay/Progression"
+				},
+				{
+					"backtrace" : 16,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/Classes/Misc"
+				},
+				{
+					"backtrace" : 18,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/Classes/Rendering"
+				},
+				{
+					"backtrace" : 20,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/Classes/System"
+				},
+				{
+					"backtrace" : 22,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/Classes/UI"
+				},
+				{
+					"backtrace" : 23,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/cocos/audio/include"
+				},
+				{
+					"backtrace" : 23,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/includes"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/fmt-9.1.0/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/cocos"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/extensions"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/cocos/platform"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/cocos/editor-support"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/cocos/base"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/cocos/platform/android"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/recast/.."
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/tinyxml2/."
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/xxhash/."
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/xxtea/."
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/clipper/."
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/edtaa3func/."
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/ConvertUTF/."
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/poly2tri/.."
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/md5/.."
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Android/sdk/ndk/23.1.7779620/sources/android/cpufeatures"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/android-specific/pvmp3dec/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/android-specific/pvmp3dec/src"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/android-specific/tremolo/."
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/unzip/."
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/Box2D/include"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/chipmunk/include"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/freetype2/include/android/freetype2"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/bullet/include"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/bullet/include/bullet"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/jpeg/include/android"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/openssl/include/android"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/uv/include"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/webp/include/android"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/websockets/include/android"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/curl/include/android"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/png/include/android"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Documents/Programming/Hexii/Hexii/cocos2d/external/zlib/include"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				47,
+				48,
+				49,
+				50,
+				51,
+				52,
+				53,
+				54,
+				55,
+				56,
+				57,
+				58,
+				59,
+				60,
+				61,
+				62,
+				63,
+				64,
+				65,
+				66,
+				67,
+				68,
+				69,
+				70,
+				71,
+				72,
+				73,
+				74,
+				75,
+				76,
+				77,
+				78,
+				79,
+				80,
+				81,
+				82,
+				83,
+				84,
+				85,
+				86
+			],
+			"sysroot" : 
+			{
+				"path" : "D:/Documents/Programming/Android/sdk/ndk/23.1.7779620/toolchains/llvm/prebuilt/windows-x86_64/sysroot"
+			}
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "cocos2d::@b17589fc6237857a1771"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_tinyxml2::@fd6ab661f4ee25a21ef0"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "external::@62470bbe2074d04a1904"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_recast::@49aedbc985f97720d891"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_xxhash::@11e20b8b9139209a045a"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_cpufeatures::@faefd91259078ecab22c"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_poly2tri::@ce0bfd23a4070be0c5de"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_pvmp3dec::@942eff57d9b63e8baa4e"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_xxtea::@95546a4b2abc077b0042"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_convertUTF::@205c2f0e44a3b06b9b59"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_edtaa3func::@f3d42e550923b89477b0"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_clipper::@33abc919e86db66c28b8"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_md5::@82bef7d6fa8c2aa61808"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_tremolo::@afb4f15f0e6ee4fb58dc"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "ext_unzip::@05a8bf1aba81c1a16e64"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "cpp_android_spec::@1eba3e23debeef414eca"
+		}
+	],
+	"id" : "MyGame::@6890427a1f51a3e7e1df",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-Wl,--whole-archive",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "engine\\cocos\\platform\\libcpp_android_spec.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-Wl,--no-whole-archive",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "lib\\libcocos2d.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libexternal.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\Box2D\\prebuilt\\android\\armeabi-v7a\\libbox2d.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\chipmunk\\prebuilt\\android\\armeabi-v7a\\libchipmunk.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\freetype2\\prebuilt\\android\\armeabi-v7a\\libfreetype.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_recast.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\bullet\\prebuilt\\android\\armeabi-v7a\\libLinearMath.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\bullet\\prebuilt\\android\\armeabi-v7a\\libBulletDynamics.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\bullet\\prebuilt\\android\\armeabi-v7a\\libBulletCollision.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\bullet\\prebuilt\\android\\armeabi-v7a\\libLinearMath.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\bullet\\prebuilt\\android\\armeabi-v7a\\libBulletMultiThreaded.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\bullet\\prebuilt\\android\\armeabi-v7a\\libMiniCL.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\jpeg\\prebuilt\\android\\armeabi-v7a\\libjpeg.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\webp\\prebuilt\\android\\armeabi-v7a\\libwebp.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\websockets\\prebuilt\\android\\armeabi-v7a\\libwebsockets.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\openssl\\prebuilt\\android\\armeabi-v7a\\libssl.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\openssl\\prebuilt\\android\\armeabi-v7a\\libcrypto.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\uv\\prebuilt\\android\\armeabi-v7a\\libuv_a.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_tinyxml2.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_xxhash.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_xxtea.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_clipper.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_edtaa3func.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_convertUTF.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_poly2tri.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_md5.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\curl\\prebuilt\\android\\armeabi-v7a\\libcurl.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\png\\prebuilt\\android\\armeabi-v7a\\libpng.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "engine\\external\\android-specific\\cpufeatures\\libext_cpufeatures.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-ldl",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_pvmp3dec.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_tremolo.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "..\\..\\..\\..\\..\\..\\cocos2d\\external\\zlib\\prebuilt\\android\\armeabi-v7a\\libz.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "lib\\libext_unzip.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lGLESv2",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lEGL",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-llog",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-landroid",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lOpenSLES",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-latomic -lm",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX",
+		"sysroot" : 
+		{
+			"path" : "D:/Documents/Programming/Android/sdk/ndk/23.1.7779620/toolchains/llvm/prebuilt/windows-x86_64/sysroot"
+		}
+	},
+	"name" : "MyGame",
+	"nameOnDisk" : "libMyGame.so",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38,
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46
+			]
+		},
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				47,
+				48,
+				49,
+				50,
+				51,
+				52,
+				53,
+				54,
+				55,
+				56,
+				57,
+				58,
+				59,
+				60,
+				61,
+				62,
+				63,
+				64,
+				65,
+				66,
+				67,
+				68,
+				69,
+				70,
+				71,
+				72,
+				73,
+				74,
+				75,
+				76,
+				77,
+				78,
+				79,
+				80,
+				81,
+				82,
+				83,
+				84,
+				85,
+				86
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Base/AppDelegate.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Base/HelloWorldScene.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Effects/CommonEffects.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Effects/EffectChain.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Gameplay/GameEvent.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Gameplay/GameplayCommon.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Gameplay/Hexii.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Gameplay/HexiiPlane.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Gameplay/HexiiScene.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Gameplay/Progression/Progression.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Gameplay/Progression/ProgressionEvent.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Gameplay/Upgrade.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Gameplay/UpgradePath.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Gameplay/UpgradeTracker.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Misc/BoolMap.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Misc/CocosUtility.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Misc/ColourSchemes.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Misc/Console.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Misc/EventUtility.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Misc/Maths.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Misc/Memory.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Rendering/CompoundLabel.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Rendering/Hexagon.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Rendering/ProgressBar.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Rendering/ShadedElement.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Rendering/ShaderSubject.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Rendering/SimpleShader.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/Rendering/YieldParticleSystem.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/System/Resources.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/System/SaveData.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/System/Settings.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/CurrencyHUD.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/Dock.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/EXPPurchaseBox.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/HexiiEXPTab.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/HexiiInfoTab.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/HexiiSacrificeHUD.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/HexiiTab.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/HexiiUpgradesTab.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/InvestRedMatterBox.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/PurchasableBox.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/SettingsTab.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/Sidebar.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/TabbedWidget.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/Tooltip.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/UICommon.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Classes/UI/UpgradeBox.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "proj.android/app/jni/hellocpp/main.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Base/AppDelegate.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Base/HelloWorldScene.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Effects/EffectChain.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/Hexii.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/HexiiPlane.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/HexiiScene.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/Progression/HexiiFirstUpgradePurchasedProgressionEvent.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/Progression/HexiiUpgradesAvailableProgressionEvent.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/Progression/Progression.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/Progression/ProgressionEvent.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/Progression/PurchaseFirstHexiiProgressionEvent.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/Upgrade.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/UpgradeEffects.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/UpgradePath.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Gameplay/UpgradeTracker.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Misc/BoolMap.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Misc/Maths.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Misc/Util.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Rendering/CompoundLabel.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Rendering/Hexagon.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Rendering/ProgressBar.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Rendering/ShadedElement.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/Rendering/SimpleShader.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/System/Resources.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/System/SaveData.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/System/Settings.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/CurrencyHUD.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/Dock.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/EXPPurchaseBox.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/HexiiEXPTab.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/HexiiInfoTab.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/HexiiSacrificeHUD.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/HexiiUpgradesTab.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/InvestRedMatterBox.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/PurchasableBox.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/SettingsTab.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/Sidebar.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/Tooltip.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Classes/UI/UpgradeBox.cpp",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "SHARED_LIBRARY"
+}
