@@ -6,37 +6,45 @@ ShadedElement::ShadedElement(SimpleShaderPtr shader) : m_shader(shader) {}
 
 void ShadedElement::setCameraMask(unsigned short mask, bool applyChildren) {
 	Node::setCameraMask(mask, false);
-	if(applyChildren) m_shaded->setCameraMask(mask, applyChildren);
+	if(applyChildren) m_output->setCameraMask(mask, applyChildren);
+}
+
+void ShadedElement::toggleShader(bool enabled) {
+	if (m_shaderEnabled == enabled) return;
+
+	m_shader->setUniform("u_enabled", enabled);
+
+	m_shaderEnabled = enabled;
 }
 
 bool ShadedElement::init(int width, int height)
 {
-	m_shaded = RenderTexture::create(width, height);
-	m_shaded->getSprite()->setAnchorPoint(Vec2(0, 0));
+	m_output = RenderTexture::create(width, height);
+	m_output->getSprite()->setAnchorPoint(Vec2(0, 0));
 
 	setContentSize(Size(width, height));
 
-	addChild(m_shaded);
+	addChild(m_output);
 
 	return true;
 }
 
 void ShadedElement::setProgramState(cocos2d::backend::ProgramState* programState) {
 	Node::setProgramState(programState);
-	if (programState == nullptr) m_shaded->getSprite()->setProgramState(
+	if (programState == nullptr) m_output->getSprite()->setProgramState(
 		new backend::ProgramState(backend::Program::getBuiltinProgram(backend::ProgramType::POSITION_TEXTURE_COLOR))
 	);
-	else m_shaded->getSprite()->setProgramState(programState);
+	else m_output->getSprite()->setProgramState(programState);
 }
 
 void ShadedElement::visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags) {
 	// Only the default camera should be used to render to the render texture.
 
 	if ((uint)Camera::getVisitingCamera()->getCameraFlag() & (uint)CameraFlag::DEFAULT) { // !isVisitableByVisitingCamera()) {
-		m_shaded->beginWithClear(0, 0, 0, 0);
+		m_output->beginWithClear(0, 0, 0, 0);
 
 		for (Node* child : getChildren()) {
-			if (child == m_shaded) continue;
+			if (child == m_output) continue;
 
 			child->setVisible(true);
 			child->visit(renderer, Mat4::IDENTITY, parentFlags);
@@ -44,7 +52,7 @@ void ShadedElement::visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& pare
 			child->setVisible(false);
 		}
 
-		m_shaded->end();
+		m_output->end();
 	}
 	
 	// Only the visiting camera should render the shaded render texture

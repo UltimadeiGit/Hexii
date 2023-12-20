@@ -2,12 +2,11 @@
 
 #include "Maths.h"
 #include "JSON_FWD.hpp"
+#include "Console.h"
+#include "GameplayCommon.h"
 #include <vector>
 
 class Resources {
-public:
-	static constexpr uint MAX_layerS = 3;
-
 private:
 	// Singleton pattern
 
@@ -23,19 +22,23 @@ public:
 	/// greenMatter
 
 	inline BigReal getGreenMatter() const { return m_greenMatter; }
-	// Adds op to greenMatter count. Throws if op is unaffordable
-	void addGreenMatter(BigReal op);
+	inline BigReal getRedMatter() const { return m_redMatter; }
+	
+	// Adds `amount` to greenMatter count. Throws if unaffordable
+	inline void addGreenMatter(BigReal amount) { addResource(m_greenMatter, amount); }
+	// Adds `amount` to redMatter count. Throws if unaffordable
+	inline void addRedMatter(BigReal amount) { addResource(m_redMatter, amount); }
 
 	/// Hexii counts
 
-	inline uint getHexiiCountInlayer(uint layer) const { return layer >= Resources::MAX_layerS ? 0 : m_hexiiCountPerlayer[layer]; }
+	inline uint getHexiiCountInlayer(uint layer) const { return layer >= GameplayCommon::MAX_LAYER ? 0 : m_hexiiCountPerlayer[layer]; }
 	// Adds to the count of the hexii in `layer`
-	void addHexiiInlayer(uint layer);
+	void addHexiiInlayer(uint layer, int num = 1);
 
 	/// Global power
 
 	inline BigReal getGlobalPowerUpgradeBonus() const { return m_globalPowerUpgradeBonus; }
-	void addGlobalPowerUpgradeBonus() { m_globalPowerUpgradeBonus += 1; }
+	void addGlobalPowerUpgradeBonus(int num = 1) { m_globalPowerUpgradeBonus += num; }
 
 	// TODO: Find a better way of doing this
 	/// Dock tabs
@@ -44,10 +47,17 @@ public:
 	inline void setTabEnabled(uint tabNumber, bool enabled) { CC_ASSERT(tabNumber < 5); m_tabsEnabled[tabNumber] = enabled; }
 
 private:
+	template <typename _Ty>
+	inline void addResource(_Ty& resource, _Ty amount) {
+		if (amount > 0 || resource >= std::abs(amount)) resource += amount;
+		else err("Resource cost was unaffordable");
+	}
+
 	static Resources* m_instance;
 
 	BigReal m_greenMatter = 6;
-	uint m_hexiiCountPerlayer[MAX_layerS] = { 0 };
+	BigReal m_redMatter = 0;
+	uint m_hexiiCountPerlayer[GameplayCommon::MAX_LAYER] = { 0 };
 	BigReal m_globalPowerUpgradeBonus = 0;
 	bool m_tabsEnabled[5] = { false };
 };

@@ -25,14 +25,17 @@ public:
 		OWNED
 	};
 
+	typedef uint UpgradeID;
+
 	Upgrade(
-		const fmt::string_view name,
-		const fmt::string_view friendlyName, 
-		const fmt::string_view description, 
-		const fmt::string_view contributionDescription, 
+		const char* name,
+		const char* friendlyName, 
+		const char* description, 
+		const char* contributionDescription, 
 		BigReal greenMatterCost,
 		BigInt levelRequirement,
-		long long actsOnFlags
+		long long actsOnFlags,
+		UpgradeID id
 	);
 
 	fmt::string_view name;
@@ -44,6 +47,7 @@ public:
 	const BigInt levelRequirement;
 
 	const long long actsOnFlags = 0;
+	const UpgradeID id;
 
 	cocos2d::Texture2D* icon;
 };

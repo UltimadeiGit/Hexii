@@ -5,6 +5,8 @@
 #include "HexiiPlane.h"
 #include "JSON.hpp"
 #include "Console.h"
+#include "GameplayCommon.h"
+#include "GameplayCommon.h"
 
 USING_NS_CC;
 using namespace nlohmann;
@@ -39,8 +41,9 @@ Hexii::Hexii(const json& data) :
 	try { m_standardPathTracker = std::make_shared<UpgradeTracker>(data.at("standardUpgrades")); }
 	catch (json::out_of_range) { /* No standard path stored */ }
 	
-	try { addEXP(data.at("exp"), true); }
-	catch (json::out_of_range) {}
+	try { addEXP(data.at("exp"), true); } catch (json::out_of_range) {}
+
+	try { addRedMatter(data.at("redMatterInvested"), true); } catch (json::out_of_range) {}
 }
 
 bool Hexii::init() {
@@ -88,9 +91,9 @@ bool Hexii::init() {
 
 	/// Label init
 
-	m_purchaseCostLabel = CompoundLabel::create("", "fonts/OCR.ttf", "fonts/OCR.ttf");
-	m_purchaseCostLabel->setStyle(false, true, 45, Color4B::WHITE, Color4B::WHITE, 0, Color4B::WHITE, Size(1, -1), 4);
-	m_purchaseCostLabel->setIconTexture("icons/GreenMatter.png");
+	m_purchaseCostLabel = CompoundLabel::create("", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
+	m_purchaseCostLabel->setStyle(false, true, 45, Color4B::WHITE, Color4B::BLACK, 3, Color4B::WHITE, Size(2, -2), 4);
+	m_purchaseCostLabel->setIconTexture("icons/GreenMatterSmall.png");
 	m_purchaseCostLabel->setSpacingConstraint(12.5f);
 	m_purchaseCostLabel->setCascadeOpacityEnabled(true);
 	m_purchaseCostLabel->setAnchorPoint(Vec2(0.5, 0.5));
@@ -101,21 +104,26 @@ bool Hexii::init() {
 	/// Particles
 
 	if (m_type == HexiiType::HOME_L0) {
-		ParticleSystemQuad* d0Particles = ParticleSystemQuad::createWithTotalParticles(18);
+		YieldParticleSystem* d0Particles = YieldParticleSystem::create();
 		d0Particles->setPosition(Vec2(0, 0));
 
+		// Particle should "pop" up from the hexii, 
+
 		// Gravity
-		d0Particles->setEmitterMode(ParticleSystem::Mode::GRAVITY);
-		d0Particles->setGravity(Vec2(0, 0));
+		d0Particles->setEmitterMode(ParticleSystem::Mode::RADIUS);
+		d0Particles->setStartRadius(10.0f);
+		//d0Particles->setGravity(Vec2(0, 0));
 		d0Particles->setPosVar(Vec2(20, 20));
 
 		// Radial acceleration
-		d0Particles->setRadialAccel(200);
-		d0Particles->setRadialAccelVar(0);
+		//d0Particles->setRadialAccel(200);
+		//d0Particles->setRadialAccelVar(0);
 
 		// Speed of particles
-		d0Particles->setSpeed(140);
-		d0Particles->setSpeedVar(14);
+		//d0Particles->setSpeed(140);
+		//d0Particles->setSpeedVar(14);
+
+		d0Particles->setEndRadius(0.0f);
 
 		// Angle
 		d0Particles->setAngle(90);
@@ -125,16 +133,14 @@ bool Hexii::init() {
 
 		// Size
 		d0Particles->setStartSize(100.0f);
-		d0Particles->setStartSizeVar(5.0f);
-		d0Particles->setEndSize(50.0f);
+		//d0Particles->setStartSizeVar(5.0f);
+		//d0Particles->setEndSize(50.0f);
 
 		// Color
-		d0Particles->setStartColor(Color4F(1.0f, 1.0f, 1.0f, 10.0));
-		d0Particles->setStartColorVar(Color4F(0.0f, 0.0f, 0.0f, 0.0f));
-		d0Particles->setEndColor(Color4F(0.0f, 1.0f, 0.0f, 0.0));
-		d0Particles->setEndColorVar(Color4F(0.0f, 0.0f, 0.0f, 0.0f));
+		d0Particles->setStartColor(Color4F(1.0f, 1.0f, 1.0f, 1.0));
+		d0Particles->setEndColor(Color4F(1.0f, 1.0f, 1.0f, 1.0));
 
-		d0Particles->setTexture(Director::getInstance()->getTextureCache()->addImage("icons/GreenMatter.png"));
+		d0Particles->setTexture(Director::getInstance()->getTextureCache()->addImage("particles/GreenMatter.png"));
 
 		m_yieldParticles.push_back(d0Particles);
 		this->addChild(m_yieldParticles[0], 2);
@@ -149,6 +155,9 @@ bool Hexii::init() {
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 	//EventUtility::addGlobalEventListener(Specialization::EVENT_NONLOCAL_UPGRADE_PURCHASED, this, &Hexii::onUpgradePurchased);
+
+	EventUtility::addGlobalEventListener(GameplayCommon::GameEvent::EVENT_SACRIFICE_INITIATED, this, &Hexii::onSacrificeInitiated);
+	EventUtility::addGlobalEventListener(GameplayCommon::GameEvent::EVENT_SACRIFICE_CANCELLED, this, &Hexii::onSacrificeCancelled);
 
 	return true;
 }
@@ -209,7 +218,7 @@ void Hexii::updateInactive(float dt) {
 	time_t currentTime;
 	time(&currentTime);
 
-	if (currentTime - m_timeOfLastPress < 1.0f) m_isHovered = true;
+	if (currentTime - m_timeOfLastPress < 3.0f) m_isHovered = true;
 	else m_isHovered = false;
 #endif
 
@@ -254,23 +263,19 @@ void Hexii::updateInactive(float dt) {
 
 
 BigReal Hexii::getEXPRequiredForLevel(BigInt level, uint layer) {
-	// = A(b^level - 1) where \
-	    b = (1.2 + layer/50) \
-	    A = 6b / (b - 1)
-
-		// First is hardcoded
-	if (level == 0) return 0;
-	level -= 1;
-
-	// Derived from EXP required at `level` to gain a level, which is simply 6 * b^level
-
-	const BigReal base = 1.2 + (layer * 0.02);
-	return std::ceill(6 + ((6 * base) / (base - 1)) * (std::powl(base, level) - 1));
+	if (level >= GameplayCommon::LevelUps::MAX_LEVEL) {
+		err("Max level exceeded!");
+	}
+	if (layer >= GameplayCommon::MAX_LAYER) {
+		err("Max layer exceeded!");
+	}
+	return GameplayCommon::LevelUps::EXP_REQUIRED_FOR_LEVEL[layer][level];
 }
 
 BigInt Hexii::getLevelFromEXP(BigReal exp, uint layer) {
+	/*
 	// = log_b(exp/A + 1) 
-	// Inverse function of expRequiredForBeesFunc
+	// Inverse function of getEXPRequiredForLevel
 
 	// First is hardcoded
 	if (exp < 6) return 0;
@@ -278,50 +283,82 @@ BigInt Hexii::getLevelFromEXP(BigReal exp, uint layer) {
 
 	const BigReal base = 1.2 + (layer * 0.02);
 	const BigReal operand = 1 + exp / ((6 * base) / (base - 1));
-	return std::floorl(1 + std::logl(operand) / std::logl(base));
+	BigReal level = 1 + std::logl(operand) / std::logl(base);
+
+	// Scaling becomes worse after level 60
+	// TODO: Handle levels over 60
+
+	return (BigInt)std::floorl(level);
+	*/
+
+	// TODO: Profile this
+
+	for (int i = 1; i < GameplayCommon::LevelUps::MAX_LEVEL; i++) {
+		if (exp < GameplayCommon::LevelUps::EXP_REQUIRED_FOR_LEVEL[layer][i]) return (BigInt)i - 1;
+	}
+
+	return GameplayCommon::LevelUps::MAX_LEVEL;
 }
 
 BigReal Hexii::getUpgradePurchaseCostMultiplier(uint layer) {
-	// Multiplier = 30 ^ layer
+	// Multiplier = 20 ^ layer
 	if (layer == 0) return 1;
-	return std::powl(30, layer);
+	return std::powl(20, layer);
 }
 
 void Hexii::addEXP(BigReal exp, bool suppressEvent) {
 	m_exp += exp;
 
-	updateLevel(m_exp, suppressEvent);
-
-	// Nothing further to do if not leveling up
-	//if (m_totalEXP >= m_expRequiredForNextLevel) levelUp(suppressEvent);
+	updateLevel(true, false, suppressEvent);
 }
 
-BigInt Hexii::updateLevel(BigReal exp, bool suppressEvent) {
-	if (exp < m_expForNextLevel) return 0;
+void Hexii::addRedMatter(BigReal redMatter, bool suppressEvent) {
+	m_redMatterInvested += redMatter;
 
-	BigInt level = getLevelFromEXP(exp, m_layer);
-	BigInt change = level - m_level;
+	updateLevel(false, true, suppressEvent);
+}
 
-	if (change == 0) throw std::runtime_error("Level change is unexpectedly 0");
+void Hexii::updateLevel(bool expChanged, bool redMatterChanged, bool suppressEvent) {
+	BigInt rawLevelChange = 0;
+	BigInt totalLevelChange = 0;
 
-	/// Update state
+	// If the EXP is greater than the EXP required for the next level, increase raw level
+	if (expChanged && m_exp >= m_expForNextLevel) {
+		BigInt level = getLevelFromEXP(m_exp, m_layer);
+		rawLevelChange = level - m_rawLevel;
 
-	m_level = level;
-	m_expForNextLevel = getEXPRequiredForLevel(m_level + 1, m_layer);
+		if (rawLevelChange == 0) throw std::runtime_error("Level change is unexpectedly 0");
 
-	/// Check upgrade states
+		// Update state
 
-	m_standardPathTracker->updateStatesDueToLevel(level);
+		m_rawLevel = level;
+		m_expForNextLevel = getEXPRequiredForLevel(m_rawLevel + 1, m_layer);
+	}
 
-	/// Dispatch events
+	// Recalculate total level if the raw level changed or red matter changed
+	if (rawLevelChange > 0 || redMatterChanged) {
+		BigInt totalLevel = std::ceill(m_rawLevel * getLevelScale());
+	
+		totalLevelChange = totalLevel - m_totalLevel;
 
-	if (!suppressEvent)
-		EventUtility::dispatchEvent(EVENT_LEVEL_GAINED, eventID, EventHexiiLevelGainedData{ this, change });
+		// Update state
 
-	// Many upgrades are affected by level, so everything needs to be recalculated
-	m_isYieldDirty = m_isYieldSpeedDirty = m_isCritDirty = true;
+		m_totalLevel = totalLevel;
+	}
 
-	return change;
+	if (totalLevelChange > 0) {
+		/// Check upgrade states
+
+		m_standardPathTracker->updateStatesDueToLevel(m_totalLevel);
+
+		/// Dispatch events
+
+		if (!suppressEvent)
+			EventUtility::dispatchEvent(EVENT_LEVEL_GAINED, eventID, EventHexiiLevelGainedData{ this, totalLevelChange });
+
+		// Many upgrades are affected by level, so everything needs to be recalculated
+		m_isYieldDirty = m_isYieldSpeedDirty = m_isCritDirty = m_isAdjacencyDirty = m_isCritDirty = true;
+	}
 }
 
 /*
@@ -349,7 +386,7 @@ void Hexii::addYieldTarget(Hexii* hex, float angleBetween) {
 
 	/// Particles
 
-	ParticleSystemQuad* yieldTargetParticles = ParticleSystemQuad::createWithTotalParticles(12);
+	YieldParticleSystem* yieldTargetParticles = YieldParticleSystem::create();
 	yieldTargetParticles->setPosition(Vec2(0, 0));
 	yieldTargetParticles->setCameraMask(getCameraMask());
 
@@ -382,7 +419,7 @@ void Hexii::addYieldTarget(Hexii* hex, float angleBetween) {
 	yieldTargetParticles->setEndColor(Color4F(0.8f, 1.0f, 0.8f, 0.0));
 	yieldTargetParticles->setEndColorVar(Color4F(0.0f, 0.0f, 0.0f, 0.0f));
 
-	yieldTargetParticles->setTexture(Director::getInstance()->getTextureCache()->addImage("particles/EXPParticle.png"));
+	yieldTargetParticles->setTexture(Director::getInstance()->getTextureCache()->addImage("particles/EXP.png"));
 
 	m_yieldParticles.push_back(yieldTargetParticles);
 
@@ -411,14 +448,6 @@ BigReal Hexii::getPurchaseCostFromlayer(uint layer) {
 	cost = std::floorl(cost);
 
 	return cost;
-}
-
-BigReal Hexii::getEXPCost() const {
-	// TODO: Adjust the formula
-
-	// Cost =  10 * 6^(layer) * (level + 1)
-	BigReal discountMultiplier = m_standardPathTracker->isOwned("Discount") ? (BigReal)1 / (10 * (m_layer + 1)) : 1;
-	return 10 * std::powl(6, m_layer) * (m_level + 1) * discountMultiplier;
 }
 
 BigReal Hexii::getYield() const {
@@ -456,21 +485,7 @@ BigReal Hexii::getYieldSpeed(bool includeActiveBonus) const {
 	return includeActiveBonus && m_isPressed ? m_yieldSpeed * m_activeYieldSpeedMultiplier : m_yieldSpeed;
 }
 
-BigReal Hexii::getCritical(uint times) const {
-	if (m_isCritDirty) {
-		m_criticalChance = getCriticalChance();
-		m_criticalYieldMultiplier = getCriticalYieldMultiplier();
 
-		m_isCritDirty = false;
-	}
-
-	if (times > 1) {
-		BigReal expectedCrits = times * m_criticalChance;
-		// Average crit multiplier
-		return (expectedCrits * m_criticalYieldMultiplier + (times - expectedCrits)) / times;
-	}
-	else return cocos2d::rand_0_1() < m_criticalChance ? m_criticalYieldMultiplier : 1;
-}
 
 BigReal Hexii::getAdjacencyYieldMultiplier() const {
 	if (m_isAdjacencyDirty) {
@@ -526,6 +541,32 @@ void Hexii::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt) {
 	m_isPressed = false;
 }
 
+void Hexii::onSacrificeInitiated(cocos2d::EventCustom* evnt) {
+	if (m_active) {
+		// Use the dents shader overall
+		this->setShaderEffect(SimpleShader::create(SimpleShaderManager::getDentsProgram()));
+
+		// Temporarily disable the progress shader
+		m_shaded->toggleShader(false);
+	}
+	else {
+		setVisible(false);
+	}
+}
+
+void Hexii::onSacrificeCancelled(cocos2d::EventCustom* evnt) {
+	if (m_active) {
+		// Disable the dents shader
+		this->setShaderEffect(nullptr);
+
+		// Re-enable the progress shader
+		m_shaded->toggleShader(true);
+	}
+	else {
+		setVisible(true);
+	}
+}
+
 void Hexii::onShaderEffectChanged(SimpleShaderPtr shader) {
 	// For hexii, changing the shader effect means applying it to the `m_shaded` sprite
 	m_shaded->setProgramState(shader ? shader->getProgramState() : nullptr);
@@ -534,6 +575,23 @@ void Hexii::onShaderEffectChanged(SimpleShaderPtr shader) {
 void Hexii::focus() {
 	if (m_active) EventUtility::dispatchEvent(Hexii::EVENT_FOCUS, eventID, EventHexiiFocusData{ this, m_active, getAxialPosition(), m_layer });
 	//if (m_active) _eventDispatcher->dispatchCustomEvent("onHexiiFocus", new EventHexiiFocusData{ this, m_active, getAxialPosition(), m_layer });
+}
+
+BigReal Hexii::getCritical(uint times) const {
+	if (m_isCritDirty) {
+		m_criticalChance = 0.005 + getCriticalChance();
+		m_criticalYieldMultiplier = 6 * getCriticalYieldMultiplier();
+
+		m_isCritDirty = false;
+	}
+
+	if (m_criticalChance == 0) return 1;
+	if (times > 1) {
+		BigReal expectedCrits = times * m_criticalChance;
+		// Average crit multiplier
+		return (expectedCrits * m_criticalYieldMultiplier + (times - expectedCrits)) / times;
+	}
+	else return cocos2d::rand_0_1() <= m_criticalChance ? m_criticalYieldMultiplier : 1;
 }
 
 void Hexii::yield(uint times) {
@@ -580,12 +638,8 @@ void Hexii::purchase(BigReal cost) {
 	Resources::getInstance()->addGreenMatter(-cost);
 	Resources::getInstance()->addHexiiInlayer(m_layer);
 
-	// TODO: Replace with the improved EventUtility
-	// Trigger the purchase event and also then focus to this hex
+	// Trigger the purchase event
 	EventUtility::dispatchEvent(Hexii::EVENT_PURCHASE, eventID, EventHexiiPurchaseData{ this, m_active, getAxialPosition(), m_layer });
-	//_eventDispatcher->dispatchCustomEvent("onHexiiPurchase", );
-	//_eventDispatcher->dispatchCustomEvent("onHexiiFocus", new EventHexiiFocusData{ this, m_active, getAxialPosition(), m_layer });
-	focus();
 }
 
 void to_json(json& j, const Hexii& hex) {
@@ -595,7 +649,8 @@ void to_json(json& j, const Hexii& hex) {
 
 	j = json{ 
 		{"active", hex.getActive() }, 
-		{"exp", hex.getEXP()}, 
+		{"exp", hex.getEXP()},
+		{"redMatterInvested", hex.getRedMatterInvested()},
 		{"standardUpgrades", *hex.getStandardUpgradeTracker()},
 		{"layer", hex.getLayer() },
 		{"posAxial", hex.getAxialPosition() }

@@ -48,7 +48,7 @@ void HexiiFirstUpgradePurchasedProgressionEvent::onProgressToEncouraging(bool di
 	)
 	->setNext(createUpgradeTabEncouragement())
 	->setNext(CommonEffects::createEncouragementForTarget(
-		upgradeBox->m_purchaseUpgradeButton,
+		upgradeBox->m_purchaseButton,
 		[this, upgradeBox]() {
 			if (upgradeBox->m_upgradeState == Upgrade::State::OWNED) {
 				// The encouragement remains the entire time, until the upgrade is purchased

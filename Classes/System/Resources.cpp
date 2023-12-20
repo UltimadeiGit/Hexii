@@ -16,36 +16,30 @@ Resources* Resources::getInstance() {
 }
 
 bool Resources::load(const nlohmann::json& data) {
-    data.at("greenMatter").get_to(m_greenMatter);
-    data.at("hexiiCountPerlayer").get_to(m_hexiiCountPerlayer);
+    try { data.at("greenMatter").get_to(m_greenMatter); } catch (json::out_of_range) { m_greenMatter = 6; }
+    try { data.at("redMatter").get_to(m_redMatter); } catch (json::out_of_range) { m_redMatter = 0; }
     data.at("tabsEnabled").get_to(m_tabsEnabled);
-    if (data.contains("globalPowerUpgradeBonus")) data.at("globalPowerUpgradeBonus").get_to(m_globalPowerUpgradeBonus);
-
+   
     return true;
 }
 
-void Resources::addGreenMatter(BigReal op) {
-    if (op > 0 || m_greenMatter >= std::abs(op)) m_greenMatter += op;
-    else err("greenMatter cost was unaffordable");
-}
+void Resources::addHexiiInlayer(uint layer, int num) {
+    if (layer >= GameplayCommon::MAX_LAYER) return;
 
-void Resources::addHexiiInlayer(uint layer) {
-    if (layer >= Resources::MAX_layerS) return;
-
-    m_hexiiCountPerlayer[layer]++;
+    m_hexiiCountPerlayer[layer] += num;
     if (layer > 0 && m_hexiiCountPerlayer[layer] > 6 * layer) err("Hexii count per layer exceeded maximum expected value");
 }
 
 void to_json(nlohmann::json& j, const Resources& resources) {
     json hexiiCountPerlayer = json::array();
-    for (uint i = 0; i < Resources::MAX_layerS; i++) hexiiCountPerlayer.push_back(resources.getHexiiCountInlayer(i));
+    for (uint i = 0; i < GameplayCommon::MAX_LAYER; i++) hexiiCountPerlayer.push_back(resources.getHexiiCountInlayer(i));
 
     json tabsEnabled = json::array();
     for (uint i = 0; i < 5; i++) tabsEnabled.push_back(resources.getTabEnabled(i));
 
     j = json{
         {"greenMatter", resources.getGreenMatter()},
-        {"globalPowerUpgradeBonus", resources.getGlobalPowerUpgradeBonus()},
+		{"redMatter", resources.getRedMatter()},
         {"hexiiCountPerlayer", hexiiCountPerlayer},
         {"tabsEnabled", tabsEnabled}
     };

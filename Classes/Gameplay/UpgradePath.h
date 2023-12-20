@@ -29,6 +29,8 @@ public:
 	static UpgradePathPtr getStandardL0Path();
 	static UpgradePathPtr getStandardPath();
 
+	// static UpgradeVec sortVecByLevelRequirements(const UpgradeVec& upgrades);
+
 	inline const UpgradeVec& getUpgrades() const { return m_upgrades; }
 	inline int getUpgradeCount() const { return m_upgradeCount; }
 	inline std::string getName() const { return m_name; }
@@ -60,7 +62,13 @@ private: /// Static block
 	// All upgrades in the standard path
 	static UpgradePathPtr s_standardPath;
 
+	inline static void initUpgrade(UpgradePtr upgrade) { s_allUpgrades->emplace(std::make_pair(upgrade->id, upgrade)); }
 	static void initAllUpgrades();
+
+	inline static void addUpgradeToVec(UpgradeVec& vec, Upgrade::UpgradeID upgradeID) { vec.push_back(s_allUpgrades->find(upgradeID)->second); }
+	
+	template<typename... UpgradeIDs>
+	inline static void addUpgradesToVec(UpgradeVec& vec, std::vector<Upgrade::UpgradeID> ids) { for (Upgrade::UpgradeID id : ids) addUpgradeToVec(vec, id); }
 
 	/// EXP Functions
 

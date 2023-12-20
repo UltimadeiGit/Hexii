@@ -31,6 +31,8 @@ private:
 	void updateBoxes();
 	UpgradeBox* addUpgradeToList(UpgradePtr upgrade);
 
+	inline void updateTrackerStoredScrollViewPos() { if(m_focusTracker) m_focusTracker->uiOffsetInUpgradesTabScrollView = m_upgradeScrollView->getInnerContainerPosition().x; }
+
 private:
 	UpgradePathPtr m_focusPath;
 	// Tracker for the upgrades listed in this tab

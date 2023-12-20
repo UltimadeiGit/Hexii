@@ -5,6 +5,7 @@
 #include "JSON.hpp"
 #include "SaveData.h"
 #include "Progression.h"
+#include "GameplayCommon.h"
 
 USING_NS_CC;
 using namespace nlohmann;
@@ -19,11 +20,9 @@ bool HexiiScene::init() {
 	// Set the instance pointer
 	HexiiScene::m_instance = this;
 
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	useVisibleSizeAndOrigin;
 
-	/// Init the camera
-
+	// Camera
 	m_hexiiCamera = Camera::create();
 	m_hexiiCamera->setPosition({ 0, 0 });
 	//m_hexiiCamera->setScale(0.5f, 0.5f);
@@ -32,15 +31,15 @@ bool HexiiScene::init() {
 	this->addChild(m_hexiiCamera);
 
 	/// Loading
+
 	auto saveData = SaveData::getInstance();
 
-	// Load progression
-
+	// Progression
 	// dbg
 	EventUtility::addGlobalEventListener(ProgressionEvent::EVENT_PROGRESSION_TO_ACHIEVED, this, &HexiiScene::onProgression);
 	saveData->tryLoad(SaveData::PROGRESSION);
 
-	// Try to load the plane and settings system (they are independent)
+	// Plane
 	bool planeLoaded = saveData->tryLoad(SaveData::PLANE);
 
 	if (planeLoaded) {
@@ -57,86 +56,48 @@ bool HexiiScene::init() {
 	}
 
 	m_plane->setPosition(0, 100);
-	//m_plane->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+	this->addChild(m_plane, 0);
 
-	//m_debugLabel = Label::createWithTTF("TMP", "fonts/arial.ttf", 20.0f);
-	//m_debugLabel->setTextColor(Color4B(128, 128, 128, 255));
-	// m_debugLabel->enableGlow(Color4B(255, 0, 0, 255));
-	//m_debugLabel->setPosition(Vec2(visibleSize.width / 2 + origin.x, 100));
-
-	//for (int i = 0; i < 10; i++) {
-	//	m_debugNodes[i] = DrawNode::create(3.0f);
-	//	this->addChild(m_debugNodes[i]);
-	//}
+	// Settings
+	//saveData->tryLoad(SaveData::SETTINGS);
 
 	/// UI & HUD
 
-	// Camera
-
-	m_backgroundCamera = Camera::create();
-	m_backgroundCamera->setCameraFlag(CameraFlag::USER2);
-	m_backgroundCamera->setPosition({0, 0 });
-	m_backgroundCamera->setDepth(-2);
-
-	//this->addChild(m_backgroundCamera);
-
-	// Background 
-	/*
-	Size bgDesiredSize = Director::getInstance()->getTextureCache()->addImage("icons/TileableBackground.png")->getContentSize();
-
-	auto bgTex = Director::getInstance()->getTextureCache()->addImage("icons/TileableBackgroundPOT.png");
-	// Size of the power of two texture (its the same as the original texture but squashed to a power of two width and height)
-	const Size bgPOTTexSize = bgTex->getContentSize();
-
-	// Set the texture wrap mode to repeat
-	bgTex->setTexParameters(Texture2D::TexParams(cocos2d::backend::SamplerFilter::LINEAR,
-		cocos2d::backend::SamplerFilter::LINEAR,
-		cocos2d::backend::SamplerAddressMode::REPEAT,
-		cocos2d::backend::SamplerAddressMode::REPEAT));
-
-	float scaleX = bgDesiredSize.width / bgPOTTexSize.width;
-	float scaleY = bgDesiredSize.height / bgPOTTexSize.height;
-
-	auto background = Sprite::createWithTexture(bgTex);
-	
-
-	background->setAnchorPoint(Vec2(0, 0));
-	background->setStretchEnabled(false);
-	background->setTextureRect(Rect(Vec2::ZERO, Size(visibleSize.width, visibleSize.height)));
-	background->setScale(scaleX, scaleY);
-
-	this->addChild(background, -10);
-	background->setCameraMask((unsigned short)m_backgroundCamera->getCameraFlag());
-	*/
-
 	// Dock
-
 	m_dock = Dock::create();
 	m_dock->setAnchorPoint(Vec2(0.5, 0.0));
 	m_dock->setPosition(origin + Vec2(visibleSize.width / 2, 0));
-
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	m_dock->setScale(1.2f);
 #endif
-
-	// Currency HUD
-
-	m_currencyHUD = CurrencyHUD::create(CurrencyHUD::CurrencyType::GREEN_MATTER);
-	//m_currencyHUD->setPosition(Vec2(origin.x, (visibleSize.height * 0.85) + origin.y));
-	m_currencyHUD->setAnchorPoint({ 0.5, 0});
-	m_currencyHUD->setPosition(Vec2(origin.x + visibleSize.width / 2, visibleSize.height + origin.y));
-
-	scheduleUpdate();
-
-	this->addChild(HexiiPlane::getInstance(), 0);
 	this->addChild(m_dock, 1);
-	this->addChild(m_currencyHUD, 1);
 
-	m_dock->switchTab(0);
-	m_plane->getHexAtPos({ 0, 0 })->focus();
+	// Sidebar
+	m_sidebar = Sidebar::create();
+	m_sidebar->setPosition({ origin.x, origin.y + visibleSize.height - 30 });
+	this->addChild(m_sidebar, 1);
+
+	/// Currency HUD
+
+	constexpr float HUD_SCALE = 1.0f;
+	constexpr float HUD_SPACING = 220.0f * HUD_SCALE;
+
+	// Green Matter HUD
+	m_greenMatterHUD = CurrencyHUD::create(CurrencyHUD::CurrencyType::GREEN_MATTER);
+	m_greenMatterHUD->setScale(HUD_SCALE);
+	m_greenMatterHUD->setAnchorPoint({ 0.5, 0});
+	m_greenMatterHUD->setPosition({ origin.x + visibleSize.width / 2 - HUD_SPACING, visibleSize.height + origin.y });
+	this->addChild(m_greenMatterHUD, 1);
+
+	// Red Matter HUD
+	m_redMatterHUD = CurrencyHUD::create(CurrencyHUD::CurrencyType::RED_MATTER);
+	m_redMatterHUD->setScale(HUD_SCALE);
+	m_redMatterHUD->setAnchorPoint({ 0.5, 0 });
+	m_redMatterHUD->setPosition({ origin.x + visibleSize.width / 2 + HUD_SPACING, visibleSize.height + origin.y });
+	this->addChild(m_redMatterHUD, 1);
 
 	//// SHADER TESTING
-	SimpleShaderPtr testShader = SimpleShader::create(SimpleShader::createShaderProgramWithFragmentShader("shaders/dents.frag"));
+	/*SimpleShaderPtr testShader = SimpleShader::create(SimpleShader::createShaderProgramWithFragmentShader("shaders/dents.frag"));
 
 	// Setup handler for the W key
 	auto listener = EventListenerKeyboard::create();
@@ -145,13 +106,27 @@ bool HexiiScene::init() {
 			for (auto& p : HexiiPlane::getInstance()->getHexiiInlayer(2)) {
 				p.hex->setShaderEffect(SimpleShader::create(SimpleShader::createShaderProgramWithFragmentShader("shaders/dents.frag")));
 			}
-			HexiiPlane::getInstance()->getHexAtPos({ 0, 0 })->setShaderEffect(testShader);
+			HexiiPlane::getInstance()->getHexiiAtPos({ 0, 0 })->setShaderEffect(testShader);
 		}
 	};
 
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);*/
 
+	// Listeners
+
+	EventUtility::addGlobalEventListener(GameplayCommon::GameEvent::EVENT_SACRIFICE_INITIATED, this, &HexiiScene::onSacrificeInitiated);
+	EventUtility::addGlobalEventListener(GameplayCommon::GameEvent::EVENT_SACRIFICE_CANCELLED, this, &HexiiScene::onSacrificeCancelled);
+	EventUtility::addGlobalEventListener(GameplayCommon::GameEvent::EVENT_SACRIFICE_CONFIRMED, this, &HexiiScene::onSacrificeConfirmed);
+
+	/// Final initialization
+
+	// Finish initializing the progression system (it requires the UI system to be loaded)
 	Progression::getInstance()->init();
+	this->scheduleUpdate();
+
+	// UI QoL
+	m_dock->switchTab(0);
+	m_plane->getHexiiAtPos({ 0, 0 })->focus();
 
 	return true;
 }
@@ -163,7 +138,52 @@ void HexiiScene::update(float dt) {
 
 	m_plane->update(dt);
 	m_dock->update(dt);
-	m_currencyHUD->update(dt);
+	m_greenMatterHUD->update(dt);
+	if(m_redMatterHUD->isVisible()) m_redMatterHUD->update(dt);
+
+	// Update the sacrifice HUD if it exists
+	if (m_sacrificeHUD) m_sacrificeHUD->update(dt);
+}
+
+void HexiiScene::onSacrificeInitiated(cocos2d::EventCustom* evnt) {
+	// Possible for the user to spam initiate
+	if (m_sacrificeHUD != nullptr) return;
+
+	useVisibleSizeAndOrigin;
+
+	// Create the sacrifice HUD
+	m_sacrificeHUD = HexiiSacrificeHUD::create();
+	m_sacrificeHUD->setCascadeOpacityEnabled(true);
+	m_sacrificeHUD->setOpacity(0);
+	m_sacrificeHUD->runAction(EaseQuadraticActionIn::create(FadeTo::create(0.8f, 255)));
+	m_sacrificeHUD->setPosition({ origin.x + visibleSize.width / 2, origin.y + visibleSize.height });
+	m_sacrificeHUD->updateValues();
+	this->addChild(m_sacrificeHUD, 2);
+}
+
+void HexiiScene::onSacrificeCancelled(cocos2d::EventCustom* evnt) {
+	closeSacrificeHUD();
+}
+
+void HexiiScene::onSacrificeConfirmed(cocos2d::EventCustom* evnt) {
+	closeSacrificeHUD();
+
+	m_dock->getHexInfoTab()->setFocusHexii(nullptr);
+}
+
+void HexiiScene::closeSacrificeHUD() {
+	// Possible for the user to spam cancel
+	if (m_sacrificeHUD == nullptr) return;
+
+	// Remove the sacrifice HUD
+	HexiiSacrificeHUD* sacrificeHUD = m_sacrificeHUD;
+	m_sacrificeHUD->runAction(Sequence::createWithTwoActions(
+		EaseIn::create(FadeTo::create(0.8f, 0), 0.5f),
+		CallFunc::create([this, sacrificeHUD]() {
+			this->removeChild(sacrificeHUD);
+		}
+	)));
+	m_sacrificeHUD = nullptr;
 }
 
 void HexiiScene::onProgression(cocos2d::EventCustom* evnt) {

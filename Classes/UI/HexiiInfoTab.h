@@ -3,6 +3,7 @@
 #include <cocos2d.h>
 #include <cocos/ui/UIButton.h>
 #include <cocos/ui/UIScrollView.h>
+#include <cocos/ui/UILayout.h>
 
 #include "Maths.h"
 #include "Hexii.h"
@@ -10,7 +11,7 @@
 #include "Upgrade.h"
 #include "CompoundLabel.h"
 #include "UpgradeBox.h"
-#include "EXPInfoTab.h"
+#include "HexiiEXPTab.h"
 #include "HexiiUpgradesTab.h"
 #include "TabbedWidget.h"
 
@@ -28,13 +29,14 @@ private:
     bool init();
 public:
     virtual void update(float dt) override;
+
+    void setFocusHexii(Hexii* focus);
     
     CREATE_FUNC(HexiiInfoTab);
 
 private:    
-    void setFocusHexii(Hexii* focus);
-
-    void updateHexiiLabels(bool nameLabel, bool yieldLabel, bool expLabels);
+    void updateNameLabel();
+    void updateStatLabels();
     //void updateSpecializationLabels(bool nameLabel, bool countLabel);
     // void updateScrollView();
 
@@ -56,7 +58,7 @@ private:
 
     // Sub tabs
 
-    EXPInfoTab* m_expInfoTab = nullptr;
+    HexiiEXPTab* m_expInfoTab = nullptr;
     HexiiUpgradesTab* m_standardL0UpgradesTab = nullptr;
     HexiiUpgradesTab* m_standardUpgradesTab = nullptr;
 
@@ -71,12 +73,31 @@ private:
     cocos2d::Label* m_hexiiNameLabel = nullptr;
     cocos2d::Label* m_hexiilayerLabel = nullptr;
     // Labels within the info plate
+
+    // Level labels (In aggregate, says "Level [TOTAL LEVEL] ([RAW LEVEL] + [LEVELS FROM RED MATTER])")
+    // Says Level [TOTAL LEVEL]
     CompoundLabel* m_levelLabel = nullptr;
+    // Says ([RAW LEVEL]
+    CompoundLabel* m_rawLevelLabel = nullptr;
+    // Says + [LEVELS FROM RED MATTER]
+    CompoundLabel* m_levelsFromRedMatterLabel = nullptr;
+    // For the closing bracket
+    cocos2d::Label* m_levelLabelRight = nullptr;
+
     CompoundLabel* m_expLabel = nullptr;
     CompoundLabel* m_nextLevelLabel = nullptr;
+    //cocos2d::Label* m_nextLevelRight = nullptr;
     CompoundLabel* m_yieldLabel = nullptr;
+    cocos2d::Label* m_yieldTimeLeft = nullptr;
+    cocos2d::Label* m_yieldTimeRight = nullptr;
     cocos2d::Label* m_yieldSpeedLabel = nullptr;
     //CompoundLabel* m_specNameLabel = nullptr;
+
+    // Level scaling labels
+    // Says "Level Scale: [MULTIPLIER]"
+    CompoundLabel* m_scalingLabel = nullptr;
+    // Says "from [RED MATTER INVESTED]"
+    CompoundLabel* m_redMatterLabel = nullptr;
 
 
     friend class HexiiFirstUpgradePurchasedProgressionEvent;

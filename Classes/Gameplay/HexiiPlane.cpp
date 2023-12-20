@@ -52,6 +52,8 @@ bool HexiiPlane::init() {
     //_eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onHexiiFocus", CC_CALLBACK_1(HexiiPlane::onHexiiFocus, this)), this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(EventListenerCustom::create("onPinButtonPressed", CC_CALLBACK_1(HexiiPlane::onPinButtonPressed, this)), this);
 
+    EventUtility::addGlobalEventListener(GameplayCommon::GameEvent::EVENT_SACRIFICE_CONFIRMED, this, &HexiiPlane::onSacrificeConfirmed);
+
     setCameraMask((unsigned short)cocos2d::CameraFlag::USER1, false);
 
     // Prevents this plane from being autoreleased at any point
@@ -68,10 +70,16 @@ bool HexiiPlane::init(const json& data) {
     json hexii = data.at("hexii");
 
     for (json::iterator it = hexii.begin(); it != hexii.end(); it++) {
-        auto a = *it;
-        Hexii* newHex = Hexii::create(a);
+        auto hexiiData = *it;
+        Hexii* newHex = Hexii::create(hexiiData);
 
-        placeHexAtPos(newHex, it->at("posAxial").get<cocos2d::Vec2>());
+        if(newHex->getStandardUpgradeTracker()->getState("GlobalPower") == Upgrade::State::OWNED)
+            Resources::getInstance()->addGlobalPowerUpgradeBonus();
+
+        if(newHex->getActive())
+            Resources::getInstance()->addHexiiInlayer(newHex->getLayer());
+
+        placeHexAtPos(newHex, newHex->getAxialPosition());
     }
 
     return true;
@@ -133,11 +141,9 @@ void HexiiPlane::onMouseMoved(cocos2d::EventMouse* mouse) {
     Vec2 mousePos = mouse ? mouse->getLocationInView() : m_lastMousePos;
     Vec2 cameraMousePos = CocosUtility::getCameraMousePos(HexiiScene::getHexiiCamera(), mousePos);
 
-    printf("%d %d (%d %d)\n", (int)mousePos.x, (int)mousePos.y, (int)cameraMousePos.x, (int)cameraMousePos.y);
-
     Hexii* previousMouseOverHex = m_mouseOverHex;
 
-    m_mouseOverHex = getHexAtPos(Hexagon::pixelToAxial(cameraMousePos - getPosition(), m_hexHeight));
+    m_mouseOverHex = getHexiiAtPos(Hexagon::pixelToAxial(cameraMousePos - getPosition(), m_hexHeight));
 
     // Detect a change in mouseover hex
     if (m_mouseOverHex != previousMouseOverHex) {
@@ -156,34 +162,41 @@ void HexiiPlane::onMouseMoved(cocos2d::EventMouse* mouse) {
 bool HexiiPlane::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* evnt) {
     static Timestamp lastClickTime = 0;
     static Vec2 lastTouchPos = getTouchPos(HexiiScene::getHexiiCamera(), touch);
+    static Hexii* lastHexiiTouched = nullptr;
 
     Timestamp currentTime = timeSinceEpochMs();
     Vec2 touchPos = getTouchPos(HexiiScene::getHexiiCamera(), touch);
-
-    // Log touch pos
- 
-    printf("%d %d (%d %d)\n", (int)touch->getLocation().x, (int)touch->getLocation().y, (int)touchPos.x, (int)touchPos.y);
-    
    
-    // Double taps (two taps within 0.3 seconds and at most 20 units apart)
-    bool doubleTap = (currentTime < lastClickTime + 300 && (lastTouchPos - touchPos).getLengthSq() < (20 * 20));
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+    constexpr float DOUBLE_TAP_MAX_TOUCH_DISTANCE = 20;
+    constexpr int DOUBLE_TAP_MAX_TIME = 300;
+#else 
+    constexpr float DOUBLE_TAP_MAX_TOUCH_DISTANCE = 45;
+    constexpr int DOUBLE_TAP_MAX_TIME = 500;
+#endif
 
     // Collide the touch with a hex
-    Hexii* hexTouched = getHexAtPos(Hexagon::pixelToAxial(touchPos - getPosition(), m_hexHeight));
+    Hexii* hexiiTouched = getHexiiAtPos(Hexagon::pixelToAxial(touchPos - getPosition(), m_hexHeight));
 
-    if (hexTouched) {
-        hexTouched->onTouchBegan();
+    // Double taps (two taps on the same hexii within 0.3 seconds and at most 20 units apart)
+    bool doubleTap = lastHexiiTouched == hexiiTouched &&
+        (currentTime < lastClickTime + DOUBLE_TAP_MAX_TIME && (lastTouchPos - touchPos).getLengthSq() < (DOUBLE_TAP_MAX_TOUCH_DISTANCE * DOUBLE_TAP_MAX_TOUCH_DISTANCE));
+    
+
+    if (hexiiTouched) {
+        hexiiTouched->onTouchBegan();
 
         // Pan the camera to the hex if it was double tapped 
         if (doubleTap) {
-            hexTouched->focus();
-            panCameraTo(hexTouched);
+            hexiiTouched->focus();
+            panCameraTo(hexiiTouched);
         }
     }
 
     // Update statics
     lastClickTime = currentTime;
     lastTouchPos = touchPos;
+    lastHexiiTouched = hexiiTouched;
 
     return true;
 }
@@ -203,6 +216,8 @@ void HexiiPlane::onHexiiPurchase(cocos2d::EventCustom* evnt) {
     Hexii::EventHexiiPurchaseData* data = static_cast<Hexii::EventHexiiPurchaseData*>(evnt->getUserData());
 
     placeHexAtPos(data->subject, data->posAxial);
+    data->subject->focus();
+    panCameraTo(data->subject);
 }
 
 void HexiiPlane::onHexiiFocus(cocos2d::EventCustom* evnt) {
@@ -230,6 +245,28 @@ void HexiiPlane::onPinButtonPressed(cocos2d::EventCustom* evnt) {
 
     // Toggle pinned state
     m_pinned = !m_pinned;
+}
+
+void HexiiPlane::onSacrificeConfirmed(cocos2d::EventCustom* evnt) {
+    // Sacrifice the board
+
+    // Clear green matter
+    Resources::getInstance()->addGreenMatter(-Resources::getInstance()->getGreenMatter());
+    Resources::getInstance()->addGreenMatter(6);
+
+    // Remove all hexii
+    for (auto& hexPosPair : m_hexMap) {
+        auto* hex = hexPosPair.second;
+
+        if(hex->getActive()) Resources::getInstance()->addHexiiInlayer(hex->getLayer(), -1);
+        // Clear global power bonus if applicable
+        if(hex->getStandardUpgradeTracker()->getState("GlobalPower") == Upgrade::State::OWNED) Resources::getInstance()->addGlobalPowerUpgradeBonus(-1);
+
+        this->removeChild(hex);
+    }
+
+    m_hexMap.clear();
+    placeHexAtPos({ 0, 0 });
 }
 
 Hexii* HexiiPlane::placeHexAtPos(cocos2d::Vec2 posAxial) {
@@ -290,7 +327,7 @@ Hexii* HexiiPlane::placeHexAtPos(Hexii* hex, cocos2d::Vec2 posAxial) {
                 if (neighborlayer < layer) continue;
 
                 // Case 2
-                else if (neighbor.hex == nullptr && neighborlayer < Resources::MAX_layerS) neighbor.hex = placeHexAtPos(neighbor.pos);
+                else if (neighbor.hex == nullptr && neighborlayer < GameplayCommon::MAX_LAYER) neighbor.hex = placeHexAtPos(neighbor.pos);
             }
             // Cases 3 & 4
             else {
@@ -310,7 +347,7 @@ Hexii* HexiiPlane::placeHexAtPos(Hexii* hex, cocos2d::Vec2 posAxial) {
     return hex;
 }
 
-Hexii* HexiiPlane::getHexAtPos(Vec2 posAxial) const {
+Hexii* HexiiPlane::getHexiiAtPos(Vec2 posAxial) const {
     posAxial = Hexagon::axialRound(posAxial);
 
     auto it = m_hexMap.find(posAxial);
@@ -351,7 +388,7 @@ std::vector<HexiiPlane::HexiiPosPair> HexiiPlane::neighborsOf(cocos2d::Vec2 posA
     for (unsigned int i = 0; i < 6; i++) {
         HexiiPosPair neighbor;
         neighbor.pos = Vec2(posAxial.x + neighborOffsets[i].x, posAxial.y + neighborOffsets[i].y);
-        neighbor.hex = getHexAtPos(neighbor.pos);
+        neighbor.hex = getHexiiAtPos(neighbor.pos);
 
         // If only nodes with hexii on them are permitted (`activeOnly`) then only append this neighbor if it is both non-null and active
         if (!activeOnly || (neighbor.hex != nullptr && neighbor.hex->getActive())) neighbors.push_back(neighbor);
@@ -376,7 +413,7 @@ void to_json(nlohmann::json& j, const HexiiPlane& plane) {
     json hexii = json::array();
 
     // Adds the hexii ordered by layer
-    for (uint i = 0; i < Resources::MAX_layerS; i++) {
+    for (uint i = 0; i < GameplayCommon::MAX_LAYER; i++) {
         for (auto hexPosPair : plane.getHexiiInlayer(i)) {
             hexii.push_back(*hexPosPair.hex);
         }

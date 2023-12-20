@@ -3,7 +3,9 @@
 #include <cocos2d.h>
 #include "HexiiPlane.h"
 #include "Dock.h"
+#include "Sidebar.h"
 #include "CurrencyHUD.h"
+#include "HexiiSacrificeHUD.h"
 
 class HexiiScene :
     public cocos2d::Scene {
@@ -24,16 +26,25 @@ public:
 private:
     static HexiiScene* m_instance;
 
+    void onSacrificeInitiated(cocos2d::EventCustom* evnt);
+    void onSacrificeCancelled(cocos2d::EventCustom* evnt);
+    void onSacrificeConfirmed(cocos2d::EventCustom* evnt);
+
+    void closeSacrificeHUD();
+
     // Dbg
     void onProgression(cocos2d::EventCustom* evnt);
 
     /// UI & HUD
 
-    cocos2d::Camera* m_backgroundCamera;
     cocos2d::Camera* m_hexiiCamera;
 
     Dock* m_dock;
-    CurrencyHUD* m_currencyHUD;
+    Sidebar* m_sidebar;
+
+    CurrencyHUD* m_greenMatterHUD;
+    CurrencyHUD* m_redMatterHUD;
+    HexiiSacrificeHUD* m_sacrificeHUD = nullptr;
 
     HexiiPlane* m_plane;
 };

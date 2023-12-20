@@ -15,6 +15,9 @@
 #include "Hexagon.h"
 #include "ShadedElement.h"
 #include "ShaderSubject.h"
+#include "YieldParticleSystem.h"
+
+#include "GameplayCommon.h"
 
 #include <functional>
 
@@ -93,6 +96,23 @@ public:
 
 	void purchaseUpgrade(UpgradeTrackerPtr tracker, UpgradePtr upgrade);
 
+	// Level related
+
+	inline BigInt getTotalLevel() const { return m_totalLevel; }
+	inline BigInt getRawLevel() const { return m_rawLevel; }
+
+	// EXP related
+
+	inline BigReal getEXP() const { return m_exp; }
+	// If suppressEvent is true, the onLevelGained will not be triggered. Used for internals
+	void addEXP(BigReal exp, bool suppressEvent = false);
+
+	// Red matter related
+	
+	inline BigReal getRedMatterInvested() const { return m_redMatterInvested; }
+	inline BigReal getLevelScale() const { return GameplayCommon::Sacrifice::redMatterLevelScale(m_redMatterInvested, m_layer); }
+	void addRedMatter(BigReal redMatter, bool suppressEvent = false);
+
 	// Hexii stats
 
 	inline HexiiType getHexiiType() const { return m_type; }
@@ -102,9 +122,7 @@ public:
 	// Returns the yield speed (per second)
 	// If includeActiveBonus is true, the active yield speed multiplier is included if applicable (i.e if pressed)
 	BigReal getYieldSpeed(bool includeActiveBonus = false) const;
-	// Randomly determines if the yield is critical and returns the multiplier (1.0 if not critical)
-	// when `times` > 1, this function returns the average critical multiplier
-	BigReal getCritical(uint times) const;
+	
 	BigReal getAdjacencyYieldMultiplier() const;
 
 	//inline bool getUpgrade(const std::string& name) const { return m_upgrades(name); }
@@ -121,23 +139,11 @@ public:
 	static BigInt getLevelFromEXP(BigReal exp, uint layer);
 	static BigReal getUpgradePurchaseCostMultiplier(uint layer);
 
-	// If suppressEvent is true, the onLevelGained will not be triggered. Used for internals
-	void addEXP(BigReal exp, bool suppressEvent = false);
-	// Called whenever exp is gained, to check if the level count should be increased.
-	// returns the change in level count
-	// suppressEvent: if true, no events will be dispatched (used for loading)
-	BigInt updateLevel(BigReal exp, bool suppressEvent = false);
-
 	// Adds `hex` as a target to receive part of this hex's yields. `angleBetween` is the counterclockwise angle from the horizontal
 	// between this and `hex`, measured in degrees
 	void addYieldTarget(Hexii* hex, float angleBetween);
 
 	/// Info values
-	
-	BigReal getEXP() const { return m_exp; }
-	BigInt getLevel() const { return m_level; }
-	// Returns the cost of purchasing 1 exp
-	BigReal getEXPCost() const;
 
 	// Returns the cost to purchase a hexii in `layer`
 	static BigReal getPurchaseCostFromlayer(uint layer);
@@ -157,12 +163,16 @@ public:
 
 	const EventUtility::ID eventID = EventUtility::generateID();
 
-	/// Upgrade contributions
+	/// Upgrade contributions ///
 
 	BigReal getYieldFromYieldUp1Upgrade() const;
 	BigReal getYieldFromYieldUp2Upgrade() const;
+	BigReal getYieldFromYieldUp3Upgrade() const;
+	BigReal getYieldFromYieldUp4Upgrade() const;
 	BigReal getYieldSpeedMultiplierFromSpeedUp1Upgrade() const;
 	BigReal getYieldSpeedMultiplierFromSpeedUp2Upgrade() const;
+	BigReal getYieldSpeedMultiplierFromSpeedUp4Upgrade() const;
+	BigReal getYieldSpeedMultiplierFromSpeedUp3Upgrade() const;
 	BigReal getCriticalChanceFromCriticalChance1Upgrade() const;
 	BigReal getCriticalYieldMultiplierFromCriticalBonus1Upgrade() const;
 	BigReal getActiveYieldSpeedMultiplierFromStrongArmUpgrade() const;
@@ -194,7 +204,7 @@ public:
 	BigReal getActiveYieldSpeedMultiplier() const;
 
 	// Gives a percentage, or if `evaluated` is set, the total value the upgrade evaluates to
-	BigReal getContributionFromUpgrade(const std::string& upgradeName, bool evaluated) const;
+	BigReal getContributionFromUpgrade(const std::string& upgradeName/*, bool evaluated*/) const;
 
 private:
 	
@@ -202,15 +212,29 @@ private:
 
 	void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* evnt);
 
+	void onSacrificeInitiated(cocos2d::EventCustom* evnt);
+	void onSacrificeCancelled(cocos2d::EventCustom* evnt);
+
 	// Updates parts of the hex that are available while active i.e yields
 	void updateActive(float dt);
 	// Updates parts of the hex that are only available while inactive i.e purchasing functionality
 	void updateInactive(float dt);
 
+	/// Yield related
+
+	// Randomly determines if the yield is critical and returns the multiplier (1.0 if not critical)
+	// when `times` > 1, this function returns the average critical multiplier
+	BigReal getCritical(uint times) const;
 	// Yield some number of times (usually once)
 	void yield(uint times);
+
 	// Purchases this hex
 	void purchase(BigReal cost);
+
+	// Called whenever exp is gained, to check if the level count should be increased.
+	// returns the change in level count
+	// suppressEvent: if true, no events will be dispatched (used for loading)
+	void updateLevel(bool expChanged, bool redMatterChanged, bool suppressEvent = false);
 
 	/// State
 
@@ -258,7 +282,12 @@ private:
 
 	// The amount of exp this hexii has
 	BigReal m_exp = 0;
-	BigInt m_level = 0;
+	// The amount of red matter this hexii has invested in it
+	BigReal m_redMatterInvested = 0;
+	// This hexii's level as determined by its exp
+	BigInt m_rawLevel = 0;
+	// This hexii's level as determined by its exp and red matter
+	BigInt m_totalLevel = 0;
 	
 	/// Shaded Children
 

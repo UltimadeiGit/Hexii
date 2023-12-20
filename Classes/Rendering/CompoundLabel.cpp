@@ -2,9 +2,9 @@
 
 USING_NS_CC;
 
-CompoundLabel* CompoundLabel::create(const std::string& constPartString, const std::string& constPartFontFilepath, const std::string& variablePartFontFilepath) {
+CompoundLabel* CompoundLabel::create(const std::string& constPartString, const std::string& constPartFontFilepath, const std::string& variablePartFontFilepath, cocos2d::TextHAlignment constPartHAlignment) {
 	CompoundLabel* pRet = new(std::nothrow) CompoundLabel(constPartString, constPartFontFilepath, variablePartFontFilepath);
-	if (pRet && pRet->initWithFonts(constPartString, constPartFontFilepath, variablePartFontFilepath))
+	if (pRet && pRet->initWithFonts(constPartString, constPartFontFilepath, variablePartFontFilepath, constPartHAlignment))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -20,11 +20,11 @@ CompoundLabel::CompoundLabel(const std::string& constPartString, const std::stri
     : m_constPart(nullptr), m_variablePart(nullptr), m_iconPart(nullptr)
 {}
 
-bool CompoundLabel::initWithFonts(const std::string& constPartString, const std::string& constPartFontFilepath, const std::string& variablePartFontFilepath) {
-    m_constPart = Label::createWithTTF(constPartString, constPartFontFilepath, 20, Size::ZERO, TextHAlignment::LEFT);
+bool CompoundLabel::initWithFonts(const std::string& constPartString, const std::string& constPartFontFilepath, const std::string& variablePartFontFilepath, cocos2d::TextHAlignment constPartHAlignment) {
+    m_constPart = Label::createWithTTF(constPartString, constPartFontFilepath, 20, Size::ZERO, constPartHAlignment, TextVAlignment::CENTER);
 	m_constPart->setAnchorPoint(Vec2(0, 0.0));
 	
-	m_variablePart = Label::createWithTTF("", variablePartFontFilepath, 20, Size::ZERO, TextHAlignment::CENTER);
+	m_variablePart = Label::createWithTTF("", variablePartFontFilepath, 20, Size::ZERO, TextHAlignment::CENTER, TextVAlignment::CENTER);
 	m_variablePart->setAnchorPoint(Vec2(0, 0.0));
 
 	updateSize();
@@ -125,21 +125,15 @@ void CompoundLabel::setVariablePartString(const std::string& text) {
 }
 
 void CompoundLabel::setIconTexture(const std::string& texturePath) {
-	if (!m_iconPart) {
-		m_iconPart = Sprite::create(texturePath);
-		m_iconPart->setAnchorPoint(Vec2(0, 0.0));
-		this->addChild(m_iconPart);
-
-		return updateSize();
+	if (m_iconPart != nullptr) {
+		this->removeChild(m_iconPart);
 	}
 
-	Texture2D* newTexture = Director::getInstance()->getTextureCache()->addImage(texturePath);
-	if (m_iconPart->getTexture() == newTexture) return;
+	m_iconPart = Sprite::create(texturePath);
+	m_iconPart->setAnchorPoint(Vec2(0, 0.0));
+	this->addChild(m_iconPart);
 
-	m_iconPart->setContentSize(newTexture->getContentSize());
-	m_iconPart->setTexture(newTexture);
-
-	updateSize();
+	return updateSize();
 }
 
 void CompoundLabel::updateSize() {

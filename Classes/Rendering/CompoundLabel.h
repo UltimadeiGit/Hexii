@@ -22,9 +22,9 @@ public:
 private:
 	CompoundLabel(const std::string& constPartString, const std::string& constPartFontFilepath, const std::string& variablePartFontFilepath);
 
+	bool initWithFonts(const std::string& constPartString, const std::string& constPartFontFilepath, const std::string& variablePartFontFilepath, cocos2d::TextHAlignment constPartHAlignment);
 public:
-	bool initWithFonts(const std::string& constPartString, const std::string& constPartFontFilepath, const std::string& variablePartFontFilepath);
-
+	
 	// Set style attributes of the const part and/or the variable part at once
 	// In all cases, give a value of 0 to leave the current value unchanged
 	void setStyle(bool applyConstPart, bool applyVariablePart, unsigned int fontSize, const cocos2d::Color4B& textColor = cocos2d::Color4B(0, 0, 0, 0), const cocos2d::Color4B& outlineColor = cocos2d::Color4B::BLACK, int outlineSize = 0,
@@ -60,7 +60,8 @@ public:
 	// Only to be used for styles that aren't set by setStyle
 	cocos2d::Label* getVariablePart() { return m_variablePart; }
 public: 
-	static CompoundLabel* create(const std::string& constPartString, const std::string& constPartFontFilepath, const std::string& variablePartFontFilepath);
+
+	static CompoundLabel* create(const std::string& constPartString, const std::string& constPartFontFilepath, const std::string& variablePartFontFilepath, cocos2d::TextHAlignment constPartHAlignment = cocos2d::TextHAlignment::LEFT);
 private:
 	// Updates the content size of this node, to reflect changes to the parts' sizes
 	void updateSize();

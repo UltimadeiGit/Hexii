@@ -132,6 +132,12 @@ ShaderProgramPtr SimpleShaderManager::getEncouragementGlowProgram() {
     return program;
 }
 
+ShaderProgramPtr SimpleShaderManager::getDentsProgram() {
+    static ShaderProgramPtr program = SimpleShader::createShaderProgramWithFragmentShader("shaders/dents.frag");
+
+    return program;
+}
+
 void SimpleShaderManager::updateShaderTime() {
     auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     float seconds = (milliseconds - baseTime) / 1000.0f;

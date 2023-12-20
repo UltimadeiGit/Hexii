@@ -45,7 +45,7 @@ public:
 	/// Retrieval
 
 	inline const float getHexHeight() const { return m_hexHeight; }
-	Hexii* getHexAtPos(cocos2d::Vec2 posAxial) const;
+	Hexii* getHexiiAtPos(cocos2d::Vec2 posAxial) const;
 	// Returns all the hexii contained in `layer`
 	std::vector<HexiiPosPair> getHexiiInlayer(uint layer) const;
 	// Returns the hexii adjacent to the one at `posAxial`. Will always return 6 pairs unless `activeOnly` is true.
@@ -67,6 +67,10 @@ private:
 	void onHexiiUpgradePurchased(cocos2d::EventCustom* evnt);
 
 	void onPinButtonPressed(cocos2d::EventCustom* evnt);
+
+	// Sacrifice
+
+	void onSacrificeConfirmed (cocos2d::EventCustom* evnt);
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 	// Used for right clicks especially

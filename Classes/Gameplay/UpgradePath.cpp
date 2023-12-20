@@ -36,16 +36,14 @@ UpgradePathPtr UpgradePath::getStandardL0Path()
     if (s_standardL0Path == nullptr) {
         UpgradeVec upgrades;
 
-        upgrades.push_back(s_allUpgrades->find(0)->second); // GM Yield Up 1
-        upgrades.push_back(s_allUpgrades->find(6)->second); // Strong Arm
-        upgrades.push_back(s_allUpgrades->find(2)->second); // Speed Up 1
-        upgrades.push_back(s_allUpgrades->find(4)->second); // Critical Chance 1
-        upgrades.push_back(s_allUpgrades->find(7)->second); // Discount
-        upgrades.push_back(s_allUpgrades->find(5)->second); // Critical Bonus 1
-        upgrades.push_back(s_allUpgrades->find(3)->second); // Speed Up 2
-        upgrades.push_back(s_allUpgrades->find(1)->second); // GM Yield Up 2
-        upgrades.push_back(s_allUpgrades->find(8)->second); // Support 1
-        upgrades.push_back(s_allUpgrades->find(9)->second); // Global Power
+        // Green Matter Yield Up 1 ~ 4
+        // Speed Up 1 ~ 4
+        // Criticals
+        // Strong Arm
+        // Discount
+        // Support 1
+        // Global Power
+        addUpgradesToVec(upgrades, { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 16, 17 });
 
         s_standardL0Path = std::make_shared<UpgradePath>(upgrades, "StandardL0Path", 0);
     }
@@ -60,22 +58,37 @@ UpgradePathPtr UpgradePath::getStandardPath()
     if (s_standardPath == nullptr) {
         UpgradeVec upgrades;
 
-        upgrades.push_back(s_allUpgrades->find(10)->second); // EXP Yield Up 1
-        upgrades.push_back(s_allUpgrades->find(6)->second); // Strong Arm
-        upgrades.push_back(s_allUpgrades->find(2)->second); // Speed Up 1
-        upgrades.push_back(s_allUpgrades->find(4)->second); // Critical Chance 1
-        upgrades.push_back(s_allUpgrades->find(7)->second); // Discount
-        upgrades.push_back(s_allUpgrades->find(5)->second); // Critical Bonus 1
-        upgrades.push_back(s_allUpgrades->find(3)->second); // Speed Up 2
-        upgrades.push_back(s_allUpgrades->find(11)->second); // EXP Yield Up 2
-        upgrades.push_back(s_allUpgrades->find(8)->second); // Support 1
-        upgrades.push_back(s_allUpgrades->find(9)->second); // Global Power
+        // EXP Yield Up 1 ~ 4
+        // Speed Up 1 ~ 4
+        // Criticals
+        // Strong Arm
+        // Discount
+        // Support 1
+        // Global Power
+        addUpgradesToVec(upgrades, { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17 });
 
         s_standardPath = std::make_shared<UpgradePath>(upgrades, "StandardPath", 1);
     }
 
     return s_standardPath;
 }
+
+/*
+UpgradePath::UpgradeVec UpgradePath::sortVecByLevelRequirements(const UpgradeVec& upgrades)
+{
+    // Make a copy of the vector to sort
+    UpgradeVec sorted = upgrades;
+
+    // Use std::sort with a custom comparator
+    std::sort(sorted.begin(), sorted.end(),
+        [](const UpgradePtr& a, const UpgradePtr& b) {
+            return a->levelRequirement < b->levelRequirement;
+        }
+    );
+
+    return sorted;
+}
+*/
 
 void UpgradePath::initAllUpgrades(){
     if (s_allUpgrades != nullptr) return;
@@ -88,41 +101,34 @@ void UpgradePath::initAllUpgrades(){
 
     // TODO: Later this can be optimized by having all upgrades be adjacent in memory
 
-
+    // Yield up
     // GM yield up and EXP yield up are different only because they have different icons
-    s_allUpgrades->emplace(std::make_pair(0, 
-        std::make_shared<Upgrade>(fmt::string_view{"GreenMatterYieldUp1"}, fmt::string_view{"Yield Up I"}, fmt::string_view{"Increases yield based on level count"}, fmt::string_view{"+{}"}, 120, 1, Upgrade::ACTS_ON_YIELD)));
+    // Existing initUpgrade calls
+    initUpgrade(std::make_shared<Upgrade>("GreenMatterYieldUp1", "Yield Up I", "Increases yield based on level", "+{}", 120, 1, Upgrade::ACTS_ON_YIELD, 0));
+    initUpgrade(std::make_shared<Upgrade>("GreenMatterYieldUp2", "Yield Up II", "Increases yield by +100%", "+100%", 9000, 12, Upgrade::ACTS_ON_YIELD, 1));
+    initUpgrade(std::make_shared<Upgrade>("GreenMatterYieldUp3", "Yield Up III", "Multiplies yield by 1.03 per level", "+{}%", 60000, 36, Upgrade::ACTS_ON_YIELD, 12));
+    initUpgrade(std::make_shared<Upgrade>("GreenMatterYieldUp4", "Yield Up IV", "Multiplies yield by 1.1 per level after 60", "+{}%", 3000000, 62, Upgrade::ACTS_ON_YIELD, 13));
+    
+    initUpgrade(std::make_shared<Upgrade>("EXPYieldUp1", "Yield Up I", "Increases yield based on level. Stronger in higher layers", "+{}", 120, 1, Upgrade::ACTS_ON_YIELD, 10));
+    initUpgrade(std::make_shared<Upgrade>("EXPYieldUp2", "Yield Up II", "Increases yield by +100%", "+100%", 9000, 12, Upgrade::ACTS_ON_YIELD, 11));
+    initUpgrade(std::make_shared<Upgrade>("EXPYieldUp3", "Yield Up III", "Multiplies yield by 1.03 per level", "+{}%", 60000, 36, Upgrade::ACTS_ON_YIELD, 14));
+    initUpgrade(std::make_shared<Upgrade>("EXPYieldUp4", "Yield Up IV", "Multiplies yield by 1.1 per level after 60", "+{}%", 3000000, 62, Upgrade::ACTS_ON_YIELD, 15));
 
-    s_allUpgrades->emplace(std::make_pair(1,
-        std::make_shared<Upgrade>(fmt::string_view{ "GreenMatterYieldUp2" }, fmt::string_view{ "Yield Up II" }, fmt::string_view{ "Multiplies yield by 1.03 each level" }, fmt::string_view{ "+{}% (+{})" }, 120000, 36, Upgrade::ACTS_ON_YIELD)));
+    // Speed up
+    initUpgrade(std::make_shared<Upgrade>("SpeedUp1", "Speed Up I", "Increases yield speed by +50%", "+50%", 450, 3, Upgrade::ACTS_ON_SPEED, 2));
+    initUpgrade(std::make_shared<Upgrade>("SpeedUp2", "Speed Up II", "Increases yield speed by +50%", "+50%", 24000, 24, Upgrade::ACTS_ON_SPEED, 3));
+    initUpgrade(std::make_shared<Upgrade>("SpeedUp3", "Speed Up III", "Increases yield speed by +1% per level", "+{}%", 36000, 30, Upgrade::ACTS_ON_SPEED, 16));
+    initUpgrade(std::make_shared<Upgrade>("SpeedUp4", "Speed Up IV", "Multiplies yield speed by 1.01 per level after 60", "+{}%", 6000000, 64, Upgrade::ACTS_ON_SPEED, 17));
 
-    s_allUpgrades->emplace(std::make_pair(10,
-        std::make_shared<Upgrade>(fmt::string_view{ "EXPYieldUp1" }, fmt::string_view{ "Yield Up I" }, fmt::string_view{ "Increases yield based on level count" }, fmt::string_view{ "+{}" }, 120, 1, Upgrade::ACTS_ON_YIELD)));
-
-    s_allUpgrades->emplace(std::make_pair(11,
-        std::make_shared<Upgrade>(fmt::string_view{ "EXPYieldUp2" }, fmt::string_view{ "Yield Up II" }, fmt::string_view{ "Multiplies yield by 1.03 each level" }, fmt::string_view{ "+{}% (+{})" }, 120000, 36, Upgrade::ACTS_ON_YIELD)));
-
-    s_allUpgrades->emplace(std::make_pair(2,
-        std::make_shared<Upgrade>(fmt::string_view{ "SpeedUp1" }, fmt::string_view{ "Speed Up I" }, fmt::string_view{ "Increases yield speed by +50%" }, fmt::string_view{ "--" }, 450, 3, Upgrade::ACTS_ON_SPEED)));
-
-    s_allUpgrades->emplace(std::make_pair(3,
-        std::make_shared<Upgrade>(fmt::string_view{ "SpeedUp2" }, fmt::string_view{ "Speed Up II" }, fmt::string_view{ "Increases yield speed by +2% per level" }, fmt::string_view{ "+{}%" }, 30000, 24, Upgrade::ACTS_ON_SPEED)));
-
-    s_allUpgrades->emplace(std::make_pair(4,
-        std::make_shared<Upgrade>(fmt::string_view{ "CriticalChance1" }, fmt::string_view{ "Critical Chance I" }, fmt::string_view{ "Increases critical chance based on level" }, fmt::string_view{ "+{}%" }, 1200, 6, Upgrade::ACTS_ON_CRITS)));
-
-    s_allUpgrades->emplace(std::make_pair(5,
-        std::make_shared<Upgrade>(fmt::string_view{ "CriticalBonus1" }, fmt::string_view{ "Critical Bonus I" }, fmt::string_view{ "Critical yields are twice as powerful" }, fmt::string_view{ "--" }, 6000, 12, Upgrade::ACTS_ON_CRITS)));
-
-    s_allUpgrades->emplace(std::make_pair(6,
-        std::make_shared<Upgrade>(fmt::string_view{ "StrongArm" }, fmt::string_view{ "Strong Arm" }, fmt::string_view{ "Active bonus is 50% stronger" }, fmt::string_view{ "--" }, 150, 2, Upgrade::ACTS_ON_SPEED)));
-
-    s_allUpgrades->emplace(std::make_pair(7,
-        std::make_shared<Upgrade>(fmt::string_view{ "Discount" }, fmt::string_view{ "Discount" }, fmt::string_view{ "Reduces the cost to purchase EXP" }, fmt::string_view{ "--" }, 1500, 9, 0)));
-
-    s_allUpgrades->emplace(std::make_pair(8,
-        std::make_shared<Upgrade>(fmt::string_view{ "Support1" }, fmt::string_view{ "Support I" }, fmt::string_view{ "Gives adjacent hexii extra yield per level" }, fmt::string_view{ "+{}%" }, 210000, 48, Upgrade::ACTS_ON_OTHER_HEXII | Upgrade::ACTS_ON_YIELD)));
-
-    s_allUpgrades->emplace(std::make_pair(9,
-        std::make_shared<Upgrade>(fmt::string_view{ "GlobalPower" }, fmt::string_view{ "Global Power" }, fmt::string_view{ "Gives +100% yield to all hexii" }, fmt::string_view{ "--" }, 1000000, 60, Upgrade::ACTS_ON_OTHER_HEXII | Upgrade::ACTS_ON_YIELD)));
+    // Crits
+    initUpgrade(std::make_shared<Upgrade>("CriticalChance1", "Critical Chance I", "Adds a 5% chance to produce critical yields (6x regular yield)", "+5%", 1200, 6, Upgrade::ACTS_ON_CRITS, 4));
+    initUpgrade(std::make_shared<Upgrade>("CriticalBonus1", "Critical Bonus I", "Critical yields are twice as powerful", "6x -> 12x", 1200, 6, Upgrade::ACTS_ON_CRITS, 5));
+    
+    // Misc
+    initUpgrade(std::make_shared<Upgrade>("Discount", "Discount", "Reduces the cost to purchase EXP", "", 300, 9, 0, 7));
+    initUpgrade(std::make_shared<Upgrade>("StrongArm", "Strong Arm", "Active bonus is 50% stronger", "", 150, 2, Upgrade::ACTS_ON_SPEED, 6));
+    
+    // Support
+    initUpgrade(std::make_shared<Upgrade>("Support1", "Support I", "Improves adjacent hexii's yield based on this hexii's level and layer", "+{}%", 210000, 48, Upgrade::ACTS_ON_OTHER_HEXII | Upgrade::ACTS_ON_YIELD, 8));
+    initUpgrade(std::make_shared<Upgrade>("GlobalPower", "Global Power", "Gives +100% yield to all hexii", "+100%", 1000000, 60, Upgrade::ACTS_ON_OTHER_HEXII | Upgrade::ACTS_ON_YIELD, 9));
 }

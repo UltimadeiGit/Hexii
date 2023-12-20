@@ -18,7 +18,7 @@ void PurchaseFirstHexiiProgressionEvent::onProgressToObserving(bool didSkip) {
 void PurchaseFirstHexiiProgressionEvent::onProgressToEncouraging(bool didSkip) {
 	if (didSkip) return;
 
-	Hexii* centreHex = HexiiPlane::getInstance()->getHexAtPos({ 0, 0 });
+	Hexii* centreHex = HexiiPlane::getInstance()->getHexiiAtPos({ 0, 0 });
 
 	// Check if the player has already purchased a hexii
 	if (centreHex->getActive()) {

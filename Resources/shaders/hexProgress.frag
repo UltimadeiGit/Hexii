@@ -1,6 +1,6 @@
 #define PI 3.14159265358979323846 
 #define HALF_PI 1.5707963267948
-#define PROGRESS_MODIFIER 1.15
+#define PROGRESS_MODIFIER 1.2
 // Multiplier required to make the reverse direction animation start at 2pi (but still finish at 0)
 #define REVERSE_ANIM_MULTI (1.0 / (PROGRESS_MODIFIER - 1.0))
 #define ALT_PI HALF_PI * PROGRESS_MODIFIER

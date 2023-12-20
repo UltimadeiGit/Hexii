@@ -6,13 +6,17 @@
 constexpr float LABEL_SPACING = 15.0f;
 constexpr float LABEL_HEIGHT = 55.0f;
 //constexpr float LABEL_WIDTH = 315.0f;
-constexpr float INFO_PLATE_WIDTH = 427.0f;
-constexpr float INFO_PLATE_START = 380.0f;
-constexpr cocos2d::Vec2 TAB_POS = { 758 + 58, 10 };
-constexpr cocos2d::Vec2 TAB_BUTTON_POS = { 790 + 58, 455 };
-constexpr uint LABEL_FONT_SIZE = 42;
+constexpr float INFO_PLATE_WIDTH = 548.0f;
+constexpr float INFO_PLATE_START = 365.0f;
+constexpr cocos2d::Vec2 TAB_POS = { INFO_PLATE_WIDTH + 409, 10 };
+constexpr cocos2d::Vec2 TAB_BUTTON_POS = { INFO_PLATE_WIDTH + 441, 460 };
+constexpr uint LABEL_FONT_SIZE = 38;
 
 USING_NS_CC;
+
+#define LABEL_STYLE Color4B::WHITE, Color4B::BLACK, 4, Color4B::BLACK, Size(4, -4), 4
+#define LABEL_STYLE_LIGHT Color4B::WHITE, Color4B::BLACK, 3, Color4B::BLACK, Size(0, 0), 2
+
 
 HexiiInfoTab::HexiiInfoTab() {}
 
@@ -67,90 +71,147 @@ bool HexiiInfoTab::init() {
 	constexpr float LABEL_PADDING = 20.0f;
 	constexpr float LABEL_LEFT_X = INFO_PLATE_START + LABEL_PADDING;
 	constexpr float LABEL_RIGHT_X = INFO_PLATE_START + INFO_PLATE_WIDTH - LABEL_PADDING + 5;
-	constexpr float LABEL_TOP_Y = 350.0f;
-	constexpr float WIDTH_CONSTRAINT = INFO_PLATE_WIDTH - LABEL_PADDING;
+	constexpr float LABEL_TOP_Y = 385.0f;
+	constexpr float WIDTH_CONSTRAINT = INFO_PLATE_WIDTH;
 	int labelIndex = 0;
 
+	// Level label
+
+	const float LEVEL_LABEL_Y = LABEL_TOP_Y + 10 - (LABEL_HEIGHT * labelIndex++);
+
 	m_levelLabel = CompoundLabel::create("Level", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
-	m_levelLabel->setStyle(true, true, LABEL_FONT_SIZE * 1.3, Color4B::WHITE, Color4B::BLACK, 4, Color4B::BLACK, Size(4, -4), 4);
+	m_levelLabel->setStyle(true, true, LABEL_FONT_SIZE * 1.3, LABEL_STYLE);
 	m_levelLabel->setStyle(false, true, LABEL_FONT_SIZE * 1.3, GENERAL_IMPORTANT_VALUE);
 	//m_levelLabel->setIconTexture("icons/EXPSmall.png");
-	m_levelLabel->setConstraintMode(CompoundLabel::ConstraintMode::SPACING);
 	m_levelLabel->setSpacingConstraint(LABEL_SPACING);
 	//m_levelLabel->setWidthConstrant(LABEL_WIDTH, LABEL_SPACING, CompoundLabel::VariablePartFloat::);
 	m_levelLabel->setAnchorPoint(Vec2(0.5, 0.5));
-	m_levelLabel->setPosition({ INFO_PLATE_START + LABEL_PADDING + (INFO_PLATE_WIDTH / 2), LABEL_TOP_Y + 10 - (LABEL_HEIGHT * labelIndex++)});
+	m_levelLabel->setPosition({ INFO_PLATE_START + LABEL_PADDING + (INFO_PLATE_WIDTH / 2), LEVEL_LABEL_Y});
 	this->addChild(m_levelLabel, 1);
 
+	m_rawLevelLabel = CompoundLabel::create("(", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
+	m_rawLevelLabel->setStyle(true, true, LABEL_FONT_SIZE * 0.8, LABEL_STYLE_LIGHT);
+	m_rawLevelLabel->setStyle(false, true, LABEL_FONT_SIZE * 0.8, GENERAL_IMPORTANT_VALUE);
+	//m_levelLabel->setIconTexture("icons/EXPSmall.png");
+	m_rawLevelLabel->setSpacingConstraint(5.0f);
+	//m_levelLabel->setWidthConstrant(LABEL_WIDTH, LABEL_SPACING, CompoundLabel::VariablePartFloat::);
+	m_rawLevelLabel->setAnchorPoint(Vec2(0.5, 0.5));
+	m_rawLevelLabel->setPosition({ 0, LEVEL_LABEL_Y});
+	this->addChild(m_rawLevelLabel, 1);
+
+	m_levelsFromRedMatterLabel = CompoundLabel::create("+ ", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
+	m_levelsFromRedMatterLabel->setStyle(true, true, LABEL_FONT_SIZE * 0.8, LABEL_STYLE_LIGHT);
+	m_levelsFromRedMatterLabel->setStyle(false, true, LABEL_FONT_SIZE * 0.8, COMMON_RED);
+	//m_levelsFromRedMatterLabel->setIconTexture("icons/EXPSmall.png");
+	m_levelsFromRedMatterLabel->setSpacingConstraint(0.0f);
+	//m_levelsFromRedMatterLabel->setWidthConstrant(LABEL_WIDTH, LABEL_SPACING, CompoundLabel::VariablePartFloat::);
+	m_levelsFromRedMatterLabel->setAnchorPoint(Vec2(0.5, 0.5));
+	m_levelsFromRedMatterLabel->setPosition({ 0, LEVEL_LABEL_Y });
+	this->addChild(m_levelsFromRedMatterLabel, 1);
+
+	m_levelLabelRight = Label::createWithTTF(")", "fonts/BreeSerif.ttf", LABEL_FONT_SIZE * 0.8, Size::ZERO, TextHAlignment::RIGHT);
+	CompoundLabel::setSingleStyle(m_levelLabelRight, LABEL_FONT_SIZE * 0.8, LABEL_STYLE_LIGHT);
+	m_levelLabelRight->setAnchorPoint(Vec2(0.0, 0.5));
+	m_levelLabelRight->setPosition({ 0, LEVEL_LABEL_Y });
+	this->addChild(m_levelLabelRight, 1);
+
+	// Scaling
+
+	const float SCALE_LABEL_Y = LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex++);
+
+	m_scalingLabel = CompoundLabel::create("Level scale:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
+	m_scalingLabel->setStyle(true, true, LABEL_FONT_SIZE, LABEL_STYLE);
+	m_scalingLabel->setStyle(false, true, LABEL_FONT_SIZE, COMMON_RED);
+	//m_scalingLabel->setIconTexture("icons/EXPSmall.png");
+	m_scalingLabel->setSpacingConstraint(20.0f, 5.0f);
+	//m_scalingLabel->setWidthConstrant(WIDTH_CONSTRAINT, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
+	m_scalingLabel->setAnchorPoint(Vec2(0.0, 0.5));
+	m_scalingLabel->setPosition({ LABEL_LEFT_X, SCALE_LABEL_Y });
+	this->addChild(m_scalingLabel, 1);
+
+	m_redMatterLabel = CompoundLabel::create("from", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
+	m_redMatterLabel->setStyle(true, true, LABEL_FONT_SIZE, LABEL_STYLE);
+	m_redMatterLabel->setStyle(false, true, LABEL_FONT_SIZE, COMMON_RED);
+	m_redMatterLabel->setIconTexture("icons/RedMatterSmall.png");
+	m_redMatterLabel->setSpacingConstraint(10.0f, 5.0f);
+	//m_redMatterLabel->setWidthConstrant(WIDTH_CONSTRAINT, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
+	m_redMatterLabel->setAnchorPoint(Vec2(0.0, 0.5));
+	m_redMatterLabel->setPosition({ LABEL_LEFT_X, SCALE_LABEL_Y });
+	this->addChild(m_redMatterLabel, 1);
+
+	// Yield label
+
+	const float YIELD_LABEL_Y = LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex++);
+
 	m_yieldLabel = CompoundLabel::create("Yield:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
-	m_yieldLabel->setStyle(true, true, LABEL_FONT_SIZE, Color4B::WHITE, Color4B::BLACK, 0, Color4B::BLACK, Size(4, -4), 4);
+	m_yieldLabel->setStyle(true, true, LABEL_FONT_SIZE, LABEL_STYLE);
 	m_yieldLabel->setStyle(false, true, LABEL_FONT_SIZE, INACTIVE_BLUE);
 	m_yieldLabel->setIconTexture("icons/EXPSmall.png");
-	m_yieldLabel->setWidthConstrant(WIDTH_CONSTRAINT, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
+	m_yieldLabel->setSpacingConstraint(20.0f, 5.0f);
+	//m_yieldLabel->setWidthConstrant(WIDTH_CONSTRAINT, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
 	m_yieldLabel->setAnchorPoint(Vec2(0.0, 0.5));
-	m_yieldLabel->setPosition({ LABEL_LEFT_X, LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex++) });
+	m_yieldLabel->setPosition({ LABEL_LEFT_X, YIELD_LABEL_Y });
 	this->addChild(m_yieldLabel, 1);
 
 	// The label to the left of the yield time value (says "Every ")
-	cocos2d::Label* yieldTimeLeft = Label::createWithTTF("Every ", "fonts/BreeSerif.ttf", LABEL_FONT_SIZE, Size::ZERO, TextHAlignment::RIGHT);
-	yieldTimeLeft->setTextColor(Color4B::WHITE);
-	yieldTimeLeft->enableShadow(Color4B::BLACK, Size(4, -4), 4);
-	yieldTimeLeft->setAnchorPoint(Vec2(0.0, 0.5));
-	yieldTimeLeft->setPosition({ LABEL_LEFT_X, LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex) });
-	this->addChild(yieldTimeLeft, 1);
+	m_yieldTimeLeft = Label::createWithTTF("/", "fonts/BreeSerif.ttf", LABEL_FONT_SIZE, Size::ZERO, TextHAlignment::RIGHT);
+	CompoundLabel::setSingleStyle(m_yieldTimeLeft, LABEL_FONT_SIZE, LABEL_STYLE);
+	m_yieldTimeLeft->setAnchorPoint(Vec2(0.0, 0.5));
+	m_yieldTimeLeft->setPosition({ LABEL_LEFT_X, YIELD_LABEL_Y });
+	this->addChild(m_yieldTimeLeft, 1);
 
 	// The label to the right of the yield time value (says " seconds")
-	cocos2d::Label* yieldTimeRight = Label::createWithTTF(" seconds", "fonts/BreeSerif.ttf", LABEL_FONT_SIZE, Size::ZERO, TextHAlignment::RIGHT);
-	yieldTimeRight->setTextColor(Color4B::WHITE);
-	yieldTimeRight->enableShadow(Color4B::BLACK, Size(4, -4), 4);
-	yieldTimeRight->setAnchorPoint(Vec2(1.0, 0.5));
-	yieldTimeRight->setPosition({ LABEL_RIGHT_X, LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex) });
-	this->addChild(yieldTimeRight, 1);
+	m_yieldTimeRight = Label::createWithTTF("seconds", "fonts/BreeSerif.ttf", LABEL_FONT_SIZE, Size::ZERO, TextHAlignment::RIGHT);
+	CompoundLabel::setSingleStyle(m_yieldTimeRight, LABEL_FONT_SIZE, LABEL_STYLE);
+	m_yieldTimeRight->setAnchorPoint(Vec2(0.0, 0.5));
+	m_yieldTimeRight->setPosition({ LABEL_LEFT_X, YIELD_LABEL_Y });
+	this->addChild(m_yieldTimeRight, 1);
 
 	m_yieldSpeedLabel = Label::createWithTTF("", "fonts/BreeSerif.ttf", LABEL_FONT_SIZE, Size::ZERO, TextHAlignment::RIGHT);
+	CompoundLabel::setSingleStyle(m_yieldSpeedLabel, LABEL_FONT_SIZE, LABEL_STYLE);
 	m_yieldSpeedLabel->setTextColor(INACTIVE_BLUE);
-	m_yieldSpeedLabel->enableShadow(Color4B::BLACK, Size(4, -4), 4);
-	m_yieldSpeedLabel->setAnchorPoint(Vec2(1.0, 0.5));
-	m_yieldSpeedLabel->setPosition({ 
-		LABEL_RIGHT_X - yieldTimeRight->getContentSize().width,
-		LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex++) 
-	});
+	m_yieldSpeedLabel->setAnchorPoint(Vec2(0.0, 0.5));
+	m_yieldSpeedLabel->setPosition({
+		LABEL_LEFT_X, //LABEL_RIGHT_X - m_yieldTimeRight->getContentSize().width,
+		YIELD_LABEL_Y
+		});
 	this->addChild(m_yieldSpeedLabel, 1);
 
+	/// EXP 
+
 	m_expLabel = CompoundLabel::create("EXP:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
-	m_expLabel->setStyle(true, true, LABEL_FONT_SIZE, Color4B::WHITE, Color4B::BLACK, 0, Color4B::BLACK, Size(4, -4), 4);
+	m_expLabel->setStyle(true, true, LABEL_FONT_SIZE, LABEL_STYLE);
 	m_expLabel->setStyle(false, true, LABEL_FONT_SIZE, GENERAL_IMPORTANT_VALUE);
 	m_expLabel->setIconTexture("icons/EXPSmall.png");
+	//m_expLabel->setSpacingConstraint(20.0f, 5.0f);
 	m_expLabel->setWidthConstrant(WIDTH_CONSTRAINT, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
 	m_expLabel->setAnchorPoint(Vec2(0.0, 0.5));
 	m_expLabel->setPosition({ LABEL_LEFT_X, LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex++) });
 	this->addChild(m_expLabel, 1);
 
-	m_nextLevelLabel = CompoundLabel::create("Next Level:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
-	m_nextLevelLabel->setStyle(true, true, LABEL_FONT_SIZE, Color4B::WHITE, Color4B::BLACK, 0, Color4B::BLACK, Size(4, -4), 4);
+	m_nextLevelLabel = CompoundLabel::create("Next level in:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
+	m_nextLevelLabel->setStyle(true, true, LABEL_FONT_SIZE, LABEL_STYLE);
 	m_nextLevelLabel->setStyle(false, true, LABEL_FONT_SIZE, GENERAL_IMPORTANT_VALUE);
 	m_nextLevelLabel->setIconTexture("icons/EXPSmall.png");
+	//m_nextLevelLabel->setSpacingConstraint(20.0f, 5.0f);
 	m_nextLevelLabel->setWidthConstrant(WIDTH_CONSTRAINT, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
 	m_nextLevelLabel->setAnchorPoint(Vec2(0.0, 0.5));
 	m_nextLevelLabel->setPosition({ LABEL_LEFT_X, LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex++) });
 	this->addChild(m_nextLevelLabel, 1);
 
 	/*
-	m_specNameLabel = CompoundLabel::create("Spec:", "fonts/BreeSerif.ttf", "fonts/BreeSerif.ttf");
-	m_specNameLabel->setStyle(true, true, LABEL_FONT_SIZE, Color4B::WHITE, Color4B::BLACK, 0, Color4B::BLACK, Size(4, -4), 4);
-	m_specNameLabel->setWidthConstrant(LABEL_WIDTH, LABEL_SPACING, CompoundLabel::VariablePartFloat::RIGHT);
-	m_specNameLabel->setAnchorPoint(Vec2(0.0, 0.5));
-	m_specNameLabel->setPosition(Vec2(400, 160));
-	this->addChild(m_specNameLabel, 1);
-	*/
-	
-	/*
-	
+	// The label to the right of the exp to next level label, closing the brackets
+	m_nextLevelRight = Label::createWithTTF(")", "fonts/BreeSerif.ttf", LABEL_FONT_SIZE, Size::ZERO, TextHAlignment::RIGHT);
+	m_nextLevelRight->setTextColor(Color4B::WHITE);
+	m_nextLevelRight->enableShadow(Color4B::BLACK, Size(4, -4), 4);
+	m_nextLevelRight->setAnchorPoint(Vec2(0.0, 0.5));
+	m_nextLevelRight->setPosition({ LABEL_RIGHT_X, LABEL_TOP_Y - (LABEL_HEIGHT * labelIndex) });
+	this->addChild(m_nextLevelRight, 1);
 	*/
 
-	/// EXPInfoTab
+	/// HexiiEXPTab
 
-	m_expInfoTab = EXPInfoTab::create();
+	m_expInfoTab = HexiiEXPTab::create();
 	initTab(0, m_expInfoTab, TAB_POS, { 0, 1 }, TAB_BUTTON_POS, { 110, 0 }, "UI/HexiiInfoTab/EXPTab", "UI/HexiiInfoTab/DisabledTab");
 
 	m_standardL0UpgradesTab = HexiiUpgradesTab::create(UpgradePath::getStandardL0Path());
@@ -175,7 +236,7 @@ void HexiiInfoTab::update(float dt) {
 	/// Update labels
 
 	// TODO: Add a setting to change the speed of UI updates
-	updateHexiiLabels(false, true, true);	
+	updateStatLabels();
 
 	/// Update sub tab
 	getCurrentTab()->update(dt);
@@ -194,25 +255,6 @@ void HexiiInfoTab::switchTab(unsigned short tab) {
 }
 
 /*
-
-void HexiiInfoTab::onUpgradePurchased(cocos2d::EventCustom* evnt) {
-	m_yieldLabel->setVariablePartString(formatBigReal(m_focus->getYield()));
-}
-
-void HexiiInfoTab::onLevelGained(cocos2d::EventCustom* evnt) {
-	Hexii::EventLevelGainedData* data = static_cast<Hexii::EventLevelGainedData*>(evnt->getUserData());
-
-	// Only update this box if the hex that leveled up was this tab's focus
-	if (data->subject != m_focus) return;
-
-	/// Update labels for hex stats
-
-	m_levelLabel->setVariablePartString(std::to_string(data->level));
-	m_yieldLabel->setVariablePartString(formatBigReal(m_focus->getYield()));
-
-	updateUpgradesList(data->levelBefore, data->level);
-}
-
 void HexiiInfoTab::onPinButtonPressed(Ref*, cocos2d::ui::Widget::TouchEventType evntType) {
 	// Only care about the release
 	if (evntType != ui::Widget::TouchEventType::ENDED) return;
@@ -287,96 +329,122 @@ void HexiiInfoTab::setFocusHexii(Hexii* focus) {
 	// Setup the new listener
 	m_levelGainedListener = EventUtility::addTargetedEventListener(Hexii::EVENT_LEVEL_GAINED, this, m_focusHexii->eventID, &HexiiInfoTab::onLevelGained);
 
-	/*auto& specGroups = m_focusHexii->getSpecializations();
-	// Setup the specs
-	if (specGroups.size() == 0) setFocusSpecialization(nullptr);
-	else for (auto& specGroup : specGroups) {
-	}
-	*/
-
 	// Update properties that change with focus but not per frame
 	m_yieldLabel->setIconTexture(m_focusHexii->getHexiiType() == Hexii::HexiiType::HOME_L0 ? "icons/GreenMatterSmall.png" : "icons/EXPSmall.png");
 	m_focusSprite->setTexture(m_focusHexii->getShadedRenderTexture());
-	updateHexiiLabels(true, true, true);
+	
+	updateNameLabel();
+	updateStatLabels();
 
 	// Finally switch back to the last active tab
 	switchTab(m_currentTab);
 }
 
-/*
-void HexiiInfoTab::setFocusSpecialization(Specialization* focus) {
-	if (m_focusSpecialization == focus) return;
+void HexiiInfoTab::updateNameLabel() {
+	m_hexiiNameLabel->setString(m_focusHexii->getName());
+	m_hexiilayerLabel->setString("Layer " + std::to_string(m_focusHexii->getLayer()));
+}
 
-	/// Cleanup
+void HexiiInfoTab::updateStatLabels() {
+	constexpr float PADDING = 10.0f;
 
-	// Remove listeners
-	if (m_levelGainedListener) {
-		_eventDispatcher->removeEventListener(m_levelGainedListener);
+	//// Yield label
+
+	// Update the text
+
+	m_yieldLabel->setVariablePartString(formatBigReal(m_focusHexii->getYield()));
+	m_yieldSpeedLabel->setString(formatBigReal(1.0 / m_focusHexii->getYieldSpeed(true), false, 3, 2));
+
+	// Update positions
+
+	float labelX = m_yieldLabel->getPosition().x + m_yieldLabel->getContentSize().width + PADDING;
+	float labelY = m_yieldLabel->getPosition().y;
+
+	m_yieldTimeLeft->setPosition(labelX, labelY);
+	labelX += m_yieldTimeLeft->getContentSize().width + PADDING;
+	m_yieldSpeedLabel->setPosition(labelX, labelY);
+	labelX += m_yieldSpeedLabel->getContentSize().width + PADDING;
+	m_yieldTimeRight->setPosition(labelX, labelY);
+
+	if (m_focusHexii->getIsPressed()) {
+		m_yieldLabel->setStyle(false, true, LABEL_FONT_SIZE, ACTIVE_ORANGE);
+		m_yieldSpeedLabel->setTextColor(ACTIVE_ORANGE);
+	}
+	else {
+		m_yieldLabel->setStyle(false, true, LABEL_FONT_SIZE, INACTIVE_BLUE);
+		m_yieldSpeedLabel->setTextColor(INACTIVE_BLUE);
 	}
 
-	// Clear the old upgrades
-	//m_upgradeScrollView->removeAllChildrenWithCleanup(true);
-	//m_upgradeBoxes.clear();
-
-	m_focusSpecialization = focus;
-	// Quick return if no focus
-	if (!m_focusSpecialization) return;
-
-	/// Setup the new spec
-
-	// Add listeners
-	m_levelGainedListener = EventUtility::addTargetedEventListener(Specialization::EVENT_LEVEL_GAINED, this, m_focusSpecialization->eventID, &HexiiInfoTab::onLevelGained);
-
-	// Update labels
-	updateSpecializationLabels(true, true);
+	//// EXP Label
 
 	/*
-	// Update upgrades list
-	auto& upgrades = focus->upgradePath->getUpgrades();
-	for (uint i = 0; i < upgrades.size(); i++) {
-		UpgradeBox* box = UpgradeBox::create();
+	/// Position the EXP label
 
-		box->setUpgrade(upgrades[i], m_focusSpecialization);
-		box->setAnchorPoint(Vec2(0, 0));
-		box->setPosition(Vec2(i * (box->getContentSize().width + 40), 0)); // Width of a box + 40 points spacing
-		//m_upgradeBoxes.push_back(box);
-		m_upgradeScrollView->addChild(box);
-	}
-	updateScrollView();
-	
-}
-*/
+	labelX = m_expLabel->getPosition().x + m_expLabel->getContentSize().width + PADDING;
+	labelY = m_expLabel->getPosition().y;
 
-void HexiiInfoTab::updateHexiiLabels(bool nameLabel, bool yieldLabel, bool expLabels) {
-	if (nameLabel) {
-		m_hexiiNameLabel->setString(m_focusHexii->getName());
-		m_hexiilayerLabel->setString("Layer " + std::to_string(m_focusHexii->getLayer()));
-	}
-	if (yieldLabel) {
-		m_yieldLabel->setVariablePartString(formatBigReal(m_focusHexii->getYield()));
-		m_yieldSpeedLabel->setString(formatBigReal(1.0 / m_focusHexii->getYieldSpeed(true), false, 3, 2));
+	m_nextLevelLabel->setPosition(labelX, labelY);
+	labelX += m_nextLevelLabel->getContentSize().width + PADDING;
+	m_nextLevelRight->setPosition(labelX, labelY);
+	*/
 
-		if (m_focusHexii->getIsPressed()) {
-			m_yieldLabel->setStyle(false, true, LABEL_FONT_SIZE, ACTIVE_ORANGE);
-			m_yieldSpeedLabel->setTextColor(ACTIVE_ORANGE);
-		}
-		else {
-			m_yieldLabel->setStyle(false, true, LABEL_FONT_SIZE, INACTIVE_BLUE);
-			m_yieldSpeedLabel->setTextColor(INACTIVE_BLUE);
-		}
-	}
-	if (expLabels) {
-		BigReal exp = m_focusHexii->getEXP();
-		BigReal expForNextLevel = m_focusHexii->getEXPForNextLevel() - exp;
+	// Update the text
 
-		m_expLabel->setVariablePartString(formatBigReal(exp));
-		m_nextLevelLabel->setVariablePartString(formatBigReal(expForNextLevel));
-		m_levelLabel->setVariablePartString(std::to_string(m_focusHexii->getLevel()));
+	BigReal exp = m_focusHexii->getEXP();
+	BigReal expForNextLevel = m_focusHexii->getEXPForNextLevel() - exp;
 
-		if (m_expInfoTab->isVisible()) m_expInfoTab->updateLabels(exp, expForNextLevel);
+	m_expLabel->setVariablePartString(formatBigReal(exp));
+	m_nextLevelLabel->setVariablePartString(formatBigReal(expForNextLevel));
+
+	//// Scaling label
+
+	// Update positions
+
+	labelX = m_scalingLabel->getPosition().x + m_scalingLabel->getContentSize().width + PADDING;
+	labelY = m_scalingLabel->getPosition().y;
+
+	m_redMatterLabel->setPosition(labelX, labelY);
+
+	// Update the text
+
+	m_scalingLabel->setVariablePartString("x" + formatBigReal(m_focusHexii->getLevelScale(), false, 2, 3));
+	m_redMatterLabel->setVariablePartString(formatBigReal(m_focusHexii->getRedMatterInvested()));
+
+	// Update the EXP info tab
+	if (m_expInfoTab->isVisible()) {
+		m_expInfoTab->updateEXP(exp, expForNextLevel);
+		m_expInfoTab->updateRedMatter(m_focusHexii->getRedMatterInvested());
 	}
 
-	// TODO: Only show this after specs have been unlocked
-	//if (nameLabel) m_specNameLabel->setVariablePartString(m_focusSpecialization->getSpecNameFriendly());
-	//if (countLabel) 
+	//// Level label
+
+	// Update text
+
+	BigInt rawLevel = m_focusHexii->getRawLevel();
+	BigInt totalLevel = m_focusHexii->getTotalLevel();
+
+	m_levelLabel->setVariablePartString(formatBigInt(totalLevel));
+	m_rawLevelLabel->setVariablePartString(formatBigInt(rawLevel));
+	m_levelsFromRedMatterLabel->setVariablePartString(formatBigInt(totalLevel - rawLevel));
+
+	// The extra detail on the level label is only applicable if the hexii has red matter levels	
+
+	bool hasRedMatterLevels = rawLevel != totalLevel;
+
+	m_rawLevelLabel->setVisible(hasRedMatterLevels);
+	m_levelsFromRedMatterLabel->setVisible(hasRedMatterLevels);
+	m_levelLabelRight->setVisible(hasRedMatterLevels);
+
+	if (hasRedMatterLevels) {
+		// Update positions
+
+		labelX = m_levelLabel->getPosition().x + (m_levelLabel->getContentSize().width / 2) + (PADDING * 2);
+		labelY = m_levelLabel->getPosition().y;
+
+		m_rawLevelLabel->setPosition(labelX, labelY);
+		labelX += (m_rawLevelLabel->getContentSize().width) + 5;// + PADDING;
+		m_levelsFromRedMatterLabel->setPosition(labelX, labelY);
+		labelX += (m_levelsFromRedMatterLabel->getContentSize().width / 2) + 5;
+		m_levelLabelRight->setPosition(labelX, labelY);
+	}
 }

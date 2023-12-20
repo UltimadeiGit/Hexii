@@ -1,9 +1,7 @@
 #include "HexiiUpgradesTab.h"
+#include "UICommon.h"
 
 USING_NS_CC;
-
-constexpr float UPGRADE_BOX_SPACING = 52;
-constexpr float UPGRADE_BOX_WIDTH = 208;
 
 HexiiUpgradesTab::HexiiUpgradesTab(UpgradePathPtr focusPath) : m_focusPath(focusPath){}
 
@@ -14,8 +12,8 @@ bool HexiiUpgradesTab::init()
 	m_upgradeScrollView = ui::ScrollView::create();
 	m_upgradeScrollView->setAnchorPoint(Vec2(0.0, 0.0));
 	m_upgradeScrollView->setDirection(ui::ScrollView::Direction::HORIZONTAL);
-	m_upgradeScrollView->setContentSize({1040, 308 });
-	m_upgradeScrollView->setInnerContainerSize({ 208, 308 });
+	m_upgradeScrollView->setContentSize(UICommon::SCROLLVIEW_CONTENT_SIZE);
+	m_upgradeScrollView->setInnerContainerSize({ UICommon::PURCHASABLE_BOX_WIDTH, UICommon::SCROLLVIEW_CONTENT_SIZE.height });
 	m_upgradeScrollView->setBounceEnabled(true);
 	m_upgradeScrollView->setPosition({0, 0});
 	//m_upgradeScrollView->setFlippedY(true);
@@ -31,7 +29,7 @@ bool HexiiUpgradesTab::init()
 		UpgradeBox* box = UpgradeBox::create();
 		box->setUpgrade(upgrades[i], nullptr, nullptr);
 		box->setAnchorPoint({0, 0});
-		box->setPosition({(UPGRADE_BOX_WIDTH + UPGRADE_BOX_SPACING) * i, 0});
+		box->setPosition({(UICommon::PURCHASABLE_BOX_WIDTH + UICommon::PURCHASABLE_BOX_SPACING) * i, 0});
 		box->setVisible(false);
 
 		m_upgradeBoxes.push_back(box);
@@ -44,9 +42,12 @@ bool HexiiUpgradesTab::init()
 void HexiiUpgradesTab::update(float dt) {
 	/// Update upgrades
 	for (auto& i : m_upgradeScrollView->getChildren()) i->update(dt);
+	updateTrackerStoredScrollViewPos();
 }
 
 void HexiiUpgradesTab::setFocus(Hexii* focus) {
+	updateTrackerStoredScrollViewPos();
+
 	HexiiTab::setFocus(focus);
 	m_focusTracker = focus->getUpgradeTrackerFromPath(m_focusPath);
 
@@ -60,7 +61,7 @@ void HexiiUpgradesTab::updateStates() {
 	if (m_focusTracker == nullptr) return;
 
 	// Number of preview upgrade boxes that should be displayed
-	constexpr int PREVIEW_COUNT = 20;
+	constexpr int PREVIEW_COUNT = 1;
 
 	auto& upgradeStates = m_focusTracker->getStates();
 	// The number of locked states encountered so far
@@ -88,10 +89,12 @@ void HexiiUpgradesTab::updateStates() {
 	}
 
 	// Update scroll view based on how many upgrade boxes are visible
-	 m_upgradeScrollView->setInnerContainerSize(Size(
-		numVisible * (UPGRADE_BOX_WIDTH + UPGRADE_BOX_SPACING),
+	m_upgradeScrollView->setInnerContainerSize(Size(
+		numVisible * (UICommon::PURCHASABLE_BOX_WIDTH + UICommon::PURCHASABLE_BOX_SPACING),
 		m_upgradeScrollView->getContentSize().height
 	));
+
+	m_upgradeScrollView->setInnerContainerPosition({ -std::min(-m_focusTracker->uiOffsetInUpgradesTabScrollView, m_upgradeScrollView->getInnerContainerSize().width - UICommon::SCROLLVIEW_CONTENT_SIZE.width), 0 });
 }
 
 void HexiiUpgradesTab::updateBoxes() {

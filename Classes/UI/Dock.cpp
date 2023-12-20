@@ -4,10 +4,12 @@
 #include "Console.h"
 #include "Resources.h"
 
+#include <cocos/ui/UIRichText.h>
+
 USING_NS_CC;
 
 bool Dock::init() {
-    m_background = Sprite::createWithTexture(Director::getInstance()->getTextureCache()->addImage("UI/Dock/DockBackground.png"));
+    m_background = Sprite::createWithTexture(Director::getInstance()->getTextureCache()->addImage("UI/Dock/Background.png"));
     m_background->setAnchorPoint(Vec2(0.0, 0.0));
     this->addChild(m_background, 0);
 

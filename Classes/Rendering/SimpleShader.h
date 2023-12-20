@@ -65,6 +65,7 @@ public:
 
     static ShaderProgramPtr getProgressShaderProgram();
     static ShaderProgramPtr getEncouragementGlowProgram();
+    static ShaderProgramPtr getDentsProgram();
 
     void updateShaderTime();
 
