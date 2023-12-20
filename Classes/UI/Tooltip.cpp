@@ -1,5 +1,5 @@
 #include "Tooltip.h"
-#include <Console.h>
+#include "Console.h"
 
 Tooltip* Tooltip::s_currentTooltip = nullptr;
 
@@ -112,8 +112,6 @@ void TooltipWidget::toggleTooltip(bool shown) {
 
 }
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-
 void Tooltip::setVisible(bool visible) {
     Node::setVisible(visible);
     if (visible) {
@@ -124,9 +122,9 @@ void Tooltip::setVisible(bool visible) {
         _director->setNotificationNode(this);
     }
 }
-void Tooltip::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint32_t flags) {
-    cocos2d::Node::draw(renderer, transform, flags);
-}
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+
 void TooltipWidget::onMouseMove(cocos2d::EventMouse* mouse) {
     // If the mouse is over the widget, show the tooltip
     // Check if the mouse is hovering over the widget
@@ -136,6 +134,7 @@ void TooltipWidget::onMouseMove(cocos2d::EventMouse* mouse) {
         bool dbg = true;
 	}
 }
+
 #endif
 
 bool TooltipWidget::onTouch(cocos2d::Ref*, cocos2d::ui::Widget::TouchEventType evntType) {

@@ -17,11 +17,7 @@ public:
 
 	inline cocos2d::ui::RichText* getContent() { return m_content; }
 
-	void setVisible(bool visible) override;
-
-	// Override draw
-	void draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint32_t flags) override;
-
+	virtual void setVisible(bool visible) override;
 private:
 	static Tooltip* s_currentTooltip;
 

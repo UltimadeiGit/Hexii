@@ -70,7 +70,7 @@ bool PurchasableBox::init() {
     CompoundLabel::setSingleStyle(m_lockedLabel, 28, Color4B::WHITE, Color4B::BLACK, 4);
     m_backgroundPlate->addChild(m_lockedLabel);
 
-    setContentSize(m_backgroundPlate->getContentSize() + Size({0, m_purchaseButton->getContentSize().height}));
+    setContentSize(m_backgroundPlate->getContentSize() + Size(0, m_purchaseButton->getContentSize().height));
 
     return true;
 }

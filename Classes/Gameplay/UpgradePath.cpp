@@ -40,10 +40,9 @@ UpgradePathPtr UpgradePath::getStandardL0Path()
         // Speed Up 1 ~ 4
         // Criticals
         // Strong Arm
-        // Discount
         // Support 1
         // Global Power
-        addUpgradesToVec(upgrades, { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 16, 17 });
+        addUpgradesToVec(upgrades, { 0, 1, 2, 3, 4, 5, 6, 8, 9, 12, 13, 16, 17 });
 
         s_standardL0Path = std::make_shared<UpgradePath>(upgrades, "StandardL0Path", 0);
     }
@@ -62,10 +61,9 @@ UpgradePathPtr UpgradePath::getStandardPath()
         // Speed Up 1 ~ 4
         // Criticals
         // Strong Arm
-        // Discount
         // Support 1
         // Global Power
-        addUpgradesToVec(upgrades, { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17 });
+        addUpgradesToVec(upgrades, { 2, 3, 4, 5, 6, 8, 9, 10, 11, 14, 15, 16, 17 });
 
         s_standardPath = std::make_shared<UpgradePath>(upgrades, "StandardPath", 1);
     }
@@ -125,7 +123,7 @@ void UpgradePath::initAllUpgrades(){
     initUpgrade(std::make_shared<Upgrade>("CriticalBonus1", "Critical Bonus I", "Critical yields are twice as powerful", "6x -> 12x", 1200, 6, Upgrade::ACTS_ON_CRITS, 5));
     
     // Misc
-    initUpgrade(std::make_shared<Upgrade>("Discount", "Discount", "Reduces the cost to purchase EXP", "", 300, 9, 0, 7));
+    //initUpgrade(std::make_shared<Upgrade>("Discount", "Discount", "Reduces the cost to purchase EXP", "", 300, 9, 0, 7));
     initUpgrade(std::make_shared<Upgrade>("StrongArm", "Strong Arm", "Active bonus is 50% stronger", "", 150, 2, Upgrade::ACTS_ON_SPEED, 6));
     
     // Support

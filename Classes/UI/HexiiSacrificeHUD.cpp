@@ -25,13 +25,13 @@ bool HexiiSacrificeHUD::init()
     // Distance from the top
     constexpr float BUTTON_DIST_Y = 890;
 
-    m_cancelButton = cocos2d::ui::Button::create("UI/Buttons/CancelButton.png", "UI/Buttons/CancelButtonSelected.png");
+    m_cancelButton = cocos2d::ui::Button::create("UI/buttons/CancelButton.png", "UI/buttons/CancelButtonSelected.png");
     m_cancelButton->setAnchorPoint({ 1.0, 0.0 });
     m_cancelButton->setPosition({ -BUTTON_DIST_X, -BUTTON_DIST_Y });
     m_cancelButton->addTouchEventListener(CC_CALLBACK_2(HexiiSacrificeHUD::onCancelButtonPressed, this));
     this->addChild(m_cancelButton, 1);
 
-    m_confirmButton = cocos2d::ui::Button::create("UI/Buttons/ConfirmButton.png", "UI/Buttons/ConfirmButtonSelected.png");
+    m_confirmButton = cocos2d::ui::Button::create("UI/buttons/ConfirmButton.png", "UI/buttons/ConfirmButtonSelected.png");
     m_confirmButton->setAnchorPoint({ 0.0, 0.0 });
     m_confirmButton->setPosition({ BUTTON_DIST_X, -BUTTON_DIST_Y });
     m_confirmButton->addTouchEventListener(CC_CALLBACK_2(HexiiSacrificeHUD::onConfirmButtonPressed, this));

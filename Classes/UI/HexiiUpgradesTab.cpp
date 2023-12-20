@@ -63,7 +63,7 @@ void HexiiUpgradesTab::updateStates() {
 	// Number of preview upgrade boxes that should be displayed
 	constexpr int PREVIEW_COUNT = 1;
 
-	auto& upgradeStates = m_focusTracker->getStates();
+	auto upgradeStates = m_focusTracker->getStates();
 	// The number of locked states encountered so far
 	uint numLocked = 0;
 	uint numVisible = 0;

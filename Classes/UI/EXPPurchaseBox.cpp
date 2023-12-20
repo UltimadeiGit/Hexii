@@ -34,7 +34,7 @@ void EXPPurchaseBox::update(float dt) {
 void EXPPurchaseBox::updateValues(BigReal exp, BigReal expForNextLevel) {
     // Since exp costs increase after a gaining a level, only buy at most the exp required to reach the next level
     BigReal desiredEXP = std::min(std::floorl(std::max((exp + expForNextLevel) * 0.05, (BigReal)1.0)), expForNextLevel);
-    BigReal cost = m_desiredEXP * GameplayCommon::LevelUps::getEXPCost(m_focusHexii->getLayer());
+    BigReal cost = m_desiredEXP * GameplayCommon::LevelUps::getEXPCost(m_focusHexii->getRawLevel(), m_focusHexii->getLayer());
 
     bool didChange = desiredEXP != m_desiredEXP || cost != m_cost;
 
@@ -64,7 +64,7 @@ void EXPPurchaseBox::updateIsAffordable() {
 }
 
 void EXPPurchaseBox::purchaseEXP() {
-    m_cost = m_desiredEXP * GameplayCommon::LevelUps::getEXPCost(m_focusHexii->getLayer());
+    m_cost = m_desiredEXP * GameplayCommon::LevelUps::getEXPCost(m_focusHexii->getRawLevel(), m_focusHexii->getLayer());
     updateIsAffordable();
     if(!m_isAffordable) return;
 
