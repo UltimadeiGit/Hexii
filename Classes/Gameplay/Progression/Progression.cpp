@@ -21,19 +21,28 @@ void Progression::load(const nlohmann::json& data) {
 	m_instance = new Progression();
 
 	State state;
+	uint achievedCount = 0;
 
-	state = data.contains("purchaseFirstHexii") ? data.at("purchaseFirstHexii").get<State>() : State::IGNORING;
+	state = data.contains("purchaseFirstHexiiState") ? data.at("purchaseFirstHexiiState").get<State>() : State::IGNORING;
 	m_instance->m_purchaseFirstHexii = new PurchaseFirstHexiiProgressionEvent(state);
 	m_instance->m_events.push_back(m_instance->m_purchaseFirstHexii);
 
-	state = data.contains("hexiiUpgradesAvailable") ? data.at("hexiiUpgradesAvailable").get<State>() : State::IGNORING;
+	state = data.contains("hexiiUpgradesAvailableState") ? data.at("hexiiUpgradesAvailableState").get<State>() : State::IGNORING;
 	m_instance->m_hexiiUpgradesAvailable = new HexiiUpgradesAvailableProgressionEvent(m_instance->m_purchaseFirstHexii, state);
 	m_instance->m_events.push_back(m_instance->m_hexiiUpgradesAvailable);
 
-	state = data.contains("hexiiFirstUpgradePurchased") ? data.at("hexiiFirstUpgradePurchased").get<State>() : State::IGNORING;
+	state = data.contains("hexiiFirstUpgradePurchasedState") ? data.at("hexiiFirstUpgradePurchasedState").get<State>() : State::IGNORING;
 	m_instance->m_hexiiFirstUpgradePurchased = new HexiiFirstUpgradePurchasedProgressionEvent(m_instance->m_hexiiUpgradesAvailable, state);
 	m_instance->m_events.push_back(m_instance->m_hexiiFirstUpgradePurchased);
 
+	state = data.contains("sacrificeUnlockedState") ? data.at("sacrificeUnlockedState").get<State>() : State::IGNORING;
+	achievedCount = data.contains("sacrificeUnlockedAchievedCount") ? data.at("sacrificeUnlockedAchievedCount").get<uint>() : 0;
+	m_instance->m_sacrificeUnlocked = new SacrificeUnlockedProgressionEvent(state, achievedCount);
+	m_instance->m_events.push_back(m_instance->m_sacrificeUnlocked);
+
+	state = data.contains("firstSacrificeCompletedState") ? data.at("firstSacrificeCompletedState").get<State>() : State::IGNORING;
+	m_instance->m_firstSacrificeCompleted = new FirstSacrificeCompletedProgressionEvent(m_instance->m_sacrificeUnlocked, state);
+	m_instance->m_events.push_back(m_instance->m_firstSacrificeCompleted);
 
 	//dbg
 
@@ -48,25 +57,14 @@ void Progression::init() {
 	}
 }
 
-void Progression::whenAchieved(ProgressionEvent* evnt, std::function<void()> callback) {
-	// If the event is already achieved, call the callback immediately
-	if (evnt->getState() == State::ACHIEVED) callback();
-	// Otherwise, add a listener to call the callback when the event is achieved
-	else cocos2d::EventListenerCustom* listener = EventUtility::addTargetedEventListenerFixedPriority(ProgressionEvent::EVENT_PROGRESSION_TO_ACHIEVED, 1, evnt->eventID, 
-		[listener, callback](cocos2d::EventCustom*) {
-			// Call the callback and remove the listener
-
-			callback(); 
-			EventUtility::removeEventListener(listener);
-		}
-	);
-}
-
 void to_json(nlohmann::json& j, const Progression& progression) {
 	j = json{
-		{"purchaseFirstHexii", progression.purchaseFirstHexii()->getState() },
-		{"hexiiUpgradesAvailable", progression.hexiiUpgradesAvailable()->getState()},
-		{"hexiiFirstUpgradePurchased", progression.hexiiFirstUpgradePurchased()->getState()}
+		{"purchaseFirstHexiiState", progression.purchaseFirstHexii()->getState() },
+		{"hexiiUpgradesAvailableState", progression.hexiiUpgradesAvailable()->getState()},
+		{"hexiiFirstUpgradePurchasedState", progression.hexiiFirstUpgradePurchased()->getState()},
+		{"sacrificeUnlockedState", progression.sacrificeUnlocked()->getState()},
+		{"sacrificeUnlockedAchievedCount", progression.sacrificeUnlocked()->getAchievedCount()},
+		{"firstSacrificeCompletedState", progression.firstSacrificeCompleted()->getState()}
 	};
 }
 

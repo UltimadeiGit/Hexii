@@ -104,7 +104,7 @@ void UpgradePath::initAllUpgrades(){
     // Existing initUpgrade calls
     initUpgrade(std::make_shared<Upgrade>("GreenMatterYieldUp1", "Yield Up I", "Increases yield based on level", "+{}", 120, 1, Upgrade::ACTS_ON_YIELD, 0));
     initUpgrade(std::make_shared<Upgrade>("GreenMatterYieldUp2", "Yield Up II", "Increases yield by +100%", "+100%", 9000, 12, Upgrade::ACTS_ON_YIELD, 1));
-    initUpgrade(std::make_shared<Upgrade>("GreenMatterYieldUp3", "Yield Up III", "Multiplies yield by 1.03 per level", "+{}%", 60000, 36, Upgrade::ACTS_ON_YIELD, 12));
+    initUpgrade(std::make_shared<Upgrade>("GreenMatterYieldUp3", "Yield Up III", "Multiplies yield by 1.03 per level", "+{}%", 90000, 36, Upgrade::ACTS_ON_YIELD, 12));
     initUpgrade(std::make_shared<Upgrade>("GreenMatterYieldUp4", "Yield Up IV", "Multiplies yield by 1.1 per level after 60", "+{}%", 3000000, 62, Upgrade::ACTS_ON_YIELD, 13));
     
     initUpgrade(std::make_shared<Upgrade>("EXPYieldUp1", "Yield Up I", "Increases yield based on level. Stronger in higher layers", "+{}", 120, 1, Upgrade::ACTS_ON_YIELD, 10));

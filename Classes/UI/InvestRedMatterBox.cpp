@@ -32,6 +32,7 @@ void InvestRedMatterBox::setFocusHexii(Hexii* focus) {
 
 void InvestRedMatterBox::update(float dt) {
     updateIsAffordable();
+    PurchasableBox::update(dt);
 }
 
 void InvestRedMatterBox::updateValues(BigReal redMatter) {
@@ -54,19 +55,12 @@ void InvestRedMatterBox::updateLabels() {
     m_purchaseCostLabel->setVariablePartString(formatBigReal(m_desiredInvestment));
 }
 
-void InvestRedMatterBox::onPurchaseButtonPressed(cocos2d::Ref*, cocos2d::ui::Widget::TouchEventType evntType) {
-    // Only care about the release
-    if (evntType != ui::Widget::TouchEventType::ENDED) return;
-
-    if (m_purchaseButton->isEnabled()) investRedMatter();
-}
-
 void InvestRedMatterBox::updateIsAffordable() {
     m_isAffordable = Resources::getInstance()->getRedMatter() >= getCost();
     togglePurchaseable(m_isAffordable);
 }
 
-void InvestRedMatterBox::investRedMatter() {
+void InvestRedMatterBox::tryPurchase() {
     // Verify affordability
     updateIsAffordable();
     if (!m_isAffordable) return;

@@ -9,15 +9,7 @@ HexiiFirstUpgradePurchasedProgressionEvent::HexiiFirstUpgradePurchasedProgressio
 	HexiiUpgradesAvailableProgressionEvent* dependency, State initialState
 ) : ProgressionEvent(initialState)
 {
-	registerGenericDependency(dependency);
-	
-}
-
-void HexiiFirstUpgradePurchasedProgressionEvent::init() {
-	if (getUnresolvedDependencyCount() == 0) {
-		if (getState() == State::IGNORING) progressToObserving();
-		else followInitialState();
-	}
+	registerGenericDependency(dependency);	
 }
 
 void HexiiFirstUpgradePurchasedProgressionEvent::onProgressToObserving(bool didSkip) {
@@ -34,9 +26,7 @@ void HexiiFirstUpgradePurchasedProgressionEvent::onProgressToEncouraging(bool di
 	if(didSkip) return;
 
 	// Stages of encouragement when enough green matter is available to purchase an upgrade
-	HexiiInfoTab* hexInfoTab = HexiiScene::getDock()->getHexInfoTab();
-
-	UpgradeBox* upgradeBox = dynamic_cast<HexiiUpgradesTab*>(HexiiScene::getDock()->getHexInfoTab()->getTab(1))->m_upgradeBoxes[0];
+	HexiiInfoTab* hexInfoTab = HexiiScene::getDock()->getHexiiInfoTab();
 
 	//upgradeBox->m_purchaseUpgradeButton->setCascadeColorEnabled(true);
 	//upgradeBox->m_purchaseUpgradeButton->setColor(cocos2d::Color3B::YELLOW);
@@ -48,8 +38,9 @@ void HexiiFirstUpgradePurchasedProgressionEvent::onProgressToEncouraging(bool di
 	)
 	->setNext(createUpgradeTabEncouragement())
 	->setNext(CommonEffects::createEncouragementForTarget(
-		upgradeBox->m_purchaseButton,
-		[this, upgradeBox]() {
+		[]() {return dynamic_cast<HexiiUpgradesTab*>(HexiiScene::getDock()->getHexiiInfoTab()->getTab(1))->m_upgradeBoxes[0]->m_purchaseButton; },
+		[this]() {
+			UpgradeBox* upgradeBox = dynamic_cast<HexiiUpgradesTab*>(HexiiScene::getDock()->getHexiiInfoTab()->getTab(1))->m_upgradeBoxes[0];
 			if (upgradeBox->m_upgradeState == Upgrade::State::OWNED) {
 				// The encouragement remains the entire time, until the upgrade is purchased
 				progressToEncouraged();
@@ -82,11 +73,13 @@ void HexiiFirstUpgradePurchasedProgressionEvent::checkAffordable() {
 EffectChainPtr HexiiFirstUpgradePurchasedProgressionEvent::createUpgradeTabEncouragement()
 {
 	Dock* dock = HexiiScene::getDock();
-	HexiiInfoTab* hexInfoTab = dock->getHexInfoTab();	
+	HexiiInfoTab* hexInfoTab = dock->getHexiiInfoTab();	
 	
 	return 
 		// Encourage the hexii info tab
 		CommonEffects::createEncouragementForTab<3>(dock, 0)
+		// Wait for L0 hex to be focused
+		->setNext(EffectChain::create(nullptr, [hexInfoTab]() { return hexInfoTab->m_focusHexii != nullptr && hexInfoTab->m_focusHexii->getLayer() == 0; }, EffectChain::noEffect))
 		// Encourage the upgrade tab
 		->setNext(CommonEffects::createEncouragementForTab<2>(hexInfoTab, 1));
 }

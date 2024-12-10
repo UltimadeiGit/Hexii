@@ -19,12 +19,11 @@ public:
 	static bool isAchieved(ProgressionEvent* evnt) { return evnt->getState() == State::ACHIEVED; }
 	static State getState(ProgressionEvent* evnt) { return evnt->getState(); }
 
-	// Calls the callback when evnt is achieved. If it's already achieved, the callback will happen immediately
-	static void whenAchieved(ProgressionEvent* evnt, std::function<void()> callback);
-
 	static PurchaseFirstHexiiProgressionEvent* purchaseFirstHexii() { return getInstance()->m_purchaseFirstHexii; }
 	static HexiiUpgradesAvailableProgressionEvent* hexiiUpgradesAvailable() { return getInstance()->m_hexiiUpgradesAvailable; }
 	static HexiiFirstUpgradePurchasedProgressionEvent* hexiiFirstUpgradePurchased() { return getInstance()->m_hexiiFirstUpgradePurchased; }
+	static SacrificeUnlockedProgressionEvent* sacrificeUnlocked() { return getInstance()->m_sacrificeUnlocked; }
+	static FirstSacrificeCompletedProgressionEvent* firstSacrificeCompleted() { return getInstance()->m_firstSacrificeCompleted; }
 
 private:
 	friend class HexiiScene;
@@ -38,6 +37,8 @@ private:
 	PurchaseFirstHexiiProgressionEvent* m_purchaseFirstHexii = nullptr;
 	HexiiUpgradesAvailableProgressionEvent* m_hexiiUpgradesAvailable = nullptr;
 	HexiiFirstUpgradePurchasedProgressionEvent* m_hexiiFirstUpgradePurchased = nullptr;
+	SacrificeUnlockedProgressionEvent* m_sacrificeUnlocked = nullptr;
+	FirstSacrificeCompletedProgressionEvent* m_firstSacrificeCompleted = nullptr;
 };
 
 extern void to_json(nlohmann::json& j, const Progression& progression);

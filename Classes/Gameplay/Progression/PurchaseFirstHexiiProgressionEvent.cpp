@@ -4,12 +4,6 @@
 PurchaseFirstHexiiProgressionEvent::PurchaseFirstHexiiProgressionEvent(State initialState) : ProgressionEvent(initialState) 
 {}
 
-void PurchaseFirstHexiiProgressionEvent::init() {
-	// This event can never be in IGNORING state
-	if (getState() == State::IGNORING) progressToObserving();
-	else followInitialState();
-}
-
 void PurchaseFirstHexiiProgressionEvent::onProgressToObserving(bool didSkip) {
 	// Immediately go to encouraging
 	progressToEncouraging();

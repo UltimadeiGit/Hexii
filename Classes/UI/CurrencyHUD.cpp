@@ -4,6 +4,7 @@
 #include "SimpleShader.h"
 #include "EventUtility.h"
 #include "GameplayCommon.h"
+#include "Progression.h"
 
 USING_NS_CC;
 
@@ -53,7 +54,32 @@ bool CurrencyHUD::init() {
 	EventUtility::addGlobalEventListener(GameplayCommon::GameEvent::EVENT_SACRIFICE_CANCELLED, this, &CurrencyHUD::onSacrificeCancelled);
 	EventUtility::addGlobalEventListener(GameplayCommon::GameEvent::EVENT_SACRIFICE_CONFIRMED, this, &CurrencyHUD::onSacrificeConfirmed);
 
+	// Set the content size to match the background
 	setContentSize(m_background->getContentSize());
+
+	// The currency HUDs become visible after certain game events
+	
+	constexpr float HUD_SPACING = 0;
+
+	// Green matter is the only currency type that is visible from the beginning of the game
+	toggleHidden(m_currencyType != CurrencyType::GREEN_MATTER, false);
+	// CurrencyHUD changes after the first sacrifice 
+	Progression::firstSacrificeCompleted()->when(ProgressionEvent::State::ACHIEVED, [this, HUD_SPACING]() {
+		switch (m_currencyType) {
+			// For green matter, the HUD should shift to the left
+		case CurrencyType::GREEN_MATTER:
+			translate(0.8f, { -(getContentSize().width / 2.0f + HUD_SPACING) * getScale(), 0 });
+			break;
+		case CurrencyType::RED_MATTER:
+			// For red matter, the HUD should become visible
+			toggleHidden(false);
+			// And shift to the right (instantly)
+			translate(0.0f, { +(getContentSize().width / 2.0f + HUD_SPACING) * getScale(), 0 });
+			break;
+		default:
+			break;
+		}
+	});
 
     return true;
 }
@@ -82,13 +108,20 @@ std::string CurrencyHUD::getCurrencyName() const {
 	}
 }
 
-void CurrencyHUD::toggleHidden(bool hidden) {
+void CurrencyHUD::toggleHidden(bool hidden, bool animate) {
 	if (m_hidden == hidden) return;
 
 	// Start an action to move the HUD offscreen
-	this->runAction(cocos2d::EaseQuadraticActionInOut::create(cocos2d::MoveBy::create(0.8f, { 0, getContentSize().height * getScale() * (hidden ? 1 : -1), 0})));
+	translate(animate ? 0.8f : 0.0f, { 0, getContentSize().height * getScale() * (hidden ? 1 : -1) });
+	//this->runAction(cocos2d::EaseQuadraticActionInOut::create(cocos2d::MoveBy::create(animate ? 0.8f : 0.0f, { 0, getContentSize().height * getScale() * (hidden ? 1 : -1), 0})));
+	//else this->setPosition(getPosition() + Vec2{ 0, getContentSize().height * getScale() * (hidden ? 1 : -1) });
 
 	m_hidden = hidden;
+}
+
+void CurrencyHUD::translate(float duration, cocos2d::Vec2 offset) {
+	if(duration == 0.0f) this->setPosition(getPosition() + Vec2{ offset.x, offset.y });
+	else this->runAction(cocos2d::EaseQuadraticActionInOut::create(cocos2d::MoveBy::create(duration, {offset.x, offset.y, 0})));
 }
 
 void CurrencyHUD::onSacrificeInitiated(cocos2d::EventCustom* evnt) {

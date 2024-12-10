@@ -15,11 +15,14 @@ public:
 
 	std::string getCurrencyName() const;
 
-	// Plays an animation to hide the HUD
-	void toggleHidden(bool hidden);
+	// Plays an animation to hide the HUD. If animate is false, the HUD will be shown/hidden instantly instead.
+	void toggleHidden(bool hidden, bool animate = true);
 
 	CREATE_FUNC_WITH_CTOR_1(CurrencyHUD, CurrencyType);
 private:
+	// Animated translation of the HUD.
+	void translate(float duration, cocos2d::Vec2 offset);
+
 	void onSacrificeInitiated(cocos2d::EventCustom* evnt);
 	void onSacrificeCancelled(cocos2d::EventCustom* evnt);
 	void onSacrificeConfirmed(cocos2d::EventCustom* evnt);

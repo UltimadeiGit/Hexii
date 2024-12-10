@@ -1,4 +1,5 @@
 #include "PurchasableBox.h"
+#include "PurchasableBox.h"
 #include "ColourSchemes.h"
 
 USING_NS_CC;
@@ -12,6 +13,7 @@ bool PurchasableBox::init() {
     m_backgroundPlate = Sprite::create("UI/parts/ImagePlate.png");
     m_backgroundPlate->setAnchorPoint({ 0.0f, 0.0f });
     m_backgroundPlate->setPosition({ 0, 69 });
+    m_backgroundPlate->setCascadeColorEnabled(true);
     this->addChild(m_backgroundPlate, 1);
 
     constexpr float NAMEPLATE_HEIGHT = 38.0f;
@@ -71,8 +73,16 @@ bool PurchasableBox::init() {
     m_backgroundPlate->addChild(m_lockedLabel);
 
     setContentSize(m_backgroundPlate->getContentSize() + Size(0, m_purchaseButton->getContentSize().height));
+    setCascadeColorEnabled(true);
 
     return true;
+}
+
+void PurchasableBox::update(float dt) {
+    if (m_purchaseButtonHeld && m_purchaseButtonHoldable) {
+        m_secondsSincePurchaseButtonTouched += dt;
+        onPurchaseButtonHeld(m_secondsSincePurchaseButtonTouched, dt);
+	}
 }
 
 void PurchasableBox::togglePurchaseable(bool purchasable) {
@@ -83,4 +93,45 @@ void PurchasableBox::togglePurchaseable(bool purchasable) {
     if (m_hidePurchaseButtonWhenUnaffordable) m_purchaseButton->setVisible(m_isPurchasable);
     m_purchaseButton->setEnabled(m_isPurchasable);
     m_purchaseButton->setBright(m_isPurchasable);
+}
+
+void PurchasableBox::onPurchaseButtonPressed(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType evntType) {
+    switch (evntType) {
+    case ui::Widget::TouchEventType::BEGAN:
+        m_secondsSincePurchaseButtonTouched = 0;
+        m_purchaseButtonHeldProgress = 0.0f;
+        m_purchaseButtonHeld = true;
+        break;
+    case ui::Widget::TouchEventType::ENDED:
+        m_purchaseButtonHeld = false;
+        tryPurchase();
+        break;
+    }
+}
+
+void PurchasableBox::onPurchaseButtonHeld(float heldTime, float dt) {
+    if (!m_purchaseButton->isEnabled()) return;
+
+    /// Purchase EXP every 5 times per second for the first 2 seconds,
+    // then 20 times per second for the next 8 seconds
+    // then 100 times per second
+
+    // How much of the time was spent in the first purchase interval
+    float firstIntervalTime = MIN(dt, MAX(0.0f, 2.0f - (heldTime - dt)));
+    // How much of the time was spent in the second purchase interval
+    float secondIntervalTime = MIN(dt, MAX(0.0f, MIN(heldTime - 2.0f, 10.0f - (heldTime - dt))));
+    // How much of the time was spent in the third purchase interval
+    float thirdIntervalTime = MIN(dt, MAX(0.0f, heldTime - 10.0f));
+
+    // The number of times to purchase from the first interval
+    m_purchaseButtonHeldProgress += firstIntervalTime / 0.2f;
+    // The number of times to purchase from the second interval
+    m_purchaseButtonHeldProgress += secondIntervalTime / 0.05f;
+    // The number of times to purchase from the third interval
+    m_purchaseButtonHeldProgress += thirdIntervalTime / 0.01f;
+
+    while (m_purchaseButtonHeldProgress >= 1.0f) {
+		m_purchaseButtonHeldProgress -= 1.0f;
+		tryPurchase();
+	}
 }

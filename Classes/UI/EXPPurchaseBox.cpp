@@ -29,6 +29,7 @@ void EXPPurchaseBox::setFocusHexii(Hexii* focus) {
 
 void EXPPurchaseBox::update(float dt) {
     updateIsAffordable();
+    PurchasableBox::update(dt);
 }
 
 void EXPPurchaseBox::updateValues(BigReal exp, BigReal expForNextLevel) {
@@ -51,19 +52,12 @@ void EXPPurchaseBox::updateLabels() {
     m_purchaseCostLabel->setVariablePartString(formatBigReal(m_cost));
 }
 
-void EXPPurchaseBox::onPurchaseButtonPressed(cocos2d::Ref*, cocos2d::ui::Widget::TouchEventType evntType) {
-    // Only care about the release
-    if (evntType != ui::Widget::TouchEventType::ENDED) return;
-
-    if (m_purchaseButton->isEnabled()) purchaseEXP();
-}
-
 void EXPPurchaseBox::updateIsAffordable() {
     m_isAffordable = Resources::getInstance()->getGreenMatter() >= getCost(); 
     togglePurchaseable(m_isAffordable);
 }
 
-void EXPPurchaseBox::purchaseEXP() {
+void EXPPurchaseBox::tryPurchase() {
     m_cost = m_desiredEXP * GameplayCommon::LevelUps::getEXPCost(m_focusHexii->getRawLevel(), m_focusHexii->getLayer());
     updateIsAffordable();
     if(!m_isAffordable) return;

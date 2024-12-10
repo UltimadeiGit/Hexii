@@ -34,12 +34,12 @@ using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
-//static cocos2d::Size smallResolutionSize = cocos2d::Size(1024, 768);
+static cocos2d::Size smallResolutionSize = cocos2d::Size(1024, 768);
 //static cocos2d::Size mediumResolutionSize = cocos2d::Size(1920, 1080);
 //static cocos2d::Size largeResolutionSize = cocos2d::Size(1584, 712);
 //static cocos2d::Size designResolutionSize = smallResolutionSize; // cocos2d::Size(480, 320);
 static cocos2d::Size designResolutionSize = cocos2d::Size(1920, 1440);// cocos2d::Size(1920, 1080); 
-static cocos2d::Size currentResolutionSize = cocos2d::Size(1920, 1080);
+static cocos2d::Size currentResolutionSize = designResolutionSize; // cocos2d::Size(1920, 1080);
 
 int main(int argc, char** argv)
 {

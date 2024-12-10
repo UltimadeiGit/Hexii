@@ -23,10 +23,9 @@ public:
 	void updateLabels();
 
 private:
-	void onPurchaseButtonPressed(cocos2d::Ref*, cocos2d::ui::Widget::TouchEventType evntType) override;
-
 	void updateIsAffordable() override;
-	void investRedMatter();
+	// Invests red matter
+	void tryPurchase() override;
 
 	Hexii* m_focusHexii = nullptr;
 

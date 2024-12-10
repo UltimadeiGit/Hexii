@@ -29,6 +29,17 @@ void Tooltip::setContent(cocos2d::ui::RichText* content) {
     this->addChild(m_content, 1);
 }
 
+void Tooltip::setVisible(bool visible) {
+    Node::setVisible(visible);
+    if (visible) {
+        if (s_currentTooltip && s_currentTooltip != this) {
+            s_currentTooltip->setVisible(false);
+            s_currentTooltip = this;
+        }
+        _director->setNotificationNode(this);
+    }
+}
+
 TooltipWidget::~TooltipWidget() {
     if (m_tooltip) m_tooltip->release();
 }
@@ -50,17 +61,7 @@ bool TooltipWidget::init() {
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 #endif
-
-    /*
-
-    // Listener to handle touch
-    auto touchListener = cocos2d::EventListenerTouchOneByOne::create();
-    touchListener->onTouchBegan = CC_CALLBACK_2(TooltipWidget::onTouchBegan, this);
-
     
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
-    */
-
     setTouchEnabled(true);
     setFocusEnabled(false);
 
@@ -87,9 +88,11 @@ void TooltipWidget::update(float dt) {
 
     // The tooltip is visible if the widget is hovered over or if it is sticky
     toggleTooltip(
-        m_hovering ||
-        (m_stickiness < 0 && m_sticky) ||
-        (m_stickiness > 0 && m_shownTime < m_stickiness && m_sticky)
+        _director->getNotificationNode() == m_tooltip && (
+            m_hovering ||
+            (m_stickiness < 0 && m_sticky) ||
+            (m_stickiness > 0 && m_shownTime < m_stickiness && m_sticky)
+        )
     );
 }
 
@@ -112,27 +115,13 @@ void TooltipWidget::toggleTooltip(bool shown) {
 
 }
 
-void Tooltip::setVisible(bool visible) {
-    Node::setVisible(visible);
-    if (visible) {
-        if (s_currentTooltip && s_currentTooltip != this) {
-            s_currentTooltip->setVisible(false);
-            s_currentTooltip = this;
-        }
-        _director->setNotificationNode(this);
-    }
-}
-
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 
 void TooltipWidget::onMouseMove(cocos2d::EventMouse* mouse) {
     // If the mouse is over the widget, show the tooltip
     // Check if the mouse is hovering over the widget
     m_hovering = this->getBoundingBox().containsPoint(getParent()->convertToNodeSpace({mouse->getCursorX(), mouse->getCursorY()}));
-
-    if (m_hovering) {
-        bool dbg = true;
-	}
+    if(m_hovering) _director->setNotificationNode(m_tooltip);
 }
 
 #endif
@@ -141,8 +130,10 @@ bool TooltipWidget::onTouch(cocos2d::Ref*, cocos2d::ui::Widget::TouchEventType e
     if(evntType != cocos2d::ui::Widget::TouchEventType::BEGAN) return false;
 
     // If the widget is not currently sticky, sticky it. Otherwise, unsticky it (will take effect next frame)
-    if (!m_sticky) m_shownTime = 0.0f;
-   
+    if (!m_sticky) {
+        m_shownTime = 0.0f;
+        _director->setNotificationNode(m_tooltip);
+    }
     m_sticky = !m_sticky;
 
     return true;

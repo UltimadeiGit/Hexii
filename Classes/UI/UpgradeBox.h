@@ -26,7 +26,7 @@ public:
 	void setState(Upgrade::State state);
 	
 private:
-	void onPurchaseButtonPressed(cocos2d::Ref*, Widget::TouchEventType evntType) override;
+	void tryPurchase() override;
 
 	void updateIsAffordable() override;
 	// Updates the contribution label

@@ -13,7 +13,11 @@ private:
 public:
 
 	virtual void update(float dt) override {}
-	virtual void setFocus(Hexii* focus) { m_focusHexii = focus; }
+	inline virtual void setFocus(Hexii* focus) { 
+		m_focusHexii = focus; 
+		if (focus == nullptr) setVisible(false);
+		else setVisible(true);
+	}
 
 protected:
 	HexiiTab() {}

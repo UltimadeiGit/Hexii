@@ -9,11 +9,13 @@ USING_NS_CC;
 bool UpgradeBox::init() {
     PurchasableBox::init();
 
+    togglePurchaseButtonHoldable(false);
+
     auto* descriptionButton = Sprite::create("UI/Tooltip/Button.png");
-    descriptionButton->setContentSize({ 40, 40 });
+    descriptionButton->setContentSize({ 80, 80 });
 
     m_descriptionWidget = TooltipWidget::create(descriptionButton, Tooltip::create());
-    m_descriptionWidget->setAnchorPoint(Vec2(0.5, 0.5));
+    m_descriptionWidget->setAnchorPoint(Vec2(0.2, 0.5));
     m_descriptionWidget->setPosition({
         UICommon::PURCHASABLE_BOX_WIDTH, 
         UICommon::PURCHASABLE_BOX_HEIGHT - (UICommon::PURCHASABLE_BOX_NAMEPLATE_HEIGHT / 2)
@@ -47,7 +49,6 @@ void UpgradeBox::setUpgrade(UpgradePtr upgrade, Hexii* subject, UpgradeTrackerPt
     m_icon->setTexture(m_focus->icon);
     m_icon->setTextureRect(Rect({ 0, 0 }, m_focus->icon->getContentSize()));
 
-    printf("Setting Description: %s\n", fmt::to_string(m_focus->description).c_str());
     auto descriptionContent = cocos2d::ui::RichText::create();
     descriptionContent->pushBackElement(cocos2d::ui::RichElementText::create(0, { 255, 255, 255 }, 255, fmt::to_string(m_focus->description), "fonts/BreeSerif.ttf", 38));
     m_descriptionWidget->getTooltip()->setContent(descriptionContent);
@@ -96,9 +97,7 @@ void UpgradeBox::setState(Upgrade::State state) {
     updateLabels();
 }
 
-void UpgradeBox::onPurchaseButtonPressed(Ref*, ui::Widget::TouchEventType evntType) {
-    // Nothing to do except on the mouse release
-    if (evntType != Widget::TouchEventType::ENDED) return;
+void UpgradeBox::tryPurchase() {
     // Verify again that the upgrade is affordable
     updateIsAffordable();
     if (!m_isAffordable) return;

@@ -171,7 +171,6 @@ bool HexiiPlane::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* evnt) {
     constexpr float DOUBLE_TAP_MAX_TOUCH_DISTANCE = 20;
     constexpr int DOUBLE_TAP_MAX_TIME = 300;
 #else 
-    constexpr float DOUBLE_TAP_MAX_TOUCH_DISTANCE = 45;
     constexpr int DOUBLE_TAP_MAX_TIME = 500;
 #endif
 
@@ -179,8 +178,12 @@ bool HexiiPlane::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* evnt) {
     Hexii* hexiiTouched = getHexiiAtPos(Hexagon::pixelToAxial(touchPos - getPosition(), m_hexHeight));
 
     // Double taps (two taps on the same hexii within 0.3 seconds and at most 20 units apart)
-    bool doubleTap = lastHexiiTouched == hexiiTouched &&
-        (currentTime < lastClickTime + DOUBLE_TAP_MAX_TIME && (lastTouchPos - touchPos).getLengthSq() < (DOUBLE_TAP_MAX_TOUCH_DISTANCE * DOUBLE_TAP_MAX_TOUCH_DISTANCE));
+    // On mobile, a double tap has no such distance restriction
+    bool doubleTap = lastHexiiTouched == hexiiTouched && currentTime < lastClickTime + DOUBLE_TAP_MAX_TIME 
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+        && (lastTouchPos - touchPos).getLengthSq() < (DOUBLE_TAP_MAX_TOUCH_DISTANCE * DOUBLE_TAP_MAX_TOUCH_DISTANCE)
+#endif
+        ;
     
 
     if (hexiiTouched) {
@@ -248,11 +251,12 @@ void HexiiPlane::onPinButtonPressed(cocos2d::EventCustom* evnt) {
 }
 
 void HexiiPlane::onSacrificeConfirmed(cocos2d::EventCustom* evnt) {
-    // Sacrifice the board
+    // Sacrifice the board and modify the appropriate resources
 
     // Clear green matter
     Resources::getInstance()->addGreenMatter(-Resources::getInstance()->getGreenMatter());
     Resources::getInstance()->addGreenMatter(6);
+    Resources::getInstance()->addToSacrificeCount();
 
     // Remove all hexii
     for (auto& hexPosPair : m_hexMap) {

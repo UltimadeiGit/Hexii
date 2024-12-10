@@ -285,14 +285,15 @@ void HexiiInfoTab::initUpgradesTab(unsigned short tabNumber, HexiiUpgradesTab* t
 	
 	m_tabButtons[tabNumber]->setVisible(false);
 
-	Progression::whenAchieved(Progression::hexiiUpgradesAvailable(), [this, tabNumber]() {
+	// Enable the tab when the upgrades become available
+	Progression::hexiiUpgradesAvailable()->when(ProgressionEvent::State::ACHIEVED, [this, tabNumber]() {
 		enableTab(tabNumber, false);
 		m_tabButtons[tabNumber]->setVisible(true);
 	});
 }
 
 void HexiiInfoTab::setFocusHexii(Hexii* focus) {
-	if (m_focusHexii == focus) return;
+	if (m_focusHexii == focus && focus != nullptr) return;
 
 	/// Cleanup
 
@@ -300,9 +301,7 @@ void HexiiInfoTab::setFocusHexii(Hexii* focus) {
 	for (uint i = 1; i < HEXII_INFO_TAB_COUNT; i++) removeTab(i);
 
 	// Remove listeners
-	if (m_levelGainedListener) {
-		_eventDispatcher->removeEventListener(m_levelGainedListener);
-	}
+	if (m_levelGainedListener) _eventDispatcher->removeEventListener(m_levelGainedListener);
 
 	m_focusHexii = focus;
 	// Propagate focus to subtabs
@@ -310,11 +309,9 @@ void HexiiInfoTab::setFocusHexii(Hexii* focus) {
 
 	// Quick return if no focus
 	if (!m_focusHexii) {
-		//setFocusSpecialization(nullptr);
 		setVisible(false);
-
 		return;
-	}	
+	}
 
 	/// Setup
 

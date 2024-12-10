@@ -15,7 +15,7 @@ private:
 public:
 	void update(float dt) override;
 
-	HexiiInfoTab* getHexInfoTab() { return dynamic_cast<HexiiInfoTab*>(m_tabs[0]); }
+	HexiiInfoTab* getHexiiInfoTab() { return dynamic_cast<HexiiInfoTab*>(m_tabs[0]); }
 	SettingsTab* getSettingsTab() { return dynamic_cast<SettingsTab*>(m_tabs[2]); }
 
 	CREATE_FUNC(Dock);

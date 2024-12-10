@@ -2,7 +2,8 @@
 #include "UICommon.h"
 
 #include "Maths.h"
-#include <Resources.h>
+#include "Resources.h"
+#include "Progression.h"
 
 USING_NS_CC;
 
@@ -15,6 +16,11 @@ bool HexiiEXPTab::init() {
 
     m_investRedMatterBox = InvestRedMatterBox::create();
     m_investRedMatterBox->setPosition({ UICommon::PURCHASABLE_BOX_SPACING + UICommon::PURCHASABLE_BOX_WIDTH, 0 });
+    m_investRedMatterBox->setVisible(false);
+    // Show the box as long as a sacrifice has been completed before
+    Progression::firstSacrificeCompleted()->when(ProgressionEvent::State::ACHIEVED, [this]() {
+        m_investRedMatterBox->setVisible(true);
+    });
     this->addChild(m_investRedMatterBox, 1);
 
     setContentSize(m_expPurchaseBox->getContentSize());
@@ -23,7 +29,7 @@ bool HexiiEXPTab::init() {
 }
 
 void HexiiEXPTab::setFocus(Hexii* focus) {
-    m_focusHexii = focus;
+    HexiiTab::setFocus(focus);
 	m_expPurchaseBox->setFocusHexii(focus);
     m_investRedMatterBox->setFocusHexii(focus);
 }

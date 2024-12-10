@@ -69,31 +69,34 @@ bool HexiiScene::init() {
 	m_dock->setPosition(origin + Vec2(visibleSize.width / 2, 0));
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	m_dock->setScale(1.2f);
+#else
+	m_dock->setScale(0.9f);
 #endif
 	this->addChild(m_dock, 1);
 
 	// Sidebar
 	m_sidebar = Sidebar::create();
+	m_sidebar->setAnchorPoint({ 1, 0 });
 	m_sidebar->setPosition({ origin.x, origin.y + visibleSize.height - 30 });
 	this->addChild(m_sidebar, 1);
 
 	/// Currency HUD
 
 	constexpr float HUD_SCALE = 1.0f;
-	constexpr float HUD_SPACING = 220.0f * HUD_SCALE;
+	const Vec2 HUD_POS = { origin.x + visibleSize.width / 2, origin.y + visibleSize.height };
 
 	// Green Matter HUD
 	m_greenMatterHUD = CurrencyHUD::create(CurrencyHUD::CurrencyType::GREEN_MATTER);
 	m_greenMatterHUD->setScale(HUD_SCALE);
 	m_greenMatterHUD->setAnchorPoint({ 0.5, 0});
-	m_greenMatterHUD->setPosition({ origin.x + visibleSize.width / 2 - HUD_SPACING, visibleSize.height + origin.y });
+	m_greenMatterHUD->setPosition(HUD_POS + m_greenMatterHUD->getPosition());
 	this->addChild(m_greenMatterHUD, 1);
 
 	// Red Matter HUD
 	m_redMatterHUD = CurrencyHUD::create(CurrencyHUD::CurrencyType::RED_MATTER);
 	m_redMatterHUD->setScale(HUD_SCALE);
 	m_redMatterHUD->setAnchorPoint({ 0.5, 0 });
-	m_redMatterHUD->setPosition({ origin.x + visibleSize.width / 2 + HUD_SPACING, visibleSize.height + origin.y });
+	m_redMatterHUD->setPosition(HUD_POS + m_redMatterHUD->getPosition());
 	this->addChild(m_redMatterHUD, 1);
 
 	//// SHADER TESTING
@@ -126,7 +129,9 @@ bool HexiiScene::init() {
 
 	// UI QoL
 	m_dock->switchTab(0);
-	m_plane->getHexiiAtPos({ 0, 0 })->focus();
+	Hexii* l0Hex = m_plane->getHexiiAtPos({ 0, 0 });
+	if (l0Hex->getActive()) l0Hex->focus();
+	else m_dock->getHexiiInfoTab()->setFocusHexii(nullptr);
 
 	return true;
 }
@@ -168,7 +173,7 @@ void HexiiScene::onSacrificeCancelled(cocos2d::EventCustom* evnt) {
 void HexiiScene::onSacrificeConfirmed(cocos2d::EventCustom* evnt) {
 	closeSacrificeHUD();
 
-	m_dock->getHexInfoTab()->setFocusHexii(nullptr);
+	m_dock->getHexiiInfoTab()->setFocusHexii(nullptr);
 }
 
 void HexiiScene::closeSacrificeHUD() {

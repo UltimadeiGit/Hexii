@@ -89,7 +89,7 @@ protected:
 		this->addChild(button, -1);
 
 		// Setup listener
-		addListenerForTab(tabNumber);
+		addListenerForTabButton(tabNumber);
 
 		if (!initEnabled) {
 			button->setEnabled(false);
@@ -97,7 +97,7 @@ protected:
 		} else enableTab(tabNumber, false);
 	}
 
-	inline void addListenerForTab(unsigned short tabNumber) {
+	inline void addListenerForTabButton(unsigned short tabNumber) {
 		m_tabButtons[tabNumber]->addTouchEventListener(CC_CALLBACK_2(TabbedWidget<TabCount>::onTabPressed, this, tabNumber));
 	}
 

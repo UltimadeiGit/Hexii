@@ -40,6 +40,13 @@ public:
 	inline BigReal getGlobalPowerUpgradeBonus() const { return m_globalPowerUpgradeBonus; }
 	void addGlobalPowerUpgradeBonus(int num = 1) { m_globalPowerUpgradeBonus += num; }
 
+	/// Stats
+
+	// The number of sacrifices that have been made
+	inline uint getSacrificeCount() const { return m_sacrificeCount; }
+	// Increments sacrifice count by 1
+	inline void addToSacrificeCount() { m_sacrificeCount++; }
+
 	// TODO: Find a better way of doing this
 	/// Dock tabs
 
@@ -59,6 +66,13 @@ private:
 	BigReal m_redMatter = 0;
 	uint m_hexiiCountPerlayer[GameplayCommon::MAX_LAYER] = { 0 };
 	BigReal m_globalPowerUpgradeBonus = 0;
+
+	/// Stats
+
+	// The number of sacrifices that have been made
+	uint m_sacrificeCount = 0;
+
+	// TODO: Replace with progression system
 	bool m_tabsEnabled[5] = { false };
 };
 

@@ -8,15 +8,6 @@ HexiiUpgradesAvailableProgressionEvent::HexiiUpgradesAvailableProgressionEvent(
 	registerGenericDependency(dependency);
 }
 
-void HexiiUpgradesAvailableProgressionEvent::init() {
-	// Register the dependency. If the dependency is not needed / already fulfilled, 
-	// then this will return false and we can progress to the appropriate state
-	if (getUnresolvedDependencyCount() == 0) {
-		if (getState() == State::IGNORING) progressToObserving();
-		else followInitialState();
-	}
-}
-
 void HexiiUpgradesAvailableProgressionEvent::onProgressToObserving(bool didSkip) {
 	// If we skipped the intermediate state, we're done. No need to set up any listeners
 	if (didSkip) return;

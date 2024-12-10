@@ -16,8 +16,12 @@ Resources* Resources::getInstance() {
 }
 
 bool Resources::load(const nlohmann::json& data) {
+    /// Resources
     try { data.at("greenMatter").get_to(m_greenMatter); } catch (json::out_of_range) { m_greenMatter = 6; }
     try { data.at("redMatter").get_to(m_redMatter); } catch (json::out_of_range) { m_redMatter = 0; }
+    /// Stats
+    try { data.at("sacrificeCount").get_to(m_sacrificeCount); } catch (json::out_of_range) { m_sacrificeCount = 0; }
+
     data.at("tabsEnabled").get_to(m_tabsEnabled);
    
     return true;
@@ -41,6 +45,9 @@ void to_json(nlohmann::json& j, const Resources& resources) {
         {"greenMatter", resources.getGreenMatter()},
 		{"redMatter", resources.getRedMatter()},
         {"hexiiCountPerlayer", hexiiCountPerlayer},
-        {"tabsEnabled", tabsEnabled}
+        {"tabsEnabled", tabsEnabled},
+
+        // Stats
+        {"sacrificeCount", resources.getSacrificeCount()}
     };
 }
