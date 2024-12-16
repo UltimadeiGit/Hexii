@@ -13,7 +13,10 @@ void HexiiUpgradesAvailableProgressionEvent::onProgressToObserving(bool didSkip)
 	if (didSkip) return;
 
 	// The only thing this event cares about is getting the hexii to level 1
-	registerConditionListener(
+	// So first check if the L0 hex is level 1 or greater already
+
+	if (HexiiPlane::getInstance()->getHexiiAtPos(cocos2d::Vec2(0, 0))->getTotalLevel() >= 1) progressToAchieved();
+	else registerConditionListener(
 		EventUtility::addGlobalEventListenerFixedPriority(
 			Hexii::EVENT_LEVEL_GAINED, 1, this, &HexiiUpgradesAvailableProgressionEvent::onLevelGained
 		)
