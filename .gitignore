@@ -397,3 +397,5 @@ FodyWeavers.xsd
 /fmt-9.1.0/doc
 /proj.win32/fmt-9.1.0
 /cocos2d/cocos/2d/CCSprite.cpp
+
+/proj.android/app/.cxx/
