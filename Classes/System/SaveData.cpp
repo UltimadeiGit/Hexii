@@ -106,4 +106,6 @@ void SaveData::refreshAutosave(const json& autosaveSetting) {
 
     scheduler->unschedule("autosave", this);
     scheduler->schedule([this](float) {save(); }, this, autosaveSetting, false, "autosave");
+
+    // TODO: Should trigger an autosave whenever the user refocuses the app
 }

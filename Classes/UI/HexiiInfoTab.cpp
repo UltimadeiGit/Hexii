@@ -2,6 +2,7 @@
 #include "Resources.h"
 #include "ColourSchemes.h"
 #include "Progression.h"
+#include "UICommon.h"
 
 constexpr float LABEL_SPACING = 15.0f;
 constexpr float LABEL_HEIGHT = 55.0f;
@@ -28,7 +29,7 @@ bool HexiiInfoTab::init() {
 	//m_backgroundOverlay->setPosition(Vec2(1, 591));
 	this->addChild(m_backgroundOverlay, -1);
 
-	setContentSize(m_backgroundOverlay->getContentSize());
+	setContentSize(UICommon::SIDEBAR_SIZE);
 
 	/// Hexii sprite
 
